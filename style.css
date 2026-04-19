@@ -1,0 +1,93 @@
+@charset "UTF-8";
+
+:root {
+  --cor-primaria-destaque: #FFC600; /* Amarelo Correios */
+  --cor-secundaria-confianca: #1d86f0; /* Azul Correios */
+  --cor-plano-fundo: #e4dede;
+  --cor-texto-base: #212121;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+    background-image: linear-gradient(to bottom , var(--cor-primaria-destaque) 60%, var(--cor-secundaria-confianca) 100%);
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--cor-plano-fundo);
+}
+
+.logocorreios {
+    width: 50vw;
+    margin: auto;
+}
+
+
+body {
+    background-color: var(--cor-plano-fundo);
+    margin: auto;
+}
+
+main {
+    background-color: var(--cor-secundaria-confianca);
+}
+
+main ul{
+    list-style: none;
+    display: flex;
+    padding: 10px;
+    padding-right: 10px;
+    justify-content: left;
+    gap: 10px;
+    cursor: pointer;
+    
+}
+
+a {
+    color: rgb(255, 253, 251);
+    text-decoration: none;
+   
+}
+
+main ul li  {
+    background-color: #0053a6;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-weight: bold
+}
+
+main ul li:hover {
+    background-color: var(--cor-plano-fundo);
+    text-decoration: underline;
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.2);
+}
+
+a:hover {
+    color: black;
+}
+
+section {
+    background-color: white;
+    padding: 20px;
+    margin: 10px auto; 
+    border-radius: 10px;
+    text-align: center;
+    width: 90%; 
+    max-width: 1000px;
+    min-height: 500px; 
+    box-sizing: border-box; 
+    box-shadow: 0 0 3px rgba(222, 192, 2, 0.5);
+}
+
+
+footer {
+    background-color: var(--cor-secundaria-confianca);
+    font-size: 12px;
+    text-align: center;
+    padding: 10px;
+    margin: auto;
+}
