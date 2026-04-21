@@ -33,19 +33,19 @@ body {
     margin: auto;
 }
 
-main {
-    background-color: var(--cor-secundaria-confianca);
-    box-shadow: 0 0 5px 1px #fbfbfb74;
-}
 
 main ul{
+    background-color: var(--cor-secundaria-confianca);
+    position: sticky;
+    top: 0;
     list-style: none;
     display: flex;
     padding: 10px;
     padding-right: 10px;
     justify-content: left;
     gap: 10px;
-    
+    box-shadow: 0 0 5px 1px #fbfbfb74;
+   
 }
 
 a {
@@ -58,7 +58,8 @@ main ul li  {
     background-color: #0053a6;
     padding: 2px 7px;
     border-radius: 5px;
-    font-weight: bold
+    font-weight: bold;
+    border: 1px solid #00000081;
 }
 
 main ul li:hover {
