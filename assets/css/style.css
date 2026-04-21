@@ -19,7 +19,7 @@ header {
     background-image: linear-gradient(to bottom , var(--cor-primaria-destaque) 60%, var(--cor-secundaria-confianca) 100%);
     padding: 20px;
     text-align: center;
-    border-bottom: 1px solid var(--cor-plano-fundo);
+   
 }
 
 .logocorreios {
@@ -35,6 +35,7 @@ body {
 
 main {
     background-color: var(--cor-secundaria-confianca);
+    box-shadow: 0 0 5px 1px #fbfbfb74;
 }
 
 main ul{
@@ -72,7 +73,7 @@ a:hover {
 }
 
 .container {
-    background-image: url(imagens/Fachada.jpg);
+    background-image: url(../images/Fachada.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     width: 100vw;
@@ -89,8 +90,10 @@ a:hover {
     display: flex;
     width: 800px;
     height: 600px;
+    padding: 5px;
     border-radius: 10px;
     box-shadow:0 0 10px #040404;
+   
    
 }
 
@@ -100,5 +103,6 @@ footer {
     text-align: center;
     padding: 10px;
     margin: auto;
-    border-top: 2px solid var(--cor-plano-fundo);
+    border-top: 1px solid rgb(2, 2, 2);
+    box-shadow: 0 0 5px #000000;
 }
