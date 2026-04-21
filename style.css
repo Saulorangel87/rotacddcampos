@@ -5,6 +5,8 @@
   --cor-secundaria-confianca: #1d86f0; /* Azul Correios */
   --cor-plano-fundo: #e4dede;
   --cor-texto-base: #212121;
+  --cor-grad: linear-gradient(to bottom, #FFC600 ,#1d86f0);
+
 }
 
 * {
@@ -21,7 +23,7 @@ header {
 }
 
 .logocorreios {
-    width: 50vw;
+    width: 40vw;
     margin: auto;
 }
 
@@ -42,7 +44,6 @@ main ul{
     padding-right: 10px;
     justify-content: left;
     gap: 10px;
-    cursor: pointer;
     
 }
 
@@ -62,7 +63,7 @@ main ul li  {
 main ul li:hover {
     background-color: var(--cor-plano-fundo);
     text-decoration: underline;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.1s ease-in-out;
     transform: scale(1.2);
 }
 
@@ -70,19 +71,28 @@ a:hover {
     color: black;
 }
 
-section {
-    background-color: white;
-    padding: 20px;
-    margin: 10px auto; 
-    border-radius: 10px;
-    text-align: center;
-    width: 90%; 
-    max-width: 1000px;
-    min-height: 500px; 
-    box-sizing: border-box; 
-    box-shadow: 0 0 3px rgba(222, 192, 2, 0.5);
+.container {
+    background-image: url(imagens/Fachada.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+    flex-flow: row;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
 }
 
+
+.mapa {
+    display: flex;
+    width: 800px;
+    height: 600px;
+    border-radius: 10px;
+    box-shadow:0 0 10px #040404;
+   
+}
 
 footer {
     background-color: var(--cor-secundaria-confianca);
@@ -90,4 +100,5 @@ footer {
     text-align: center;
     padding: 10px;
     margin: auto;
+    border-top: 2px solid var(--cor-plano-fundo);
 }
