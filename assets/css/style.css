@@ -1,163 +1,162 @@
-@charset "UTF-8";
-
 :root {
-  --cor-primaria-destaque: #FFC600; /* Amarelo Correios */
-  --cor-secundaria-confianca: #1d86f0; /* Azul Correios */
-  --cor-plano-fundo: #e4dede;
-  --cor-texto-base: #212121;
-  --cor-grad: linear-gradient(to bottom, #FFC600 ,#1d86f0);
-
+    --cor-azul: #005DAA;
+    --cor-amarela: #FFD400;
 }
-      /*Configurações Gerais*/
+
 * {
     margin: 0;
     padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
     box-sizing: border-box;
 }
 
 body {
-    width: 100vw;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
     height: 100vh;
 }
 
 header {
-    background-image: linear-gradient(to bottom, #FFC600 ,#1d86f0);
-    text-align: center;
+    background: linear-gradient(to bottom , var(--cor-azul), var(--cor-amarela));
+    width: 100%;
+    height: 165px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    margin-bottom: 1px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.305);
+}
+
+.logo-correios {
+    width: 380px;
+    filter: drop-shadow(0 1px 10px white);
+    margin: 10px;
 }
 
 header h1 {
-    color: #fafafa;
-    font-size: 1.5em;
-    text-shadow: 0 0 10px #000000;
-}
-
-.logocorreios {
-    width: 50%;
-    margin: 10px auto;
+    font-size: 1.8rem;
+    color: var(--cor-azul);
+    text-align: center;
+    white-space: wrap;
+    text-shadow: 0 0 10px rgb(255, 255, 255);
 }
 
 nav {
-    background-color: var(--cor-secundaria-confianca);
-    display: flex;
-    justify-content: flex-start;
-    box-shadow: 0 0 10px #07020230;
-    border-bottom: 5px solid var(--cor-secundaria-confianca);
+    background-color: var(--cor-amarela);
+    width: 100vw;
+    width: 100%;
+    height: 30px;
 }
 
 nav ul {
     list-style: none;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(9 , 50px);
     padding: 5px;
-    font-size: 1.2em;
-    transition: all 0.3s ease-in-out;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.232);
 }
 
 nav ul li a {
     background-color: white;
-    border: 2px solid transparent;
     text-decoration: none;
-    color: rgb(0, 0, 0);
-    padding: 4px;
+    padding: 2px;
     border-radius: 5px;
-    transition: 0.3s;
+    transition: 0.4s;
 }
 
 nav ul li a:hover {
-    background-color: var(--cor-plano-fundo);
-    color: rgb(9, 9, 220);
-    border-radius: 5px;
-    padding: 5px;
-    text-decoration: underline;
+    background-color: var(--cor-azul);
+    color: white;
+    padding: 3px;
 }
 
-main {
+.container-principal {
+    background-color: rgba(128, 128, 128, 0.151);
+    width: 90vw;
+    margin: auto;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    justify-content: center;
+    flex-wrap: nowrap;
+    box-sizing: border-box;
 }
 
-iframe {
-    width: 70vw;
-    height: 80vh;
-    box-shadow: #02020250 0 0 10px;
+.mapa {
+    width: 85%;
+    max-width: 100%;
+    height: 500px;
+    margin: 10px;
     border-radius: 10px;
 }
 
-footer {
-    background-color: var(--cor-secundaria-confianca);
-}
-
-.rodape  {
-    padding: 8px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.rodape-final {
-    text-align: center;
-    font-size: 14px;
-    padding: 5px;
-    border-top: white solid 1px;
-}
-
-.titulo-link {
-    text-align: left;
-    background-color: var(--cor-primaria-destaque);
-    font-size: 16px;
-    border-bottom: white solid 2px;
-    padding: 5px;
-    
-}
-
-.link {
-    list-style-position: inside;
-    font-size: 13px;
-    margin: 5px;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    justify-content: left;
-    gap: 5px;;
-}
-
-
-           /*Configurações da Legenda*/
-
 .legenda {
-    border:  3px double rgba(0, 0, 0, 0.348);
-    padding: 10px;
-    width: 100px;
-    border-radius: 5px;
-    margin-top: auto;
-    margin-left: 10px;
-    margin-bottom: 5px;
-    margin-right: 2px;
+    font-family: 'Courier New', Courier, monospace;
+    border-style: double;
+    padding: 8px;
+    border-radius: 4px;
 }
 
-.titulo {
-    font-family: 'Courier New', Courier, monospace;
-    padding: 5px;
-    text-align: center;
+.legenda-lista {
+    list-style: none;
+    padding: 10px;
+}
+
+.legenda-item {
+    display: flex;
+    align-items: center;
+    padding:2px;
 }
 
 .legenda-cor {
     display: inline-block;
     width: 20px;
-    height: 10px;
-    border-radius: 5px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 4px;
 }
 
-.numero-distrito {
-    font-family: 'Courier New', Courier, monospace;
-    text-align: center;
-    font-size: 14px;
+.link-container {
+    background: linear-gradient(to bottom , var(--cor-amarela), var(--cor-azul));
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.titulo-link {
+    font-size: 1.2rem;
+    color: black;
+    font-weight: 600;
+    text-shadow: rgb(255, 255, 255) 0 0 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    text-decoration: underline;
     padding: 5px;
 }
 
+.link {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 150px 150px;
+    gap: 5px;
+    margin: 1px;
+    padding: 5px;
+}
 
+.link li a {
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.link li a:hover {
+    background-color: #005DAA;
+    color: white;
+    padding: 3px;
+    border-radius: 5px;
+}
+
+.rodape {
+    background-color: var(--cor-azul);
+    font-size: 14px;
+    text-align: center;
+    padding: 8px;
+}
