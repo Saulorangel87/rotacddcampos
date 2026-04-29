@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
+  <img src="https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
+</p>
+
 # 📍 Mapeamento Digital CDD Campos dos Goytacazes
 
 ![Status do Projeto](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
@@ -42,7 +48,7 @@ O projeto foi pensado para o uso "em campo". Por isso, a interface se adapta aut
 Este projeto une a experiência prática de 13 anos na **Empresa de Correios e Telégrafos (ECT)** com os conhecimentos acadêmicos adquiridos no curso de **Análise e Desenvolvimento de Sistemas (ADS)**.
 
 - **Portfólio:** [saulorangel87.github.io](https://saulorangel87.github.io)
-- **LinkedIn:** [Seu Link Aqui]
+- **LinkedIn:** www.linkedin.com/in/saulo-rangel-rosa-leonardo-1169093a6
 
 ---
 > *Este projeto não possui fins comerciais e foi desenvolvido para auxiliar os colaboradores do CDD Campos dos Goytacazes.*
