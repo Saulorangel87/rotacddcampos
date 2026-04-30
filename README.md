@@ -4,7 +4,9 @@
   <img src="https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
 </p>
 
-![Print do Mapa](./images/print-image.png)
+## 📸 Visualização do Projeto
+
+![Interface do Mapa Online](./image.png)
 
 # 📍 Mapeamento Digital CDD Campos dos Goytacazes
 
