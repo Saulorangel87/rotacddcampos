@@ -4,6 +4,8 @@
   <img src="https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
 </p>
 
+![Print do Mapa](./img/print-image.png)
+
 # 📍 Mapeamento Digital CDD Campos dos Goytacazes
 
 ![Status do Projeto](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
