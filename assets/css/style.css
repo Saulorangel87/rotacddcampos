@@ -156,11 +156,16 @@ nav ul li a:hover {
     border-radius: 5px;
 }
 
+
 .rodape {
     background-color: var(--cor-azul);
-    font-size: 14px;
+    font-size: 13px;
     text-align: center;
     padding: 8px;
+}
+
+.end {
+    border-top: 1px solid rgba(255, 255, 255, 0.297);
 }
 
 @media screen and (max-width: 768px) {
