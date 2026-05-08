@@ -14,7 +14,7 @@
     align-items: center;
     justify-content: center;
     z-index: 9999;
-    cursor: grab;
+    cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 #chat-btn:hover {
