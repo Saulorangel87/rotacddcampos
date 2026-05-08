@@ -8,6 +8,8 @@
     <link rel="shortcut icon" href="assets/images/iconcorreios.png" type="image/x-icon">
     <link rel="stylesheet" href="assets/css/legend.css">
     <script src="https://kit.fontawesome.com/02b1151847.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="assets/css/chat.css">
+    
 </head>
             
    <body>
@@ -114,6 +116,40 @@
                     <p class="end">&copy; 2026 Correios - CDD Campos dos Goytacazes - Desenvolvido por <a href="https://github.com/Saulorangel87" target="_blank">Saulo Rangel</a>.</p>
                 </div>
             </footer>
+
+            </footer>
+
+            <!-- CHATBOT FLUTUANTE -->
+            <button id="chat-btn" onclick="toggleChat()" title="Assistente CDD Campos">
+               <img src="assets/images/iconcorreios.png" alt="Chat" onerror="this.style.display='none'; this.parentElement.innerHTML += '💬'">
+               <span id="chat-badge">?</span>
+            </button>
+
+            <div id="chat-window">
+               <div id="chat-header">
+                  <img src="assets/images/iconcorreios.png" alt="Bot">
+                  <div id="chat-header-info">
+                        <h4>Assistente CDD Campos</h4>
+                        <p>Tire suas dúvidas sobre CEPs e endereços</p>
+                  </div>
+                  <button id="chat-fechar" onclick="toggleChat()">✕</button>
+               </div>
+
+               <div id="chat-mensagens">
+                  <div class="msg bot">Olá! 👋 Sou o assistente do CDD Campos dos Goytacazes. Posso te ajudar com informações sobre CEPs e endereços da região. Como posso ajudar?</div>
+               </div>
+
+               <div id="chat-input-area">
+                  <input type="text" id="chat-input" placeholder="Digite sua dúvida..." onkeydown="if(event.key==='Enter') enviarMensagem()">
+                  <button id="chat-enviar" onclick="enviarMensagem()">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                  </button>
+               </div>
+            </div>
+
+            <script src="assets/js/chat.js"></script>
    </body>
     
 </html>
