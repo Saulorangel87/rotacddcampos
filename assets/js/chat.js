@@ -157,40 +157,55 @@ document.addEventListener('mouseup', () => {
     chatHeader.style.cursor = 'grab';
 });
 
-// ===== BOTÃO ARRASTÁVEL =====
+// ===== BOTÃO ARRASTÁVEL (mouse + touch) =====
 const chatBtn = document.getElementById('chat-btn');
 
 let btnDragging = false;
 let btnOffsetX, btnOffsetY;
 let btnMoved = false;
 
-chatBtn.addEventListener('mousedown', (e) => {
+function getEventCoords(e) {
+    if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    return { x: e.clientX, y: e.clientY };
+}
+
+function onBtnStart(e) {
     btnDragging = true;
     btnMoved = false;
-    btnOffsetX = e.clientX - chatBtn.getBoundingClientRect().left;
-    btnOffsetY = e.clientY - chatBtn.getBoundingClientRect().top;
-    chatBtn.style.cursor = 'grabbing';
+    const { x, y } = getEventCoords(e);
+    btnOffsetX = x - chatBtn.getBoundingClientRect().left;
+    btnOffsetY = y - chatBtn.getBoundingClientRect().top;
     e.preventDefault();
-});
+}
 
-document.addEventListener('mousemove', (e) => {
+function onBtnMove(e) {
     if (!btnDragging) return;
     btnMoved = true;
+    const { x, y } = getEventCoords(e);
 
-    const x = e.clientX - btnOffsetX;
-    const y = e.clientY - btnOffsetY;
+    const newX = x - btnOffsetX;
+    const newY = y - btnOffsetY;
 
     const maxX = window.innerWidth - chatBtn.offsetWidth;
     const maxY = window.innerHeight - chatBtn.offsetHeight;
 
-    chatBtn.style.left = `${Math.max(0, Math.min(x, maxX))}px`;
-    chatBtn.style.top = `${Math.max(0, Math.min(y, maxY))}px`;
+    chatBtn.style.left = `${Math.max(0, Math.min(newX, maxX))}px`;
+    chatBtn.style.top = `${Math.max(0, Math.min(newY, maxY))}px`;
     chatBtn.style.right = 'auto';
     chatBtn.style.bottom = 'auto';
-});
+}
 
-document.addEventListener('mouseup', () => {
-    if (btnDragging && !btnMoved) toggleChat(); // clique normal abre o chat
+function onBtnEnd() {
+    if (btnDragging && !btnMoved) toggleChat();
     btnDragging = false;
-    chatBtn.style.cursor = 'grab';
-});
+}
+
+// Mouse
+chatBtn.addEventListener('mousedown', onBtnStart);
+document.addEventListener('mousemove', onBtnMove);
+document.addEventListener('mouseup', onBtnEnd);
+
+// Touch
+chatBtn.addEventListener('touchstart', onBtnStart, { passive: false });
+document.addEventListener('touchmove', onBtnMove, { passive: false });
+document.addEventListener('touchend', onBtnEnd);
