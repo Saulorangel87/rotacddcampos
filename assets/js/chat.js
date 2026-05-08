@@ -163,3 +163,31 @@ document.addEventListener('mouseup', () => {
 // ===== BOTÃO CLICÁVEL =====
 const chatBtn = document.getElementById('chat-btn');
 chatBtn.addEventListener('click', toggleChat);
+
+// ===== MICROFONE =====
+const btnMic = document.getElementById('chat-mic');
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = (e) => {
+        const texto = e.results[0][0].transcript;
+        document.getElementById('chat-input').value = texto;
+        enviarMensagem();
+    };
+
+    recognition.onend = () => {
+        btnMic.style.background = '';
+    };
+
+    btnMic.addEventListener('click', () => {
+        recognition.start();
+        btnMic.style.background = 'red'; // fica vermelho enquanto grava
+    });
+} else {
+    btnMic.style.display = 'none'; // esconde se navegador não suportar
+}

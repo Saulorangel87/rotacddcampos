@@ -156,3 +156,22 @@
     flex-shrink: 0;
 }
 #chat-enviar svg { width: 18px; height: 18px; fill: #003399; }
+
+#chat-mic {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+#chat-mic svg {
+    width: 18px;
+    height: 18px;
+    fill: #003399;
+}
