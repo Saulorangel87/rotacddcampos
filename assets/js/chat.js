@@ -30,6 +30,13 @@ function extrairCEP(texto) {
     return match ? match[0] : null;
 }
 
+function extrairNomeRua(texto) {
+    const regexRua = /(?:rua|avenida|av\.?|travessa|alameda|praça|estrada)\s+[\wÀ-ÿ\s]+/i;
+    const match = texto.match(regexRua);
+    if (!match) return null;
+    return match[0].trim();
+}
+
 function toggleChat() {
     const win = document.getElementById('chat-window');
     win.classList.toggle('aberto');
@@ -71,17 +78,16 @@ async function enviarMensagem() {
         const palavrasChave = ['rua', 'avenida', 'av.', 'av ', 'travessa', 'alameda', 'praça', 'estrada'];
         const temRua = palavrasChave.some(p => texto.toLowerCase().includes(p));
         if (temRua) {
-            const regexRua = /(?:rua|avenida|av\.?|travessa|alameda|praça|estrada)\s+([a-zA-ZÀ-ÿ\s]+)/i;
-            const match = texto.match(regexRua);
-            const termoBusca = match ? match[0] : texto;
-
-            const resultados = await buscarPorRua(termoBusca);
-            if (resultados && resultados.length > 0) {
-                infoCEP = `\n\n[Endereços encontrados no ViaCEP: ${resultados.slice(0, 5).map(r =>
-                    `CEP: ${r.cep} - ${r.logradouro}, ${r.bairro}`
-                ).join(' | ')}]`;
-            } else {
-                infoCEP = `\n\n[Busca no ViaCEP não retornou resultados para "${termoBusca}" em Campos dos Goytacazes]`;
+            const nomeRua = extrairNomeRua(texto);
+            if (nomeRua) {
+                const resultados = await buscarPorRua(nomeRua);
+                if (resultados && resultados.length > 0) {
+                    infoCEP = `\n\n[Endereços encontrados no ViaCEP: ${resultados.slice(0, 5).map(r =>
+                        `CEP: ${r.cep} - ${r.logradouro}, ${r.bairro}`
+                    ).join(' | ')}]`;
+                } else {
+                    infoCEP = `\n\n[Busca no ViaCEP não retornou resultados para "${nomeRua}" em Campos dos Goytacazes]`;
+                }
             }
         }
     }
@@ -123,7 +129,7 @@ Responda SEMPRE em português do Brasil, de forma clara e amigável.`
     }
 }
 
-// ===== CHAT ARRASTÁVEL =====
+// ===== CHAT ARRASTÁVEL (cabeçalho) =====
 const chatWindow = document.getElementById('chat-window');
 const chatHeader = document.getElementById('chat-header');
 
@@ -141,11 +147,8 @@ document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     const x = e.clientX - offsetX;
     const y = e.clientY - offsetY;
-
-    // Limita para não sair da tela
     const maxX = window.innerWidth - chatWindow.offsetWidth;
     const maxY = window.innerHeight - chatWindow.offsetHeight;
-
     chatWindow.style.left = `${Math.max(0, Math.min(x, maxX))}px`;
     chatWindow.style.top = `${Math.max(0, Math.min(y, maxY))}px`;
     chatWindow.style.right = 'auto';
@@ -157,55 +160,6 @@ document.addEventListener('mouseup', () => {
     chatHeader.style.cursor = 'grab';
 });
 
-// ===== BOTÃO ARRASTÁVEL (mouse + touch) =====
+// ===== BOTÃO CLICÁVEL =====
 const chatBtn = document.getElementById('chat-btn');
-
-let btnDragging = false;
-let btnOffsetX, btnOffsetY;
-let btnMoved = false;
-
-function getEventCoords(e) {
-    if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    return { x: e.clientX, y: e.clientY };
-}
-
-function onBtnStart(e) {
-    btnDragging = true;
-    btnMoved = false;
-    const { x, y } = getEventCoords(e);
-    btnOffsetX = x - chatBtn.getBoundingClientRect().left;
-    btnOffsetY = y - chatBtn.getBoundingClientRect().top;
-    e.preventDefault();
-}
-
-function onBtnMove(e) {
-    if (!btnDragging) return;
-    btnMoved = true;
-    const { x, y } = getEventCoords(e);
-
-    const newX = x - btnOffsetX;
-    const newY = y - btnOffsetY;
-
-    const maxX = window.innerWidth - chatBtn.offsetWidth;
-    const maxY = window.innerHeight - chatBtn.offsetHeight;
-
-    chatBtn.style.left = `${Math.max(0, Math.min(newX, maxX))}px`;
-    chatBtn.style.top = `${Math.max(0, Math.min(newY, maxY))}px`;
-    chatBtn.style.right = 'auto';
-    chatBtn.style.bottom = 'auto';
-}
-
-function onBtnEnd() {
-    if (btnDragging && !btnMoved) toggleChat();
-    btnDragging = false;
-}
-
-// Mouse
-chatBtn.addEventListener('mousedown', onBtnStart);
-document.addEventListener('mousemove', onBtnMove);
-document.addEventListener('mouseup', onBtnEnd);
-
-// Touch
-chatBtn.addEventListener('touchstart', onBtnStart, { passive: false });
-document.addEventListener('touchmove', onBtnMove, { passive: false });
-document.addEventListener('touchend', onBtnEnd);
+chatBtn.addEventListener('click', toggleChat);
