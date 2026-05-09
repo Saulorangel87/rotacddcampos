@@ -1,22 +1,50 @@
 const WORKER_URL = "https://flat-rice-6724.sauloleonardo1987.workers.dev";
 const historico = [];
 
+// Função de busca de CEP com Fallback (BrasilAPI)
 async function buscarCEP(cep) {
     const cepLimpo = cep.replace(/\D/g, '');
     if (cepLimpo.length !== 8) return null;
+
     try {
-        const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-        const data = await res.json();
-        if (data.erro) return null;
+        // 1ª Tentativa: ViaCEP
+        let res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+        let data = await res.json();
+
+        if (data.erro) throw new Error("CEP não encontrado");
         return data;
-    } catch {
-        return null;
+    } catch (error) {
+        console.warn("ViaCEP falhou ou não encontrou. Tentando BrasilAPI...");
+        try {
+            // 2ª Tentativa: BrasilAPI
+            const res = await fetch(`https://brasilapi.com.br/api/cep/v1/${cepLimpo}`);
+            const data = await res.json();
+            
+            if (res.ok) {
+                return {
+                    logradouro: data.street || "",
+                    bairro: data.neighborhood || "",
+                    localidade: data.city || "",
+                    uf: data.state || "",
+                    cep: data.cep || ""
+                };
+            }
+            return null;
+        } catch {
+            return null;
+        }
     }
 }
 
+// Função de busca por Nome de Rua em Campos dos Goytacazes
 async function buscarPorRua(texto) {
+    // Limpa prefixos para melhorar a busca no banco de dados
+    const buscaLimpa = texto.toLowerCase()
+        .replace(/^(rua|avenida|av\.?|travessa|alameda|praça|estrada)\s+/i, '')
+        .trim();
+
     try {
-        const res = await fetch(`https://viacep.com.br/ws/RJ/Campos%20dos%20Goytacazes/${encodeURIComponent(texto)}/json/`);
+        const res = await fetch(`https://viacep.com.br/ws/RJ/Campos%20dos%20Goytacazes/${encodeURIComponent(buscaLimpa)}/json/`);
         const data = await res.json();
         if (!Array.isArray(data) || data.length === 0) return null;
         return data;
@@ -33,15 +61,14 @@ function extrairCEP(texto) {
 function extrairNomeRua(texto) {
     const regexRua = /(?:rua|avenida|av\.?|travessa|alameda|praça|estrada)\s+[\wÀ-ÿ\s]+/i;
     const match = texto.match(regexRua);
-    if (!match) return null;
-    return match[0].trim();
+    return match ? match[0].trim() : null;
 }
 
 function toggleChat() {
     const win = document.getElementById('chat-window');
     win.classList.toggle('aberto');
     if (win.classList.contains('aberto')) {
-        document.getElementById('chat-badge').style.display = 'none';
+        document.getElementById('chat-badge') && (document.getElementById('chat-badge').style.display = 'none');
         document.getElementById('chat-input').focus();
     }
 }
@@ -69,25 +96,26 @@ async function enviarMensagem() {
     let infoCEP = '';
     const cepEncontrado = extrairCEP(texto);
 
+    // Lógica de Identificação: CEP ou Nome de Rua
     if (cepEncontrado) {
         const dados = await buscarCEP(cepEncontrado);
         if (dados) {
             infoCEP = `\n\n[Dados do CEP ${cepEncontrado}: Logradouro: ${dados.logradouro}, Bairro: ${dados.bairro}, Cidade: ${dados.localidade}, UF: ${dados.uf}]`;
+        } else {
+            infoCEP = `\n\n[O CEP ${cepEncontrado} não foi localizado nas bases oficiais.]`;
         }
     } else {
-        const palavrasChave = ['rua', 'avenida', 'av.', 'av ', 'travessa', 'alameda', 'praça', 'estrada'];
-        const temRua = palavrasChave.some(p => texto.toLowerCase().includes(p));
-        if (temRua) {
-            const nomeRua = extrairNomeRua(texto);
-            if (nomeRua) {
-                const resultados = await buscarPorRua(nomeRua);
-                if (resultados && resultados.length > 0) {
-                    infoCEP = `\n\n[Endereços encontrados no ViaCEP: ${resultados.slice(0, 5).map(r =>
-                        `CEP: ${r.cep} - ${r.logradouro}, ${r.bairro}`
-                    ).join(' | ')}]`;
-                } else {
-                    infoCEP = `\n\n[Busca no ViaCEP não retornou resultados para "${nomeRua}" em Campos dos Goytacazes]`;
-                }
+        // Tenta pegar o nome da rua ou assume o texto todo se for uma mensagem curta e direta
+        let nomeParaBusca = extrairNomeRua(texto) || (texto.length > 3 && texto.length < 60 ? texto : null);
+
+        if (nomeParaBusca) {
+            const resultados = await buscarPorRua(nomeParaBusca);
+            if (resultados && resultados.length > 0) {
+                infoCEP = `\n\n[Endereços encontrados em Campos: ${resultados.slice(0, 5).map(r =>
+                    `CEP: ${r.cep} - ${r.logradouro}, ${r.bairro}`
+                ).join(' | ')}]`;
+            } else {
+                infoCEP = `\n\n[Busca por "${nomeParaBusca}" não retornou resultados em Campos dos Goytacazes.]`;
             }
         }
     }
@@ -104,11 +132,10 @@ async function enviarMensagem() {
                     {
                         role: 'system',
                         content: `Você é um assistente virtual do CDD de Campos dos Goytacazes, RJ. 
-Ajude os carteiros com informações sobre CEPs, endereços, bairros e logística da região.
-Os distritos postais vão de 601 a 609.
-Quando receber dados de um CEP ou endereço entre colchetes [], use essas informações para responder de forma clara.
-Se não houver resultados no ViaCEP, oriente o usuário a consultar buscacepinter.correios.com.br.
-Responda SEMPRE em português do Brasil, de forma clara e amigável.`
+Ajude os carteiros com informações sobre CEPs, endereços e logística. 
+Os distritos postais da região vão de 601 a 609.
+Use as informações entre colchetes [] para dar respostas precisas. 
+Se a busca falhar, oriente o usuário a verificar se o logradouro é novo.`
                     },
                     ...historico
                 ]
@@ -124,12 +151,12 @@ Responda SEMPRE em português do Brasil, de forma clara e amigável.`
 
     } catch (erro) {
         digitando.remove();
-        adicionarMsg('Desculpe, ocorreu um erro. Tente novamente.', 'bot');
+        adicionarMsg('Ocorreu um erro ao processar sua mensagem. Tente novamente.', 'bot');
         console.error(erro);
     }
 }
 
-// ===== CHAT ARRASTÁVEL (cabeçalho) =====
+// ===== Lógica de Arrastar Janela =====
 const chatWindow = document.getElementById('chat-window');
 const chatHeader = document.getElementById('chat-header');
 
@@ -160,34 +187,27 @@ document.addEventListener('mouseup', () => {
     chatHeader.style.cursor = 'grab';
 });
 
-// ===== BOTÃO CLICÁVEL =====
-const chatBtn = document.getElementById('chat-btn');
-chatBtn.addEventListener('click', toggleChat);
+// ===== Eventos de Botão e Voz =====
+document.getElementById('chat-btn').addEventListener('click', toggleChat);
 
-// ===== MICROFONE =====
 const btnMic = document.getElementById('chat-mic');
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 if (SpeechRecognition) {
     const recognition = new SpeechRecognition();
     recognition.lang = 'pt-BR';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
+    
     recognition.onresult = (e) => {
         const texto = e.results[0][0].transcript;
         document.getElementById('chat-input').value = texto;
         enviarMensagem();
     };
 
-    recognition.onend = () => {
-        btnMic.style.background = '';
-    };
-
     btnMic.addEventListener('click', () => {
         recognition.start();
-        btnMic.style.background = 'red'; // fica vermelho enquanto grava
+        btnMic.style.background = '#ff4d4d';
+        recognition.onend = () => btnMic.style.background = '';
     });
 } else {
-    btnMic.style.display = 'none'; // esconde se navegador não suportar
+    btnMic.style.display = 'none';
 }
