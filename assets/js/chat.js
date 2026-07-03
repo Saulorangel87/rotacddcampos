@@ -66,8 +66,17 @@ function extrairNomeRua(texto) {
 
 function toggleChat() {
     const win = document.getElementById('chat-window');
-    win.classList.toggle('aberto');
-    if (win.classList.contains('aberto')) {
+    const btn = document.getElementById('chat-btn');
+    const aberto = win.classList.toggle('aberto');
+    
+    if (btn) {
+        btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+    }
+    if (win) {
+        win.setAttribute('aria-hidden', aberto ? 'false' : 'true');
+    }
+    
+    if (aberto) {
         document.getElementById('chat-badge') && (document.getElementById('chat-badge').style.display = 'none');
         document.getElementById('chat-input').focus();
     }

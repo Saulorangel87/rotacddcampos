@@ -12,11 +12,13 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
-    background: linear-gradient(to bottom , var(--cor-azul), var(--cor-amarela));
+    background-color: var(--cor-azul);
     width: 100%;
     height: 165px;
     display: flex;
@@ -37,53 +39,96 @@ header {
 
 header h1 {
     font-size: 1.8rem;
-    color: var(--cor-azul);
+    color: white;
     text-align: center;
     white-space: wrap;
-    text-shadow: 0 0 10px rgb(255, 255, 255);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.sub-header-titulo {
+    font-size: 1.1rem;
+    color: #e6f0fa;
+    text-align: center;
+    font-weight: normal;
+    margin-top: 5px;
 }
 
 .topo {
     background-color: var(--cor-amarela);
     display: flex;
-    padding: 5px;
+    align-items: center;
+    padding: 8px 16px;
     width: 100%;
-    height: 40px;
-    box-sizing: border-box
+    min-height: 60px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.topo i {
-    font-size: 1.5rem;
-    color:  var(--cor-azul);
-    margin: 5px;
+.home-link {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    text-align: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: white;
+    color: var(--cor-azul);
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s, color 0.3s, transform 0.1s;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.home-link:hover, .home-link:focus {
+    background-color: var(--cor-azul);
+    color: white;
+    transform: scale(1.05);
+    outline: none;
+}
+
+.home-link svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
 }
 
 .topo h1 {
-    color: var(--cor-azul);
-    font-size: 1.8rem;
-    text-shadow: 0 0 10px rgb(255, 255, 255);
-    margin: auto;
-    justify-content: center;
-    text-align: center;
+    color: #111111; /* Contrast 12.85:1 on yellow background */
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
-.topo i:hover {
-    background-color: #005DAA;
-    color: white;
-    padding: 2px;
-    border-radius: 5px;
-    transition: 0.8s;
-}
-
-footer p {
-    border-bottom: rgba(255, 255, 255, 0.297) solid 1px;
+footer {
+    width: 100%;
+    margin-top: auto; /* Sticky footer behavior in flex container */
 }
 
 .rodape {
-    background-color: var(--cor-azul);
+    background-color: #001d47;
     font-size: 13px;
     text-align: center;
-
+    padding: 15px;
+    color: #cccccc;
+    line-height: 1.6;
 }
+
+.rodape p {
+    margin-bottom: 5px;
+}
+
+.rodape a {
+    color: var(--cor-amarela);
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.rodape a:hover, .rodape a:focus {
+    color: white;
+}
+
+.end {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 10px;
+    margin-top: 10px;
+}

@@ -34,17 +34,23 @@
               
                  
                <section class="container-principal" aria-label="Mapa de rotas e legenda dos distritos">
-                          <iframe
-                              src="https://www.google.com/maps/d/u/0/embed?mid=1K1UrY4Joi-H2j4vU_EawYxELPuKcSWM&ehbc=2E312F&noprof=1"
-                              class="mapa"
-                              title="Mapa de distritos postais do CDD Campos dos Goytacazes"
-                              loading="lazy"
-                              allowfullscreen
-                          ></iframe>
+                  <div id="mapa-wrapper" class="mapa-wrapper">
+                     <div id="mapa-placeholder" class="mapa-placeholder">
+                        <img src="assets/images/image.png" alt="Mapa de distritos postais do CDD Campos dos Goytacazes" class="mapa-img" width="100%" height="500">
+                        <div class="mapa-overlay">
+                           <button id="btn-carregar-mapa" class="btn-carregar-mapa" aria-label="Carregar mapa interativo">
+                              <svg class="map-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                              </svg>
+                              Carregar Mapa Interativo
+                           </button>
+                        </div>
+                     </div>
+                  </div>
 
                   <!-- Legenda do mapa -->
                   <div class="legenda" aria-label="Legenda de cores dos distritos">
-                     <h3 class="titulo">Legenda</h3>
+                     <h2 class="titulo">Legenda</h2>
 
                      <ul class="legenda-lista" role="list">
                         <li class="legenda-item">
@@ -98,8 +104,8 @@
 
             <footer>
                <!-- Links úteis -->
-               <div class="link-container">
-                  <h3 class="titulo-link">Links úteis:</h3>
+                <div class="link-container">
+                   <h2 class="titulo-link">Links úteis:</h2>
                     <ul class="link">
                        <li><a href="https://www.correios.com.br/" target="_blank" rel="noopener noreferrer">Correios.com.br</a></li>
                        <li><a href="https://buscacepinter.correios.com.br/app/endereco/index.php?t" target="_blank" rel="noopener noreferrer">Busca CEP</a></li>
@@ -121,7 +127,7 @@
                <span id="chat-badge" aria-label="Nova mensagem">?</span>
             </button>
 
-            <div id="chat-window" role="dialog" aria-label="Chat do Assistente CDD Campos" aria-modal="false">
+            <div id="chat-window" role="dialog" aria-label="Chat do Assistente CDD Campos" aria-modal="false" aria-hidden="true">
                <div id="chat-header">
                   <img src="assets/images/iconcorreios.png" alt="" role="presentation" width="36" height="36">
                   <div id="chat-header-info">
@@ -152,6 +158,19 @@
             </div>
 
             <script src="assets/js/chat.js"></script>
+            <script>
+               document.getElementById('btn-carregar-mapa').addEventListener('click', function() {
+                  const wrapper = document.getElementById('mapa-wrapper');
+                  wrapper.innerHTML = `
+                     <iframe
+                        src="https://www.google.com/maps/d/u/0/embed?mid=1K1UrY4Joi-H2j4vU_EawYxELPuKcSWM&ehbc=2E312F&noprof=1"
+                        class="mapa"
+                        title="Mapa de distritos postais do CDD Campos dos Goytacazes"
+                        allowfullscreen
+                     ></iframe>
+                  `;
+               });
+            </script>
    </body>
     
 </html>
