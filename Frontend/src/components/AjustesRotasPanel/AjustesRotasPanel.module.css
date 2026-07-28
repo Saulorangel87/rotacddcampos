@@ -1,0 +1,197 @@
+.painel {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-flutuante);
+  border: 1px solid var(--cinza-200);
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--cinza-200);
+}
+
+.cabecalho h2 {
+  font-size: 1rem;
+}
+
+.fechar {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--cinza-600);
+  line-height: 1;
+}
+
+.passos {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  padding: 12px 18px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--cinza-400);
+  border-bottom: 1px solid var(--cinza-200);
+  flex-wrap: wrap;
+}
+
+.passos li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.passos li[data-estado='ativo'] {
+  color: var(--cor-azul);
+}
+
+.passos li[data-estado='concluido'] {
+  color: var(--sucesso);
+}
+
+.numeroPasso {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: currentColor;
+  color: var(--branco);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+}
+
+.conteudo {
+  padding: 16px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.aviso {
+  background: var(--alerta-bg);
+  color: #7a5407;
+  border-radius: var(--raio-sm);
+  padding: 8px 12px;
+  font-size: 0.8rem;
+}
+
+.campoBusca {
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 8px 12px;
+  font-size: 0.85rem;
+}
+
+.carregando {
+  color: var(--cinza-600);
+  font-size: 0.85rem;
+  padding: 12px 0;
+}
+
+.tabelaSelecao {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.tabelaSelecao th {
+  text-align: left;
+  color: var(--cinza-600);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--cinza-200);
+}
+
+.tabelaSelecao td {
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--cinza-100);
+}
+
+.vazio {
+  text-align: center;
+  color: var(--cinza-400);
+  padding: 20px 0 !important;
+}
+
+.rodapePasso {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  font-size: 0.8rem;
+  color: var(--cinza-600);
+  font-weight: 600;
+}
+
+.botaoPrimario {
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.botaoPrimario:disabled {
+  background: var(--cinza-400);
+  cursor: not-allowed;
+}
+
+.botaoSecundario {
+  background: var(--branco);
+  color: var(--cinza-800);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--cinza-800);
+}
+
+.campo select,
+.campo input {
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 8px 10px;
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.comparativo {
+  border-top: 1px solid var(--cinza-100);
+  padding-top: 10px;
+}
+
+.sucesso {
+  background: var(--sucesso-bg);
+  color: var(--sucesso);
+  border-radius: var(--raio-sm);
+  padding: 14px;
+  font-size: 0.85rem;
+}
+
+.sucesso p {
+  margin-top: 6px;
+  color: var(--cinza-800);
+}

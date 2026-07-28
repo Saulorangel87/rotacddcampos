@@ -1,0 +1,105 @@
+.header {
+  background: var(--cor-azul);
+  color: var(--branco);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 28px;
+  box-shadow: var(--sombra);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo {
+  width: 30px;
+  height: 26px;
+}
+
+.nomeMarca {
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}
+
+.titulo {
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.acoes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-self: end;
+}
+
+.busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  padding: 7px 14px;
+  color: var(--branco);
+}
+
+.busca input {
+  background: transparent;
+  border: none;
+  color: var(--branco);
+  font-size: 0.85rem;
+  width: 220px;
+}
+
+.busca input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.busca input:focus {
+  outline: none;
+}
+
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--branco);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--cor-amarela);
+  color: var(--cor-azul-escuro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .header {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .acoes {
+    justify-self: center;
+  }
+  .busca input {
+    width: 160px;
+  }
+}

@@ -1,0 +1,106 @@
+.caixa {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--cinza-200);
+}
+
+.abas {
+  display: flex;
+  gap: 4px;
+}
+
+.aba {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: var(--raio-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cinza-600);
+  cursor: pointer;
+}
+
+.aba[data-ativa='true'] {
+  background: var(--cor-azul);
+  color: var(--branco);
+}
+
+.busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.busca input {
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 7px 10px;
+  font-size: 0.82rem;
+}
+
+.btnExportar {
+  background: var(--branco);
+  border: 1px solid var(--cor-azul);
+  color: var(--cor-azul);
+  border-radius: var(--raio-sm);
+  padding: 7px 12px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.tabelaWrapper {
+  overflow-x: auto;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.tabela th {
+  text-align: left;
+  color: var(--cinza-600);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--cinza-200);
+  white-space: nowrap;
+}
+
+.tabela td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--cinza-100);
+  white-space: nowrap;
+}
+
+.chipDistrito {
+  color: var(--branco);
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.status {
+  color: var(--sucesso);
+  font-weight: 600;
+}
+
+.vazio {
+  text-align: center;
+  color: var(--cinza-400);
+  padding: 24px 0 !important;
+}

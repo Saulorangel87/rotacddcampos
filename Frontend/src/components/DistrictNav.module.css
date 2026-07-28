@@ -1,0 +1,61 @@
+.nav {
+  background: var(--cor-amarela);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 28px;
+  flex-wrap: wrap;
+}
+
+.rotulo {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--cor-azul-escuro);
+  background: var(--branco);
+  padding: 6px 12px;
+  border-radius: 999px;
+  box-shadow: var(--sombra);
+}
+
+.lista {
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.item {
+  width: 44px;
+  height: 36px;
+  border-radius: var(--raio-sm);
+  border: 2px solid transparent;
+  background: var(--branco);
+  color: var(--cinza-800);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  transition: transform 0.12s, border-color 0.12s;
+  position: relative;
+}
+
+.item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 0 0 var(--raio-sm) var(--raio-sm);
+  background: var(--cor-distrito);
+}
+
+.item:hover {
+  transform: translateY(-1px);
+}
+
+.item[data-ativo='true'] {
+  border-color: var(--cor-azul-escuro);
+  background: var(--cor-azul-escuro);
+  color: var(--branco);
+}

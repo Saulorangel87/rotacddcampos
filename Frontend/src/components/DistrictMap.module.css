@@ -1,0 +1,10 @@
+.svg {
+  width: 100%;
+  height: auto;
+  background: #eef1f4;
+  border-radius: var(--raio);
+}
+
+.svg[data-tamanho='pequeno'] {
+  max-height: 180px;
+}

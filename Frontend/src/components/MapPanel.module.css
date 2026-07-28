@@ -1,0 +1,93 @@
+.painel {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cabecalho {
+  background: var(--cinza-950);
+  color: var(--branco);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+}
+
+.tituloBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.btnAjustes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.btnAjustes:hover {
+  background: var(--cor-azul-escuro);
+}
+
+.corpo {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 12px;
+  padding: 16px;
+}
+
+.legenda {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--cinza-100);
+  border-radius: var(--raio-sm);
+  padding: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  align-self: start;
+}
+
+.legenda li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.corLegenda {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.rodape {
+  font-size: 0.72rem;
+  color: var(--cinza-600);
+  padding: 0 16px 14px;
+}
+
+@media (max-width: 700px) {
+  .corpo {
+    grid-template-columns: 1fr;
+  }
+  .legenda {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}

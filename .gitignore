@@ -1,0 +1,28 @@
+# ===== Frontend (Node/Vite/React) =====
+node_modules/
+dist/
+.vite/
+*.local
+
+# ===== Variáveis de ambiente =====
+.env
+.env.local
+.env.*.local
+Backend/.env
+
+# ===== Backend (Go) =====
+Backend/tmp/
+Backend/bin/
+*.exe
+*.test
+*.out
+
+# ===== Editor / SO =====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+*.log
+npm-debug.log*
