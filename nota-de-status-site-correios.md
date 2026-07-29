@@ -1,4 +1,5 @@
 # Nota de status — Site Correios (CDD Campos dos Goytacazes)
+
 _Gerado em 29/07/2026_
 
 ## Visão geral do projeto
@@ -12,13 +13,18 @@ Ferramenta interna pra substituir mapas de papel na sua unidade: consulta e gest
 ## O que já está funcionando
 
 ### Backend (Go)
+
 - API sobe local com `go run main.go`, porta 8080
 - `GET /ruas` com filtros `?distrito=` e `?nome=` — testado e validado contra os dados reais
 - `PUT /ruas/:id` — usado pra gravar mudança de distrito
 - CORS configurado liberando `http://localhost:5173` (necessário pro front conversar com a API)
+- API `GET /colaboradores` agora aceita `?carteiro=true` no backend para filtrar apenas colaboradores cujo cargo/funcao indica carteiro (motorizado/ciclista)
+- API `GET /colaboradores/aniversariantes-hoje` passou a aceitar data simulada no formato `DD/MM` ou `DD-MM`
+- Datas no JSON de colaboradores agora são serializadas em formato brasileiro `dd/mm/yyyy`
 - Tabela `ruas` já tem colunas preparadas pro futuro: `ativo`, `latitude`, `longitude`, `rota_id`, `rota` — **mas o model Go (`models/rua.go`) ainda não expõe `ativo`/`latitude`/`longitude`/`rota_id`**, só usa os 9 campos originais
 
 ### Frontend (React)
+
 - Layout seguindo o mockup: header com logo real dos Correios, nav de 24 distritos (cores únicas, sem repetir), sidebar, mapa esquemático em SVG
 - Painel **Ajustes de Rotas**: assistente de 3 passos (selecionar ruas → escolher distrito → confirmar), com paginação (12 por página) e altura travada na tela (não empurra mais o botão "Próximo" pra fora)
 - Tabela de ruas: abas (todas/distrito/carteiro/CEP), paginação (30 por página), exportar CSV
@@ -36,13 +42,16 @@ Ferramenta interna pra substituir mapas de papel na sua unidade: consulta e gest
 ## Planejado pra mais à frente (só desenho, não implementar ainda)
 
 ### Autenticação simples (admin vs. carteiro)
+
 - Sem login complexo — matrícula + senha, JWT simples
 - Padrão: **somente leitura pra todos**
 - Só você (Saulo) é admin no início; botão "gerenciar usuários" futuro permite conceder acesso admin a outras pessoas
 - Trava sempre no backend (middleware verifica papel antes de qualquer escrita), front só esconde botão por UX
 
 ### Redistribuição automática de ruas órfãs
+
 Pra quando o número de distritos cair (hoje 24, pode diminuir):
+
 - Motor de sugestão por heurística (proximidade + carga de trabalho) — **não IA decidindo sozinha**
 - IA entra só pra gerar a justificativa em texto de cada sugestão, e pra interpretar nomes de rua bagunçados
 - Sugestões caem pré-preenchidas dentro do próprio Ajustes de Rotas, humano sempre confirma
