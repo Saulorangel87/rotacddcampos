@@ -7,7 +7,7 @@ import (
 	"github.com/empresa/rotas-entrega/config"
 	"github.com/empresa/rotas-entrega/database"
 	"github.com/empresa/rotas-entrega/routes"
-	_ "github.com/empresa/rotas-entrega/docs"
+	_"github.com/empresa/rotas-entrega/docs"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"

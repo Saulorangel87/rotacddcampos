@@ -18,7 +18,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
 
-	// Injeção de dependências
+	// Injeção de dependências - Ruas
 	ruaRepo := repositories.NewRuaRepository(db)
 	ruaService := services.NewRuaService(ruaRepo)
 	ruaHandler := handlers.NewRuaHandler(ruaService)
@@ -30,5 +30,17 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 		api.Post("/", ruaHandler.CreateRua)
 		api.Put("/:id", ruaHandler.UpdateRua)
 		api.Delete("/:id", ruaHandler.DeleteRua)
+	}
+
+	// Injeção de dependências - Colaboradores
+	colaboradorRepo := repositories.NewColaboradorRepository(db)
+	colaboradorService := services.NewColaboradorService(colaboradorRepo)
+	colaboradorHandler := handlers.NewColaboradorHandler(colaboradorService)
+
+	colaboradores := app.Group("/colaboradores")
+	{
+		colaboradores.Get("/", colaboradorHandler.ListColaboradores)
+		colaboradores.Get("/aniversariantes-hoje", colaboradorHandler.AniversariantesHoje)
+		colaboradores.Get("/:id", colaboradorHandler.GetColaborador)
 	}
 }
