@@ -7,11 +7,10 @@ export default function Header({ usuario = 'Saulo' }) {
   return (
     <header className={styles.header}>
       <div className={styles.marca}>
-        <svg className={styles.logo} viewBox="0 0 48 40" aria-hidden="true">
-          <path d="M2 8 L24 20 L2 32 Z" fill="var(--cor-amarela)" />
-          <path d="M46 8 L24 20 L46 32 Z" fill="var(--branco)" />
-        </svg>
-        <span className={styles.nomeMarca}>Correios</span>
+        <picture>
+          <source srcSet="/images/logocorreios.webp" type="image/webp" />
+          <img className={styles.logo} src="/images/logocorreios.png" alt="Correios" />
+        </picture>
       </div>
 
       <h1 className={styles.titulo}>Guia de Logística: CDD Campos dos Goytacazes</h1>

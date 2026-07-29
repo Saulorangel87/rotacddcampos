@@ -11,6 +11,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 // @title API Rotas de Entrega
@@ -44,6 +45,12 @@ func main() {
 
 	app.Use(recover.New())
 	app.Use(logger.New())
+
+	app.Use(cors.New(cors.Config{
+    AllowOrigins: "http://localhost:5173",
+    AllowHeaders: "Origin, Content-Type, Accept",
+    AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
+}))
 
 	routes.SetupRoutes(app, db)
 

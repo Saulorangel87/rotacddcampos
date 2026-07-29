@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { listarRuas } from '../api/ruas.js'
+import { corDoDistrito } from '../data/distritos.js'
 import styles from './RuasTable.module.css'
 
 const ABAS = [
@@ -9,24 +10,43 @@ const ABAS = [
   { id: 'cep', label: 'Por CEP' },
 ]
 
+const ITENS_POR_PAGINA = 30
+
 export default function RuasTable() {
   const [aba, setAba] = useState('todas')
   const [busca, setBusca] = useState('')
   const [ruas, setRuas] = useState([])
+  const [pagina, setPagina] = useState(1)
 
   useEffect(() => {
     listarRuas().then(setRuas)
   }, [])
 
+  useEffect(() => {
+    setPagina(1)
+  }, [busca, aba])
+
   const linhas = useMemo(() => {
-    const filtradas = ruas.filter((r) =>
-      [r.nome_rua, r.cep, r.distrito, r.rota].join(' ').toLowerCase().includes(busca.toLowerCase())
-    )
+    const alvo = busca.trim().toLowerCase()
+    const filtradas = ruas.filter((r) => {
+      if (!alvo) return true
+      const bateDistrito = String(r.distrito).toLowerCase() === alvo
+      const bateCep = String(r.cep).toLowerCase().startsWith(alvo)
+      const bateTexto = [r.nome_rua, r.rota].join(' ').toLowerCase().includes(alvo)
+      return bateDistrito || bateCep || bateTexto
+    })
     if (aba === 'todas') return filtradas
     const chavePorAba = { distrito: 'distrito', carteiro: 'rota', cep: 'cep' }
     const chave = chavePorAba[aba]
     return [...filtradas].sort((a, b) => String(a[chave]).localeCompare(String(b[chave])))
   }, [ruas, busca, aba])
+
+  const totalPaginas = Math.max(1, Math.ceil(linhas.length / ITENS_POR_PAGINA))
+  const paginaAtual = Math.min(pagina, totalPaginas)
+  const linhasDaPagina = linhas.slice(
+    (paginaAtual - 1) * ITENS_POR_PAGINA,
+    paginaAtual * ITENS_POR_PAGINA
+  )
 
   function exportarCsv() {
     const cabecalho = ['Rua', 'CEP', 'Distrito', 'Carteiro']
@@ -86,12 +106,12 @@ export default function RuasTable() {
             </tr>
           </thead>
           <tbody>
-            {linhas.map((r) => (
+            {linhasDaPagina.map((r) => (
               <tr key={r.id}>
                 <td>{r.nome_rua}</td>
                 <td>{r.cep}</td>
                 <td>
-                  <span className={styles.chipDistrito} style={{ background: `var(--d${r.distrito})` }}>
+                  <span className={styles.chipDistrito} style={{ background: corDoDistrito(r.distrito) }}>
                     {r.distrito}
                   </span>
                 </td>
@@ -107,6 +127,31 @@ export default function RuasTable() {
           </tbody>
         </table>
       </div>
+
+      <footer className={styles.paginacao}>
+        <span>
+          {linhas.length === 0
+            ? '0 ruas'
+            : `${(paginaAtual - 1) * ITENS_POR_PAGINA + 1}–${Math.min(paginaAtual * ITENS_POR_PAGINA, linhas.length)} de ${linhas.length} ruas`}
+        </span>
+        <div className={styles.paginacaoBotoes}>
+          <button
+            type="button"
+            disabled={paginaAtual <= 1}
+            onClick={() => setPagina((p) => p - 1)}
+          >
+            ← Anterior
+          </button>
+          <span className={styles.paginaAtual}>Página {paginaAtual} de {totalPaginas}</span>
+          <button
+            type="button"
+            disabled={paginaAtual >= totalPaginas}
+            onClick={() => setPagina((p) => p + 1)}
+          >
+            Próxima →
+          </button>
+        </div>
+      </footer>
     </section>
   )
 }

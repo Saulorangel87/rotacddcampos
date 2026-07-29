@@ -12,18 +12,16 @@
 .marca {
   display: flex;
   align-items: center;
-  gap: 8px;
+  background: var(--branco);
+  border-radius: 999px;
+  padding: 6px 14px;
+  box-shadow: var(--sombra);
 }
 
 .logo {
-  width: 30px;
-  height: 26px;
-}
-
-.nomeMarca {
-  font-weight: 800;
-  font-size: 1.15rem;
-  letter-spacing: 0.02em;
+  height: 22px;
+  width: auto;
+  display: block;
 }
 
 .titulo {

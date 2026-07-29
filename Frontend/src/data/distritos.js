@@ -1,34 +1,67 @@
-// Metadados dos 9 distritos do CDD Campos dos Goytacazes.
-// As cores são as mesmas já usadas na legenda do site atual (style.css),
-// mantidas aqui para não quebrar a identidade visual que os carteiros já reconhecem.
-export const DISTRITOS = [
-  { numero: '601', cor: 'var(--d601)', nome: 'Distrito 601' },
-  { numero: '602', cor: 'var(--d602)', nome: 'Distrito 602' },
-  { numero: '603', cor: 'var(--d603)', nome: 'Distrito 603' },
-  { numero: '604', cor: 'var(--d604)', nome: 'Distrito 604' },
-  { numero: '605', cor: 'var(--d605)', nome: 'Distrito 605' },
-  { numero: '606', cor: 'var(--d606)', nome: 'Distrito 606' },
-  { numero: '607', cor: 'var(--d607)', nome: 'Distrito 607' },
-  { numero: '608', cor: 'var(--d608)', nome: 'Distrito 608' },
-  { numero: '609', cor: 'var(--d609)', nome: 'Distrito 609' },
-]
+// Metadados dos distritos do CDD Campos dos Goytacazes.
+// 601-609 mantêm as cores originais da legenda do site antigo (identidade já
+// conhecida pelos carteiros). 610-624 foram adicionados depois, então ganharam
+// cores novas, escolhidas pra não repetir nenhuma das 9 primeiras nem entre si.
+const CORES_POR_DISTRITO = {
+  601: '#cc0000', // vermelho (original)
+  602: '#ccb300', // amarelo-ouro (original)
+  603: '#0000cc', // azul (original)
+  604: '#007700', // verde (original)
+  605: '#ff8000', // laranja (original)
+  606: '#222222', // preto (original)
+  607: '#8B4513', // marrom (original)
+  608: '#cc00cc', // magenta (original)
+  609: '#009999', // ciano (original)
+  610: '#4B0082', // índigo
+  611: '#FF1493', // rosa-choque
+  612: '#2E8B57', // verde-mar
+  613: '#DAA520', // dourado
+  614: '#4169E1', // azul-royal
+  615: '#A0522D', // marrom-terracota
+  616: '#DC143C', // carmesim
+  617: '#20B2AA', // verde-água
+  618: '#9932CC', // roxo
+  619: '#FFA07A', // salmão
+  620: '#556B2F', // verde-oliva escuro
+  621: '#C71585', // vinho-rosado
+  622: '#708090', // cinza-ardósia
+  623: '#B8860B', // âmbar escuro
+  624: '#1E90FF', // azul-dodger
+}
+
+export const DISTRITOS = Object.entries(CORES_POR_DISTRITO).map(([numero, cor]) => ({
+  numero,
+  cor,
+  nome: `Distrito ${numero}`,
+}))
 
 export function corDoDistrito(numero) {
-  return DISTRITOS.find((d) => d.numero === String(numero))?.cor || 'var(--cinza-400)'
+  return CORES_POR_DISTRITO[numero] || 'var(--cinza-400)'
 }
 
-// Layout aproximado (não geográfico) só para desenhar o mini-mapa em SVG,
-// seguindo a disposição relativa do mapa do Google My Maps atual:
-// 601 acima-esquerda, 606 acima-direita, 608/609 ponta direita,
-// 602 centro, 603/604/605 faixa inferior, 607 direita.
-export const LAYOUT_DISTRITOS = {
-  601: { x: 40, y: 20, w: 150, h: 130 },
-  606: { x: 210, y: 15, w: 140, h: 110 },
-  608: { x: 360, y: 10, w: 120, h: 95 },
-  602: { x: 130, y: 150, w: 140, h: 120 },
-  607: { x: 280, y: 125, w: 150, h: 130 },
-  609: { x: 440, y: 110, w: 90, h: 130 },
-  603: { x: 20, y: 260, w: 130, h: 110 },
-  604: { x: 160, y: 270, w: 110, h: 100 },
-  605: { x: 280, y: 255, w: 130, h: 115 },
-}
+// Layout em grade automática pro mini-mapa esquemático (SVG). Não é geográfico
+// — é só uma disposição em blocos, gerada pra caber qualquer quantidade de
+// distritos sem precisar redesenhar posições à mão a cada novo distrito criado.
+const COLUNAS = 6
+const LARGURA_BLOCO = 88
+const ALTURA_BLOCO = 78
+const ESPACO = 8
+
+export const LAYOUT_DISTRITOS = Object.fromEntries(
+  DISTRITOS.map(({ numero }, i) => {
+    const col = i % COLUNAS
+    const lin = Math.floor(i / COLUNAS)
+    return [
+      numero,
+      {
+        x: 10 + col * (LARGURA_BLOCO + ESPACO),
+        y: 10 + lin * (ALTURA_BLOCO + ESPACO),
+        w: LARGURA_BLOCO,
+        h: ALTURA_BLOCO,
+      },
+    ]
+  })
+)
+
+export const LARGURA_TOTAL = COLUNAS * (LARGURA_BLOCO + ESPACO) + 10
+export const ALTURA_TOTAL = Math.ceil(DISTRITOS.length / COLUNAS) * (ALTURA_BLOCO + ESPACO) + 10

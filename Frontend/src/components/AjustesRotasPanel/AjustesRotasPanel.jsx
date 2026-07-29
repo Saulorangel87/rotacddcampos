@@ -5,12 +5,14 @@ import DistrictMap from '../DistrictMap.jsx'
 import styles from './AjustesRotasPanel.module.css'
 
 const PASSOS = ['Selecionar Ruas', 'Alterar Distrito', 'Confirmar']
+const RUAS_POR_PAGINA = 12
 
 export default function AjustesRotasPanel({ distritoOrigem, onFechar, onConcluido }) {
   const [passo, setPasso] = useState(0)
   const [ruas, setRuas] = useState([])
   const [carregando, setCarregando] = useState(true)
   const [busca, setBusca] = useState('')
+  const [pagina, setPagina] = useState(1)
   const [selecionadas, setSelecionadas] = useState(new Set())
   const [distritoDestino, setDistritoDestino] = useState('')
   const [carteiroResponsavel, setCarteiroResponsavel] = useState('')
@@ -31,7 +33,17 @@ export default function AjustesRotasPanel({ distritoOrigem, onFechar, onConcluid
     }
   }, [distritoOrigem])
 
+  useEffect(() => {
+    setPagina(1)
+  }, [busca, distritoOrigem])
+
   const ruasFiltradas = ruas.filter((r) => r.nome_rua.toLowerCase().includes(busca.toLowerCase()))
+  const totalPaginas = Math.max(1, Math.ceil(ruasFiltradas.length / RUAS_POR_PAGINA))
+  const paginaAtual = Math.min(pagina, totalPaginas)
+  const ruasDaPagina = ruasFiltradas.slice(
+    (paginaAtual - 1) * RUAS_POR_PAGINA,
+    paginaAtual * RUAS_POR_PAGINA
+  )
 
   function alternarSelecao(id) {
     setSelecionadas((prev) => {
@@ -96,7 +108,7 @@ export default function AjustesRotasPanel({ distritoOrigem, onFechar, onConcluid
                 </tr>
               </thead>
               <tbody>
-                {ruasFiltradas.map((r) => (
+                {ruasDaPagina.map((r) => (
                   <tr key={r.id}>
                     <td>
                       <input
@@ -117,6 +129,26 @@ export default function AjustesRotasPanel({ distritoOrigem, onFechar, onConcluid
                 )}
               </tbody>
             </table>
+          )}
+
+          {ruasFiltradas.length > 0 && (
+            <div className={styles.paginacao}>
+              <button
+                type="button"
+                disabled={paginaAtual <= 1}
+                onClick={() => setPagina((p) => p - 1)}
+              >
+                ← Anterior
+              </button>
+              <span>Página {paginaAtual} de {totalPaginas}</span>
+              <button
+                type="button"
+                disabled={paginaAtual >= totalPaginas}
+                onClick={() => setPagina((p) => p + 1)}
+              >
+                Próxima →
+              </button>
+            </div>
           )}
 
           <footer className={styles.rodapePasso}>

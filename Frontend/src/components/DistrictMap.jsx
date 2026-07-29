@@ -1,4 +1,4 @@
-import { DISTRITOS, LAYOUT_DISTRITOS } from '../data/distritos.js'
+import { DISTRITOS, LAYOUT_DISTRITOS, LARGURA_TOTAL, ALTURA_TOTAL } from '../data/distritos.js'
 import styles from './DistrictMap.module.css'
 
 /**
@@ -24,9 +24,9 @@ export default function DistrictMap({ emFoco = [], seta = null, tamanho = 'grand
     <svg
       className={styles.svg}
       data-tamanho={tamanho}
-      viewBox="0 0 560 400"
+      viewBox={`0 0 ${LARGURA_TOTAL} ${ALTURA_TOTAL}`}
       role="img"
-      aria-label="Mapa esquemático dos distritos 601 a 609"
+      aria-label={`Mapa esquemático dos ${DISTRITOS.length} distritos`}
     >
       {DISTRITOS.map((d) => {
         const box = LAYOUT_DISTRITOS[d.numero]
@@ -38,11 +38,11 @@ export default function DistrictMap({ emFoco = [], seta = null, tamanho = 'grand
               y={box.y}
               width={box.w}
               height={box.h}
-              rx="14"
+              rx="10"
               fill={d.cor}
               fillOpacity={emDestaque ? 0.35 : 0.15}
               stroke={d.cor}
-              strokeWidth={emFoco.includes(d.numero) ? 3 : 1.5}
+              strokeWidth={emFoco.includes(d.numero) ? 2.5 : 1.25}
             />
             <text
               x={box.x + box.w / 2}
@@ -50,7 +50,7 @@ export default function DistrictMap({ emFoco = [], seta = null, tamanho = 'grand
               textAnchor="middle"
               dominantBaseline="middle"
               fontWeight="800"
-              fontSize="20"
+              fontSize="15"
               fill="var(--cinza-950)"
             >
               {d.numero}

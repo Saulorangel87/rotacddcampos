@@ -19,17 +19,6 @@
   --alerta: #b7791f;
   --alerta-bg: #fff6e0;
 
-  /* Distritos 601-609, cores herdadas da legenda original */
-  --d601: #cc0000;
-  --d602: #ccb300;
-  --d603: #0000cc;
-  --d604: #007700;
-  --d605: #ff8000;
-  --d606: #222222;
-  --d607: #8B4513;
-  --d608: #cc00cc;
-  --d609: #009999;
-
   --raio: 10px;
   --raio-sm: 6px;
   --sombra: 0 2px 10px rgba(0, 0, 0, 0.12);

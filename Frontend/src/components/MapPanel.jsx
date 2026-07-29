@@ -1,4 +1,5 @@
 import DistrictMap from './DistrictMap.jsx'
+import { DISTRITOS } from '../data/distritos.js'
 import styles from './MapPanel.module.css'
 
 export default function MapPanel({ distritoAtivo, onAbrirAjustes }) {
@@ -18,10 +19,10 @@ export default function MapPanel({ distritoAtivo, onAbrirAjustes }) {
         <DistrictMap emFoco={distritoAtivo ? [distritoAtivo] : []} />
 
         <ul className={styles.legenda} aria-label="Legenda de distritos">
-          {['601', '602', '603', '604', '605', '606', '607', '608', '609'].map((n) => (
-            <li key={n}>
-              <span className={styles.corLegenda} style={{ background: `var(--d${n})` }} aria-hidden="true" />
-              {n}
+          {DISTRITOS.map((d) => (
+            <li key={d.numero}>
+              <span className={styles.corLegenda} style={{ background: d.cor }} aria-hidden="true" />
+              {d.numero}
             </li>
           ))}
         </ul>

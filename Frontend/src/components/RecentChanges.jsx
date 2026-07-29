@@ -1,3 +1,4 @@
+import { corDoDistrito } from '../data/distritos.js'
 import styles from './RecentChanges.module.css'
 
 export default function RecentChanges({ alteracoes }) {
@@ -10,7 +11,7 @@ export default function RecentChanges({ alteracoes }) {
         <ul className={styles.lista}>
           {alteracoes.map((a, i) => (
             <li key={i}>
-              <span className={styles.ponto} style={{ background: `var(--d${a.para})` }} aria-hidden="true" />
+              <span className={styles.ponto} style={{ background: corDoDistrito(a.para) }} aria-hidden="true" />
               <div>
                 <p>{a.quantidade} rua(s) movidas de {a.de || '—'} para {a.para}</p>
                 <span className={styles.meta}>{a.quando} · Por: {a.por}</span>
