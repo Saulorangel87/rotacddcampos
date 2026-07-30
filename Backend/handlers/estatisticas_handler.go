@@ -24,6 +24,8 @@ type OperacaoResponse struct {
 	Administrativos    int64 `json:"administrativos"`
 	OTT                int64 `json:"ott"`
 	OT                 int64 `json:"ot"`
+	Supervisores       int64 `json:"supervisores"`
+	Gerentes           int64 `json:"gerentes"`
 }
 
 // OperacaoEmNumeros godoc
@@ -81,6 +83,16 @@ func (h *EstatisticasHandler) OperacaoEmNumeros(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	supervisores, err := h.colaboradorRepo.ContarPorFuncaoLike(ctx, "SUPERVISOR")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	gerentes, err := h.colaboradorRepo.ContarPorFuncaoLike(ctx, "GERENTE")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
 	return c.JSON(OperacaoResponse{
 		TotalDistritos:     totalDistritos,
 		TotalColaboradores: totalColaboradores,
@@ -91,5 +103,7 @@ func (h *EstatisticasHandler) OperacaoEmNumeros(c *fiber.Ctx) error {
 		Administrativos:    administrativos,
 		OTT:                ott,
 		OT:                 ot,
+		Supervisores:       supervisores,
+		Gerentes:           gerentes,
 	})
 }

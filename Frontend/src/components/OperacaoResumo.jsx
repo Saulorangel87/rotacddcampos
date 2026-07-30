@@ -29,6 +29,8 @@ export default function OperacaoResumo() {
     { icone: '🗂️', valor: dados.administrativos, label: 'Administrativo' },
     { icone: '📦', valor: dados.ott, label: 'OTT' },
     { icone: '✉️', valor: dados.ot, label: 'OT' },
+    { icone: '🧭', valor: dados.supervisores, label: 'Supervisor' },
+    { icone: '⭐', valor: dados.gerentes, label: 'Gerente' },
   ]
 
   return (
