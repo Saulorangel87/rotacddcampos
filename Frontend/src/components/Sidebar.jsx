@@ -5,7 +5,7 @@ const ITENS = [
   { id: 'ajustes', label: 'Ajustes de Rotas', icone: '🛠️' },
   { id: 'ruas', label: 'Ruas', icone: '🛣️' },
   { id: 'cep', label: 'CEP', icone: '📮' },
-  { id: 'carteiros', label: 'Carteiros', icone: '👤' },
+  { id: 'colaboradores', label: 'Colaboradores', icone: '👤' },
   { id: 'relatorios', label: 'Relatórios', icone: '📊' },
 ]
 

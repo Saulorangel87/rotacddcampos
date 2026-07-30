@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import AniversarioBadge from './AniversarioBadge.jsx'
 import styles from './Header.module.css'
 
 export default function Header({ usuario = 'Saulo' }) {
@@ -29,6 +30,8 @@ export default function Header({ usuario = 'Saulo' }) {
             aria-label="Pesquisar rua, CEP ou distrito"
           />
         </label>
+
+        <AniversarioBadge />
 
         <button className={styles.usuario} type="button">
           <span className={styles.avatar} aria-hidden="true">{usuario.charAt(0)}</span>

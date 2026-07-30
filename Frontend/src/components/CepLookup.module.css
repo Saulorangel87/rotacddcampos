@@ -1,0 +1,76 @@
+.caixa {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 20px;
+  max-width: 640px;
+}
+
+.titulo {
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.dica {
+  font-size: 0.8rem;
+  color: var(--cinza-600);
+  margin-bottom: 14px;
+}
+
+.campo {
+  width: 100%;
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}
+
+.mensagem {
+  color: var(--cinza-400);
+  font-size: 0.85rem;
+  padding: 16px 0;
+  text-align: center;
+}
+
+.lista {
+  list-style: none;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.lista li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--cinza-100);
+  font-size: 0.85rem;
+}
+
+.bairro {
+  display: block;
+  color: var(--cinza-600);
+  font-size: 0.75rem;
+}
+
+.direita {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cep {
+  font-family: var(--fonte-mono);
+  font-weight: 600;
+}
+
+.chipDistrito {
+  color: var(--branco);
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+}

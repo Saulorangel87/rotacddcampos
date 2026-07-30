@@ -7,12 +7,17 @@ import AjustesRotasPanel from './components/AjustesRotasPanel/AjustesRotasPanel.
 import RecentChanges from './components/RecentChanges.jsx'
 import DicaBanner from './components/DicaBanner.jsx'
 import RuasTable from './components/RuasTable.jsx'
+import OperacaoResumo from './components/OperacaoResumo.jsx'
+import CepLookup from './components/CepLookup.jsx'
+import RelatorioMovimentacoes from './components/RelatorioMovimentacoes.jsx'
+import ColaboradoresModal from './components/ColaboradoresModal.jsx'
 import styles from './App.module.css'
 
 export default function App() {
   const [distritoAtivo, setDistritoAtivo] = useState('602')
   const [secaoAtiva, setSecaoAtiva] = useState('mapa')
   const [painelAjustesAberto, setPainelAjustesAberto] = useState(false)
+  const [colaboradoresAberto, setColaboradoresAberto] = useState(false)
   const [alteracoes, setAlteracoes] = useState([])
 
   function registrarAlteracao(resultado) {
@@ -20,6 +25,32 @@ export default function App() {
       { ...resultado, quando: 'Agora', por: 'Saulo' },
       ...prev,
     ])
+    setPainelAjustesAberto(false)
+  }
+
+  function selecionarSidebar(id) {
+    if (id === 'ajustes') {
+      setPainelAjustesAberto(true)
+      return
+    }
+    if (id === 'colaboradores') {
+      setColaboradoresAberto(true)
+      return
+    }
+    if (id === 'ruas') {
+      // Já existe a lista completa de ruas na tela principal — em vez de duplicar,
+      // "Ruas" leva direto pra ela e foca a busca.
+      setSecaoAtiva('mapa')
+      setPainelAjustesAberto(false)
+      requestAnimationFrame(() => {
+        const alvo = document.getElementById('tabela-ruas')
+        alvo?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        alvo?.querySelector('input[type="search"]')?.focus()
+      })
+      return
+    }
+
+    setSecaoAtiva(id)
     setPainelAjustesAberto(false)
   }
 
@@ -31,37 +62,44 @@ export default function App() {
       <div className={styles.corpo}>
         <Sidebar
           ativo={painelAjustesAberto ? 'ajustes' : secaoAtiva}
-          onSelecionar={(id) => {
-            if (id === 'ajustes') {
-              setPainelAjustesAberto(true)
-            } else {
-              setSecaoAtiva(id)
-              setPainelAjustesAberto(false)
-            }
-          }}
+          onSelecionar={selecionarSidebar}
         />
 
         <main className={styles.principal}>
-          <div className={styles.grade}>
-            <MapPanel distritoAtivo={distritoAtivo} onAbrirAjustes={() => setPainelAjustesAberto(true)} />
+          {secaoAtiva === 'mapa' && (
+            <>
+              <div className={styles.grade}>
+                <MapPanel distritoAtivo={distritoAtivo} onAbrirAjustes={() => setPainelAjustesAberto(true)} />
 
-            {painelAjustesAberto && (
-              <AjustesRotasPanel
-                distritoOrigem={distritoAtivo}
-                onFechar={() => setPainelAjustesAberto(false)}
-                onConcluido={registrarAlteracao}
-              />
-            )}
-          </div>
+                {painelAjustesAberto && (
+                  <AjustesRotasPanel
+                    distritoOrigem={distritoAtivo}
+                    onFechar={() => setPainelAjustesAberto(false)}
+                    onConcluido={registrarAlteracao}
+                  />
+                )}
+              </div>
 
-          <div className={styles.grade2}>
-            <RecentChanges alteracoes={alteracoes} />
-            <DicaBanner texto="As alterações são registradas no histórico e podem ser acompanhadas por relatórios." />
-          </div>
+              <OperacaoResumo />
 
-          <RuasTable />
+              <div className={styles.grade2}>
+                <RecentChanges alteracoes={alteracoes} />
+                <DicaBanner texto="As alterações são registradas no histórico e podem ser acompanhadas por relatórios." />
+              </div>
+
+              <div id="tabela-ruas">
+                <RuasTable />
+              </div>
+            </>
+          )}
+
+          {secaoAtiva === 'cep' && <CepLookup />}
+
+          {secaoAtiva === 'relatorios' && <RelatorioMovimentacoes alteracoes={alteracoes} />}
         </main>
       </div>
+
+      <ColaboradoresModal aberto={colaboradoresAberto} onFechar={() => setColaboradoresAberto(false)} />
     </div>
   )
 }

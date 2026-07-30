@@ -12,6 +12,7 @@ type RuaRepository interface {
 	Create(ctx context.Context, rua *models.Rua) error
 	Update(ctx context.Context, rua *models.Rua) error
 	Delete(ctx context.Context, id uint) error
+	ContarDistritosDistintos(ctx context.Context) (int64, error)
 }
 
 type ruaRepository struct {
@@ -59,4 +60,16 @@ func (r *ruaRepository) Update(ctx context.Context, rua *models.Rua) error {
 
 func (r *ruaRepository) Delete(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&models.Rua{}, id).Error
+}
+
+// ContarDistritosDistintos conta quantos distritos diferentes existem de fato
+// na tabela ruas (em vez de um número fixo no código).
+func (r *ruaRepository) ContarDistritosDistintos(ctx context.Context) (int64, error) {
+	var total int64
+	err := r.db.WithContext(ctx).
+		Model(&models.Rua{}).
+		Distinct("distrito").
+		Where("distrito IS NOT NULL AND distrito <> ''").
+		Count(&total).Error
+	return total, err
 }

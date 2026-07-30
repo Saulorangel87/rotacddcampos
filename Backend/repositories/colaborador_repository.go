@@ -12,6 +12,8 @@ type ColaboradorRepository interface {
 	FindAll(ctx context.Context, filters map[string]string) ([]models.Colaborador, error)
 	FindByID(ctx context.Context, id uint) (*models.Colaborador, error)
 	FindAniversariantes(ctx context.Context, mes, dia int) ([]models.Colaborador, error)
+	ContarTotal(ctx context.Context) (int64, error)
+	ContarPorFuncaoLike(ctx context.Context, padrao string) (int64, error)
 }
 
 type colaboradorRepository struct {
@@ -60,4 +62,21 @@ func (r *colaboradorRepository) FindAniversariantes(ctx context.Context, mes, di
 		Order("nome asc").
 		Find(&colaboradores).Error
 	return colaboradores, err
+}
+
+func (r *colaboradorRepository) ContarTotal(ctx context.Context) (int64, error) {
+	var total int64
+	err := r.db.WithContext(ctx).Model(&models.Colaborador{}).Count(&total).Error
+	return total, err
+}
+
+// ContarPorFuncaoLike conta colaboradores cuja função bate com o padrão (ILIKE),
+// tolerando variações de digitação como "MOTORIZADO (M)" vs "MOTORIZADO (Moto)".
+func (r *colaboradorRepository) ContarPorFuncaoLike(ctx context.Context, padrao string) (int64, error) {
+	var total int64
+	err := r.db.WithContext(ctx).
+		Model(&models.Colaborador{}).
+		Where("funcao ILIKE ?", padrao).
+		Count(&total).Error
+	return total, err
 }

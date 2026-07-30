@@ -34,6 +34,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body, #root {
   height: 100%;
 }
@@ -67,5 +71,55 @@ a {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* Impressão da tabela de ruas — some com o app, mostra só a tabela filtrada */
+#area-impressao-ruas {
+  display: none;
+}
+
+@media print {
+  #root {
+    display: none !important;
+  }
+
+  #area-impressao-ruas {
+    display: block !important;
+    padding: 16px;
+    font-family: var(--fonte-base);
+    color: #000;
+  }
+
+  #area-impressao-ruas h1 {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+
+  #area-impressao-ruas p {
+    font-size: 0.8rem;
+    color: #444;
+    margin-bottom: 12px;
+  }
+
+  #area-impressao-ruas table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #area-impressao-ruas th,
+  #area-impressao-ruas td {
+    border: 1px solid #000;
+    padding: 6px 8px;
+    font-size: 0.78rem;
+    text-align: left;
+  }
+
+  #area-impressao-ruas thead {
+    display: table-header-group;
+  }
+
+  #area-impressao-ruas tr {
+    page-break-inside: avoid;
   }
 }

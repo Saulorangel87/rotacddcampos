@@ -43,4 +43,8 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 		colaboradores.Get("/aniversariantes-hoje", colaboradorHandler.AniversariantesHoje)
 		colaboradores.Get("/:id", colaboradorHandler.GetColaborador)
 	}
+
+	// Injeção de dependências - Estatísticas (reaproveita os repositórios acima)
+	estatisticasHandler := handlers.NewEstatisticasHandler(ruaRepo, colaboradorRepo)
+	app.Get("/estatisticas/operacao", estatisticasHandler.OperacaoEmNumeros)
 }

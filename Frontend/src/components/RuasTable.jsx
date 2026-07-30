@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { listarRuas } from '../api/ruas.js'
 import { corDoDistrito } from '../data/distritos.js'
 import styles from './RuasTable.module.css'
@@ -61,6 +62,10 @@ export default function RuasTable() {
     URL.revokeObjectURL(url)
   }
 
+  function imprimirTabela() {
+    window.print()
+  }
+
   return (
     <section className={styles.caixa} aria-label="Tabela de ruas cadastradas">
       <div className={styles.barra}>
@@ -90,6 +95,9 @@ export default function RuasTable() {
           />
           <button type="button" className={styles.btnExportar} onClick={exportarCsv}>
             ⬇ Exportar
+          </button>
+          <button type="button" className={styles.btnExportar} onClick={imprimirTabela}>
+            🖨️ Imprimir
           </button>
         </div>
       </div>
@@ -152,6 +160,34 @@ export default function RuasTable() {
           </button>
         </div>
       </footer>
+
+      {createPortal(
+        <div id="area-impressao-ruas">
+          <h1>Lista de Ruas — CDD Campos dos Goytacazes</h1>
+          <p>Gerado em {new Date().toLocaleDateString('pt-BR')} — {linhas.length} rua(s)</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Rua</th>
+                <th>CEP</th>
+                <th>Distrito</th>
+                <th>Carteiro</th>
+              </tr>
+            </thead>
+            <tbody>
+              {linhas.map((r) => (
+                <tr key={r.id}>
+                  <td>{r.nome_rua}</td>
+                  <td>{r.cep}</td>
+                  <td>{r.distrito}</td>
+                  <td>{r.rota}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>,
+        document.body
+      )}
     </section>
   )
 }

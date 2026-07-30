@@ -1,0 +1,36 @@
+.faixa {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 14px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icone {
+  font-size: 1.5rem;
+}
+
+.valor {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--cor-azul-escuro);
+  line-height: 1.1;
+}
+
+.label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--cinza-600);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
