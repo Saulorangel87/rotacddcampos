@@ -25,6 +25,10 @@ export default function OperacaoResumo() {
     { icone: '🏍️', valor: dados.motorizados_moto, label: 'Motos' },
     { icone: '🚐', valor: dados.motorizados_carro, label: 'Carros' },
     { icone: '🚲', valor: dados.ciclistas, label: 'Ciclistas' },
+    { icone: '🏢', valor: dados.internos, label: 'Interno' },
+    { icone: '🗂️', valor: dados.administrativos, label: 'Administrativo' },
+    { icone: '📦', valor: dados.ott, label: 'OTT' },
+    { icone: '✉️', valor: dados.ot, label: 'OT' },
   ]
 
   return (

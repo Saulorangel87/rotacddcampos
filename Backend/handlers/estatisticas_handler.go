@@ -20,10 +20,14 @@ type OperacaoResponse struct {
 	MotorizadosMoto    int64 `json:"motorizados_moto"`
 	MotorizadosCarro   int64 `json:"motorizados_carro"`
 	Ciclistas          int64 `json:"ciclistas"`
+	Internos           int64 `json:"internos"`
+	Administrativos    int64 `json:"administrativos"`
+	OTT                int64 `json:"ott"`
+	OT                 int64 `json:"ot"`
 }
 
 // OperacaoEmNumeros godoc
-// @Summary Números gerais da operação (distritos, colaboradores, frota)
+// @Summary Números gerais da operação (distritos, colaboradores, frota, funções administrativas)
 // @Tags estatisticas
 // @Produce json
 // @Success 200 {object} OperacaoResponse
@@ -56,11 +60,36 @@ func (h *EstatisticasHandler) OperacaoEmNumeros(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	internos, err := h.colaboradorRepo.ContarPorFuncaoLike(ctx, "INTERNO")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	administrativos, err := h.colaboradorRepo.ContarPorFuncaoLike(ctx, "ADMINISTRATIVO")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	// OTT e OT usam comparação exata (sem %), senão "OT" bateria dentro de "OTT" também.
+	ott, err := h.colaboradorRepo.ContarPorFuncaoLike(ctx, "OTT")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	ot, err := h.colaboradorRepo.ContarPorFuncaoLike(ctx, "OT")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
 	return c.JSON(OperacaoResponse{
 		TotalDistritos:     totalDistritos,
 		TotalColaboradores: totalColaboradores,
 		MotorizadosMoto:    moto,
 		MotorizadosCarro:   carro,
 		Ciclistas:          ciclistas,
+		Internos:           internos,
+		Administrativos:    administrativos,
+		OTT:                ott,
+		OT:                 ot,
 	})
 }
