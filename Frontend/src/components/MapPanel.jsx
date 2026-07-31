@@ -1,8 +1,8 @@
-import DistrictMap from './DistrictMap.jsx'
+import LeafletMap from './LeafletMap.jsx'
 import { DISTRITOS } from '../data/distritos.js'
 import styles from './MapPanel.module.css'
 
-export default function MapPanel({ distritoAtivo, onAbrirAjustes }) {
+export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirAjustes }) {
   return (
     <section className={styles.painel} aria-label="Mapa de distritos">
       <header className={styles.cabecalho}>
@@ -16,7 +16,7 @@ export default function MapPanel({ distritoAtivo, onAbrirAjustes }) {
       </header>
 
       <div className={styles.corpo}>
-        <DistrictMap emFoco={distritoAtivo ? [distritoAtivo] : []} />
+        <LeafletMap distritoAtivo={distritoAtivo} onSelecionarDistrito={onSelecionarDistrito} />
 
         <ul className={styles.legenda} aria-label="Legenda de distritos">
           {DISTRITOS.map((d) => (
@@ -29,7 +29,7 @@ export default function MapPanel({ distritoAtivo, onAbrirAjustes }) {
       </div>
 
       <p className={styles.rodape}>
-        Dados cartográficos de referência interna — não substitui o Google Maps para navegação em rota.
+        Mapa real (OpenStreetMap) com os contornos desenhados pelo Saulo — ainda em ajuste fino, alguns limites podem não estar 100% precisos.
       </p>
     </section>
   )

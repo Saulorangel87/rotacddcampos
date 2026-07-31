@@ -21,6 +21,10 @@
 
   --raio: 10px;
   --raio-sm: 6px;
+
+  /* Camada de modal — acima de tudo, inclusive dos controles internos do Leaflet
+     (que usam z-index até 1000). Qualquer modal novo deve usar essa mesma variável. */
+  --z-modal: 5000;
   --sombra: 0 2px 10px rgba(0, 0, 0, 0.12);
   --sombra-flutuante: 0 8px 28px rgba(0, 0, 0, 0.22);
 

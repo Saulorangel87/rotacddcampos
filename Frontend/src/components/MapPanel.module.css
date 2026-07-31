@@ -52,13 +52,13 @@
 
 .legenda {
   list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 10px;
   background: var(--cinza-100);
   border-radius: var(--raio-sm);
   padding: 12px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   align-self: start;
 }
@@ -87,7 +87,6 @@
     grid-template-columns: 1fr;
   }
   .legenda {
-    flex-direction: row;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(4, 1fr);
   }
 }

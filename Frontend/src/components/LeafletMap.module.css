@@ -1,0 +1,37 @@
+.mapa {
+  width: 100%;
+  border-radius: var(--raio);
+  overflow: hidden;
+}
+
+.container {
+  width: 100%;
+  height: 420px;
+}
+
+.alfineteWrapper {
+  background: transparent;
+  border: none;
+}
+
+.alfinete {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--branco);
+}
+
+.alfineteTexto {
+  display: block;
+  transform: rotate(45deg);
+  color: var(--branco);
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
+}

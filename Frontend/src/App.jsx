@@ -69,7 +69,11 @@ export default function App() {
           {secaoAtiva === 'mapa' && (
             <>
               <div className={styles.grade}>
-                <MapPanel distritoAtivo={distritoAtivo} onAbrirAjustes={() => setPainelAjustesAberto(true)} />
+                <MapPanel
+                  distritoAtivo={distritoAtivo}
+                  onSelecionarDistrito={setDistritoAtivo}
+                  onAbrirAjustes={() => setPainelAjustesAberto(true)}
+                />
 
                 {painelAjustesAberto && (
                   <AjustesRotasPanel
