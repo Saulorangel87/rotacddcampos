@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { listarRuas } from '../api/ruas.js'
+import { listarRuas, excluirRua } from '../api/ruas.js'
 import { corDoDistrito } from '../data/distritos.js'
+import NovaRuaModal from './NovaRuaModal.jsx'
 import styles from './RuasTable.module.css'
 
 const ABAS = [
@@ -18,6 +19,8 @@ export default function RuasTable() {
   const [busca, setBusca] = useState('')
   const [ruas, setRuas] = useState([])
   const [pagina, setPagina] = useState(1)
+  const [novaRuaAberta, setNovaRuaAberta] = useState(false)
+  const [excluindoId, setExcluindoId] = useState(null)
 
   useEffect(() => {
     listarRuas().then(setRuas)
@@ -26,6 +29,25 @@ export default function RuasTable() {
   useEffect(() => {
     setPagina(1)
   }, [busca, aba])
+
+  function aoCriarRua(novaRua) {
+    setRuas((prev) => [novaRua, ...prev])
+  }
+
+  async function aoExcluirRua(rua) {
+    const confirmou = window.confirm(`Excluir "${rua.nome_rua}" (${rua.cep})? Essa ação não pode ser desfeita.`)
+    if (!confirmou) return
+
+    setExcluindoId(rua.id)
+    try {
+      await excluirRua(rua.id)
+      setRuas((prev) => prev.filter((r) => r.id !== rua.id))
+    } catch (err) {
+      alert(err.message)
+    } finally {
+      setExcluindoId(null)
+    }
+  }
 
   const linhas = useMemo(() => {
     const alvo = busca.trim().toLowerCase()
@@ -85,6 +107,10 @@ export default function RuasTable() {
           ))}
         </div>
 
+        <button type="button" className={styles.btnNovaRua} onClick={() => setNovaRuaAberta(true)}>
+          + Nova rua
+        </button>
+
         <div className={styles.busca}>
           <input
             type="search"
@@ -111,6 +137,7 @@ export default function RuasTable() {
               <th>Distrito</th>
               <th>Carteiro</th>
               <th>Status</th>
+              <th aria-hidden="true"></th>
             </tr>
           </thead>
           <tbody>
@@ -125,11 +152,23 @@ export default function RuasTable() {
                 </td>
                 <td>{r.rota}</td>
                 <td className={styles.status}>Atualizado {r.atualizado_em}</td>
+                <td>
+                  <button
+                    type="button"
+                    className={styles.btnExcluir}
+                    onClick={() => aoExcluirRua(r)}
+                    disabled={excluindoId === r.id}
+                    aria-label={`Excluir ${r.nome_rua}`}
+                    title="Excluir rua"
+                  >
+                    {excluindoId === r.id ? '…' : '🗑️'}
+                  </button>
+                </td>
               </tr>
             ))}
             {linhas.length === 0 && (
               <tr>
-                <td colSpan={5} className={styles.vazio}>Nenhuma rua encontrada para essa busca.</td>
+                <td colSpan={6} className={styles.vazio}>Nenhuma rua encontrada para essa busca.</td>
               </tr>
             )}
           </tbody>
@@ -188,6 +227,12 @@ export default function RuasTable() {
         </div>,
         document.body
       )}
+
+      <NovaRuaModal
+        aberto={novaRuaAberta}
+        onFechar={() => setNovaRuaAberta(false)}
+        onCriada={aoCriarRua}
+      />
     </section>
   )
 }

@@ -36,3 +36,28 @@ export async function aniversariantesDeHoje(dataSimulada = '') {
     return []
   }
 }
+
+/**
+ * Cadastra um colaborador novo (POST /colaboradores). Nome e matrícula são obrigatórios.
+ * Datas no formato DD/MM/AAAA (o mesmo que o backend espera). Lança erro com a
+ * mensagem da API em caso de falha, pra exibir na tela.
+ */
+export async function criarColaborador({ nome, matricula, funcao = '', cargo = '', dataAdmissao = '', dataNascimento = '' }) {
+  const res = await fetch(`${API_URL}/colaboradores`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      nome,
+      matricula,
+      funcao,
+      cargo,
+      data_admissao: dataAdmissao,
+      data_nascimento: dataNascimento,
+    }),
+  })
+  const dados = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw new Error(dados.error || `Não foi possível cadastrar o colaborador (HTTP ${res.status})`)
+  }
+  return dados
+}

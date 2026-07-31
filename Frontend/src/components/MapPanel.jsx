@@ -29,7 +29,7 @@ export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirA
       </div>
 
       <p className={styles.rodape}>
-        Mapa real (OpenStreetMap) com os contornos desenhados por Saulo — ainda em ajuste fino, alguns limites podem não estar 100% precisos.
+        Mapa real (OpenStreetMap) com os contornos desenhados pelo Saulo — ainda em ajuste fino, alguns limites podem não estar 100% precisos.
       </p>
     </section>
   )

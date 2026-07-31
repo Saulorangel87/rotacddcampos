@@ -46,6 +46,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	colaboradores := app.Group("/colaboradores")
 	{
 		colaboradores.Get("/", colaboradorHandler.ListColaboradores)
+		colaboradores.Post("/", colaboradorHandler.CreateColaborador)
 		colaboradores.Get("/aniversariantes-hoje", colaboradorHandler.AniversariantesHoje)
 		colaboradores.Get("/:id", colaboradorHandler.GetColaborador)
 	}

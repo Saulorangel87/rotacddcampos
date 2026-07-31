@@ -15,17 +15,16 @@
   box-shadow: var(--sombra-flutuante);
   width: 100%;
   max-width: 420px;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
+  max-height: 90vh;
+  overflow-y: auto;
   padding: 18px;
-  gap: 12px;
 }
 
 .cabecalho {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 12px;
 }
 
 .cabecalho h2 {
@@ -40,36 +39,10 @@
   color: var(--cinza-600);
 }
 
-.campoBusca {
-  border: 1px solid var(--cinza-200);
-  border-radius: var(--raio-sm);
-  padding: 8px 12px;
-  font-size: 0.85rem;
-  flex: 1;
-}
-
-.barraTopo {
-  display: flex;
-  gap: 8px;
-}
-
-.btnNovo {
-  background: var(--cor-azul);
-  color: var(--branco);
-  border: none;
-  border-radius: var(--raio-sm);
-  padding: 8px 14px;
-  font-weight: 700;
-  font-size: 0.8rem;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
 .form {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow-y: auto;
 }
 
 .campo {
@@ -81,7 +54,8 @@
   color: var(--cinza-800);
 }
 
-.campo input {
+.campo input,
+.campo select {
   border: 1px solid var(--cinza-200);
   border-radius: var(--raio-sm);
   padding: 8px 10px;
@@ -97,10 +71,11 @@
   font-size: 0.8rem;
 }
 
-.rodapeForm {
+.rodape {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  padding-top: 4px;
 }
 
 .botaoPrimario {
@@ -128,43 +103,4 @@
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
-}
-
-.mensagem {
-  text-align: center;
-  color: var(--cinza-400);
-  font-size: 0.85rem;
-  padding: 20px 0;
-}
-
-.lista {
-  list-style: none;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.lista li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 4px;
-  border-bottom: 1px solid var(--cinza-100);
-  font-size: 0.85rem;
-}
-
-.nome {
-  font-weight: 600;
-}
-
-.matricula {
-  color: var(--cinza-600);
-  font-family: var(--fonte-mono);
-  font-size: 0.78rem;
-}
-
-.rodape {
-  font-size: 0.75rem;
-  color: var(--cinza-400);
-  text-align: right;
 }

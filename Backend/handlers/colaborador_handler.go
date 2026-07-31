@@ -100,6 +100,28 @@ func (h *ColaboradorHandler) GetColaborador(c *fiber.Ctx) error {
 	return c.JSON(toColaboradorResponse(*colaborador))
 }
 
+// CreateColaborador godoc
+// @Summary Cadastrar novo colaborador
+// @Tags colaboradores
+// @Accept json
+// @Produce json
+// @Param colaborador body services.NovoColaboradorDTO true "Dados do novo colaborador"
+// @Success 201 {object} models.Colaborador
+// @Failure 400 {object} map[string]interface{}
+// @Router /colaboradores [post]
+func (h *ColaboradorHandler) CreateColaborador(c *fiber.Ctx) error {
+	var dto services.NovoColaboradorDTO
+	if err := c.BodyParser(&dto); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "corpo da requisição inválido"})
+	}
+
+	colaborador, err := h.service.Create(c.Context(), dto)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.Status(fiber.StatusCreated).JSON(toColaboradorResponse(*colaborador))
+}
+
 // AniversariantesHoje godoc
 // @Summary Aniversariantes do dia
 // @Description Retorna colaboradores que fazem aniversário hoje. Aceita ?data=DD/MM ou ?data=DD-MM para testar outra data.

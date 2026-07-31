@@ -99,6 +99,36 @@
   font-weight: 600;
 }
 
+.btnNovaRua {
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btnExcluir {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 4px 6px;
+  border-radius: var(--raio-sm);
+}
+
+.btnExcluir:hover {
+  background: #fdecea;
+}
+
+.btnExcluir:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .vazio {
   text-align: center;
   color: var(--cinza-400);

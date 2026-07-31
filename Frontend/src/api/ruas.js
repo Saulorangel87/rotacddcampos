@@ -62,3 +62,38 @@ function filtrarMock({ nome, cep, distrito }) {
     return okNome && okCep && okDistrito
   })
 }
+
+/**
+ * Cadastra uma rua nova (POST /ruas). nome_rua, cep e distrito são obrigatórios no backend.
+ * Lança erro com a mensagem da API em caso de falha de validação, pra exibir na tela.
+ */
+export async function criarRua({ nomeRua, bairro = '', cep, distrito, rota = '', observacao = '' }) {
+  const res = await fetch(`${API_URL}/ruas`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      nome_rua: nomeRua,
+      bairro,
+      cep,
+      distrito,
+      rota,
+      observacao,
+    }),
+  })
+  const dados = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw new Error(dados.error || `Não foi possível criar a rua (HTTP ${res.status})`)
+  }
+  return dados
+}
+
+/**
+ * Exclui uma rua (DELETE /ruas/:id) — usado em caso de cadastro duplicado.
+ */
+export async function excluirRua(id) {
+  const res = await fetch(`${API_URL}/ruas/${id}`, { method: 'DELETE' })
+  if (!res.ok) {
+    const dados = await res.json().catch(() => ({}))
+    throw new Error(dados.error || `Não foi possível excluir a rua (HTTP ${res.status})`)
+  }
+}

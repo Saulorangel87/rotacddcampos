@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, GeoJSON, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import { corDoDistrito } from '../data/distritos.js'
+import { buscarDistritosGeoJSON } from '../api/distritos.js'
 import styles from './LeafletMap.module.css'
 
 const CENTRO_CAMPOS = [-21.7649, -41.3211]
@@ -23,10 +24,7 @@ export default function LeafletMap({ distritoAtivo, onSelecionarDistrito }) {
   const mapRef = useRef(null)
 
   useEffect(() => {
-    fetch('/geojson/distritos.json')
-      .then((res) => res.json())
-      .then(setDados)
-      .catch((err) => console.warn('[LeafletMap] falha ao carregar geojson:', err.message))
+    buscarDistritosGeoJSON().then(setDados)
   }, [])
 
   function estiloPorDistrito(feature) {
