@@ -18,9 +18,15 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
 
+	// Injeção de dependências - Histórico (precisa existir antes do RuaService, que grava nela)
+	historicoRepo := repositories.NewHistoricoRepository(db)
+	historicoService := services.NewHistoricoService(historicoRepo)
+	historicoHandler := handlers.NewHistoricoHandler(historicoService)
+	app.Get("/historico", historicoHandler.ListHistorico)
+
 	// Injeção de dependências - Ruas
 	ruaRepo := repositories.NewRuaRepository(db)
-	ruaService := services.NewRuaService(ruaRepo)
+	ruaService := services.NewRuaService(ruaRepo, historicoRepo)
 	ruaHandler := handlers.NewRuaHandler(ruaService)
 
 	api := app.Group("/ruas")
@@ -42,6 +48,17 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 		colaboradores.Get("/", colaboradorHandler.ListColaboradores)
 		colaboradores.Get("/aniversariantes-hoje", colaboradorHandler.AniversariantesHoje)
 		colaboradores.Get("/:id", colaboradorHandler.GetColaborador)
+	}
+
+	// Injeção de dependências - Distritos
+	distritoRepo := repositories.NewDistritoRepository(db)
+	distritoService := services.NewDistritoService(distritoRepo)
+	distritoHandler := handlers.NewDistritoHandler(distritoService)
+
+	distritos := app.Group("/distritos")
+	{
+		distritos.Get("/", distritoHandler.ListDistritos)
+		distritos.Get("/:codigo", distritoHandler.GetDistrito)
 	}
 
 	// Injeção de dependências - Estatísticas (reaproveita os repositórios acima)

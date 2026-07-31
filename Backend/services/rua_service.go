@@ -21,11 +21,12 @@ type RuaService interface {
 }
 
 type ruaService struct {
-	repo repositories.RuaRepository
+	repo          repositories.RuaRepository
+	historicoRepo repositories.HistoricoRepository
 }
 
-func NewRuaService(repo repositories.RuaRepository) RuaService {
-	return &ruaService{repo: repo}
+func NewRuaService(repo repositories.RuaRepository, historicoRepo repositories.HistoricoRepository) RuaService {
+	return &ruaService{repo: repo, historicoRepo: historicoRepo}
 }
 
 type CreateRuaDTO struct {
@@ -44,6 +45,7 @@ type UpdateRuaDTO struct {
 	Distrito   string `json:"distrito" validate:"omitempty,max=100"`
 	Rota       string `json:"rota" validate:"max=50"`
 	Observacao string `json:"observacao"`
+	Usuario    string `json:"usuario" validate:"max=150"`
 }
 
 func (s *ruaService) List(ctx context.Context, nome, cep, distrito string) ([]models.Rua, error) {
@@ -89,6 +91,8 @@ func (s *ruaService) Update(ctx context.Context, id uint, dto UpdateRuaDTO) (*mo
 		return nil, errors.New("rua não encontrada")
 	}
 
+	distritoAntigo := rua.Distrito
+
 	if dto.NomeRua != "" {
 		rua.NomeRua = strings.TrimSpace(dto.NomeRua)
 	}
@@ -109,6 +113,23 @@ func (s *ruaService) Update(ctx context.Context, id uint, dto UpdateRuaDTO) (*mo
 	if err := s.repo.Update(ctx, rua); err != nil {
 		return nil, err
 	}
+
+	// Se o distrito realmente mudou, registra no histórico — best-effort:
+	// se isso falhar, não desfaz a atualização da rua (que já foi salva).
+	if distritoAntigo != "" && rua.Distrito != "" && distritoAntigo != rua.Distrito && s.historicoRepo != nil {
+		usuario := strings.TrimSpace(dto.Usuario)
+		if usuario == "" {
+			usuario = "Não identificado (sem login)"
+		}
+		_ = s.historicoRepo.Create(ctx, &models.HistoricoAlteracao{
+			RuaID:           rua.ID,
+			NomeRua:         rua.NomeRua,
+			DistritoOrigem:  distritoAntigo,
+			DistritoDestino: rua.Distrito,
+			Usuario:         usuario,
+		})
+	}
+
 	return rua, nil
 }
 
