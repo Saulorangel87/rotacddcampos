@@ -122,6 +122,25 @@ func (h *ColaboradorHandler) CreateColaborador(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(toColaboradorResponse(*colaborador))
 }
 
+// DeleteColaborador godoc
+// @Summary Excluir colaborador
+// @Tags colaboradores
+// @Param id path int true "ID do colaborador"
+// @Success 204
+// @Failure 400 {object} map[string]interface{}
+// @Router /colaboradores/{id} [delete]
+func (h *ColaboradorHandler) DeleteColaborador(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil || id <= 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ID inválido"})
+	}
+
+	if err := h.service.Delete(c.Context(), uint(id)); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.SendStatus(fiber.StatusNoContent)
+}
+
 // AniversariantesHoje godoc
 // @Summary Aniversariantes do dia
 // @Description Retorna colaboradores que fazem aniversário hoje. Aceita ?data=DD/MM ou ?data=DD-MM para testar outra data.

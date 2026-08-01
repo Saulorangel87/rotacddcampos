@@ -13,6 +13,7 @@ type ColaboradorRepository interface {
 	FindByID(ctx context.Context, id uint) (*models.Colaborador, error)
 	FindAniversariantes(ctx context.Context, mes, dia int) ([]models.Colaborador, error)
 	Create(ctx context.Context, colaborador *models.Colaborador) error
+	Delete(ctx context.Context, id uint) error
 	ContarTotal(ctx context.Context) (int64, error)
 	ContarPorFuncaoLike(ctx context.Context, padrao string) (int64, error)
 }
@@ -54,6 +55,10 @@ func (r *colaboradorRepository) FindByID(ctx context.Context, id uint) (*models.
 
 func (r *colaboradorRepository) Create(ctx context.Context, colaborador *models.Colaborador) error {
 	return r.db.WithContext(ctx).Create(colaborador).Error
+}
+
+func (r *colaboradorRepository) Delete(ctx context.Context, id uint) error {
+	return r.db.WithContext(ctx).Delete(&models.Colaborador{}, id).Error
 }
 
 // FindAniversariantes retorna colaboradores cuja data_nascimento cai no mês/dia informados,

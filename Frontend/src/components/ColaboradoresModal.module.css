@@ -81,7 +81,8 @@
   color: var(--cinza-800);
 }
 
-.campo input {
+.campo input,
+.campo select {
   border: 1px solid var(--cinza-200);
   border-radius: var(--raio-sm);
   padding: 8px 10px;
@@ -153,6 +154,14 @@
   font-size: 0.85rem;
 }
 
+.itemInfo {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
 .nome {
   font-weight: 600;
 }
@@ -167,4 +176,23 @@
   font-size: 0.75rem;
   color: var(--cinza-400);
   text-align: right;
+}
+
+.btnExcluir {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px 6px;
+  border-radius: var(--raio-sm);
+  flex-shrink: 0;
+}
+
+.btnExcluir:hover {
+  background: #fdecea;
+}
+
+.btnExcluir:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }

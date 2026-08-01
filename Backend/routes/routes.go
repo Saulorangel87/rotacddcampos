@@ -49,6 +49,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 		colaboradores.Post("/", colaboradorHandler.CreateColaborador)
 		colaboradores.Get("/aniversariantes-hoje", colaboradorHandler.AniversariantesHoje)
 		colaboradores.Get("/:id", colaboradorHandler.GetColaborador)
+		colaboradores.Delete("/:id", colaboradorHandler.DeleteColaborador)
 	}
 
 	// Injeção de dependências - Distritos

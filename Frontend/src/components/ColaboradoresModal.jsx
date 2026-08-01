@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
-import { listarColaboradores, criarColaborador } from '../api/colaboradores.js'
+import { listarColaboradores, criarColaborador, excluirColaborador } from '../api/colaboradores.js'
+import { FUNCOES } from '../data/funcoes.js'
+import ConfirmModal from './ConfirmModal.jsx'
 import styles from './ColaboradoresModal.module.css'
 
-export default function ColaboradoresModal({ aberto, onFechar }) {
+export default function ColaboradoresModal({ aberto, onFechar, onAlterado }) {
   const [colaboradores, setColaboradores] = useState([])
   const [carregando, setCarregando] = useState(true)
   const [busca, setBusca] = useState('')
   const [formAberto, setFormAberto] = useState(false)
+  const [excluindoId, setExcluindoId] = useState(null)
+  const [colaboradorParaExcluir, setColaboradorParaExcluir] = useState(null)
 
   useEffect(() => {
     if (!aberto) return
@@ -24,6 +28,25 @@ export default function ColaboradoresModal({ aberto, onFechar }) {
   function fecharTudo() {
     setFormAberto(false)
     onFechar()
+  }
+
+  function aoExcluir(colaborador) {
+    setColaboradorParaExcluir(colaborador)
+  }
+
+  async function confirmarExclusao() {
+    if (!colaboradorParaExcluir) return
+    setExcluindoId(colaboradorParaExcluir.id)
+    try {
+      await excluirColaborador(colaboradorParaExcluir.id)
+      setColaboradores((prev) => prev.filter((c) => c.id !== colaboradorParaExcluir.id))
+      setColaboradorParaExcluir(null)
+      onAlterado?.()
+    } catch (err) {
+      alert(err.message)
+    } finally {
+      setExcluindoId(null)
+    }
   }
 
   if (!aberto) return null
@@ -44,6 +67,7 @@ export default function ColaboradoresModal({ aberto, onFechar }) {
             onCriado={() => {
               setFormAberto(false)
               carregar()
+              onAlterado?.()
             }}
           />
         ) : (
@@ -69,8 +93,20 @@ export default function ColaboradoresModal({ aberto, onFechar }) {
               <ul className={styles.lista}>
                 {filtrados.map((c) => (
                   <li key={c.id}>
-                    <span className={styles.nome}>{c.nome}</span>
-                    <span className={styles.matricula}>{c.matricula}</span>
+                    <div className={styles.itemInfo}>
+                      <span className={styles.nome}>{c.nome}</span>
+                      <span className={styles.matricula}>{c.matricula}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.btnExcluir}
+                      onClick={() => aoExcluir(c)}
+                      disabled={excluindoId === c.id}
+                      aria-label={`Excluir ${c.nome}`}
+                      title="Excluir colaborador"
+                    >
+                      {excluindoId === c.id ? '…' : '🗑️'}
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -80,6 +116,15 @@ export default function ColaboradoresModal({ aberto, onFechar }) {
           </>
         )}
       </div>
+
+      <ConfirmModal
+        aberto={!!colaboradorParaExcluir}
+        titulo="Excluir colaborador"
+        mensagem={colaboradorParaExcluir ? `Tem certeza que quer excluir "${colaboradorParaExcluir.nome}" (matrícula ${colaboradorParaExcluir.matricula})? Essa ação não pode ser desfeita.` : ''}
+        onConfirmar={confirmarExclusao}
+        onCancelar={() => setColaboradorParaExcluir(null)}
+        confirmando={excluindoId === colaboradorParaExcluir?.id}
+      />
     </div>
   )
 }
@@ -128,7 +173,12 @@ function FormularioColaborador({ onCancelar, onCriado }) {
 
       <label className={styles.campo}>
         Função
-        <input type="text" value={funcao} onChange={(e) => setFuncao(e.target.value)} placeholder="Ex: MOTORIZADO (M), CICLISTA..." />
+        <select value={funcao} onChange={(e) => setFuncao(e.target.value)}>
+          <option value="">Selecione…</option>
+          {FUNCOES.map((f) => (
+            <option key={f} value={f}>{f}</option>
+          ))}
+        </select>
       </label>
 
       <label className={styles.campo}>

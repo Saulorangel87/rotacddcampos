@@ -14,10 +14,11 @@ import ColaboradoresModal from './components/ColaboradoresModal.jsx'
 import styles from './App.module.css'
 
 export default function App() {
-  const [distritoAtivo, setDistritoAtivo] = useState('602')
+  const [distritoAtivo, setDistritoAtivo] = useState('')
   const [secaoAtiva, setSecaoAtiva] = useState('mapa')
   const [painelAjustesAberto, setPainelAjustesAberto] = useState(false)
   const [colaboradoresAberto, setColaboradoresAberto] = useState(false)
+  const [statsVersao, setStatsVersao] = useState(0)
   const [alteracoes, setAlteracoes] = useState([])
 
   function registrarAlteracao(resultado) {
@@ -84,7 +85,7 @@ export default function App() {
                 )}
               </div>
 
-              <OperacaoResumo />
+              <OperacaoResumo versao={statsVersao} />
 
               <div className={styles.grade2}>
                 <RecentChanges alteracoes={alteracoes} />
@@ -103,7 +104,11 @@ export default function App() {
         </main>
       </div>
 
-      <ColaboradoresModal aberto={colaboradoresAberto} onFechar={() => setColaboradoresAberto(false)} />
+      <ColaboradoresModal
+        aberto={colaboradoresAberto}
+        onFechar={() => setColaboradoresAberto(false)}
+        onAlterado={() => setStatsVersao((v) => v + 1)}
+      />
     </div>
   )
 }

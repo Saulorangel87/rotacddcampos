@@ -25,6 +25,7 @@ type ColaboradorService interface {
 	AniversariantesDeHoje(ctx context.Context) ([]models.Colaborador, error)
 	AniversariantesDaData(ctx context.Context, mes, dia int) ([]models.Colaborador, error)
 	Create(ctx context.Context, dto NovoColaboradorDTO) (*models.Colaborador, error)
+	Delete(ctx context.Context, id uint) error
 }
 
 type colaboradorService struct {
@@ -91,4 +92,8 @@ func (s *colaboradorService) Create(ctx context.Context, dto NovoColaboradorDTO)
 		return nil, err
 	}
 	return colaborador, nil
+}
+
+func (s *colaboradorService) Delete(ctx context.Context, id uint) error {
+	return s.repo.Delete(ctx, id)
 }

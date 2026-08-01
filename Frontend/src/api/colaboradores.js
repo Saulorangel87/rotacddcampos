@@ -38,6 +38,17 @@ export async function aniversariantesDeHoje(dataSimulada = '') {
 }
 
 /**
+ * Exclui um colaborador (DELETE /colaboradores/:id).
+ */
+export async function excluirColaborador(id) {
+  const res = await fetch(`${API_URL}/colaboradores/${id}`, { method: 'DELETE' })
+  if (!res.ok) {
+    const dados = await res.json().catch(() => ({}))
+    throw new Error(dados.error || `Não foi possível excluir o colaborador (HTTP ${res.status})`)
+  }
+}
+
+/**
  * Cadastra um colaborador novo (POST /colaboradores). Nome e matrícula são obrigatórios.
  * Datas no formato DD/MM/AAAA (o mesmo que o backend espera). Lança erro com a
  * mensagem da API em caso de falha, pra exibir na tela.

@@ -3,7 +3,7 @@ import styles from './OperacaoResumo.module.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
-export default function OperacaoResumo() {
+export default function OperacaoResumo({ versao = 0 }) {
   const [dados, setDados] = useState(null)
   const [erro, setErro] = useState(false)
 
@@ -15,7 +15,7 @@ export default function OperacaoResumo() {
       })
       .then(setDados)
       .catch(() => setErro(true))
-  }, [])
+  }, [versao])
 
   if (erro || !dados) return null
 

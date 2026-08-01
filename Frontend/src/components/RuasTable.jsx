@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { listarRuas, excluirRua } from '../api/ruas.js'
 import { corDoDistrito } from '../data/distritos.js'
 import NovaRuaModal from './NovaRuaModal.jsx'
+import ConfirmModal from './ConfirmModal.jsx'
 import styles from './RuasTable.module.css'
 
 const ABAS = [
@@ -21,6 +22,7 @@ export default function RuasTable() {
   const [pagina, setPagina] = useState(1)
   const [novaRuaAberta, setNovaRuaAberta] = useState(false)
   const [excluindoId, setExcluindoId] = useState(null)
+  const [ruaParaExcluir, setRuaParaExcluir] = useState(null)
 
   useEffect(() => {
     listarRuas().then(setRuas)
@@ -34,14 +36,17 @@ export default function RuasTable() {
     setRuas((prev) => [novaRua, ...prev])
   }
 
-  async function aoExcluirRua(rua) {
-    const confirmou = window.confirm(`Excluir "${rua.nome_rua}" (${rua.cep})? Essa ação não pode ser desfeita.`)
-    if (!confirmou) return
+  function aoExcluirRua(rua) {
+    setRuaParaExcluir(rua)
+  }
 
-    setExcluindoId(rua.id)
+  async function confirmarExclusaoRua() {
+    if (!ruaParaExcluir) return
+    setExcluindoId(ruaParaExcluir.id)
     try {
-      await excluirRua(rua.id)
-      setRuas((prev) => prev.filter((r) => r.id !== rua.id))
+      await excluirRua(ruaParaExcluir.id)
+      setRuas((prev) => prev.filter((r) => r.id !== ruaParaExcluir.id))
+      setRuaParaExcluir(null)
     } catch (err) {
       alert(err.message)
     } finally {
@@ -232,6 +237,15 @@ export default function RuasTable() {
         aberto={novaRuaAberta}
         onFechar={() => setNovaRuaAberta(false)}
         onCriada={aoCriarRua}
+      />
+
+      <ConfirmModal
+        aberto={!!ruaParaExcluir}
+        titulo="Excluir rua"
+        mensagem={ruaParaExcluir ? `Tem certeza que quer excluir "${ruaParaExcluir.nome_rua}" (${ruaParaExcluir.cep})? Essa ação não pode ser desfeita.` : ''}
+        onConfirmar={confirmarExclusaoRua}
+        onCancelar={() => setRuaParaExcluir(null)}
+        confirmando={excluindoId === ruaParaExcluir?.id}
       />
     </section>
   )
