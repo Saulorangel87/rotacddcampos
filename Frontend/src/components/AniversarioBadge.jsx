@@ -43,7 +43,7 @@ export default function AniversarioBadge() {
                 <li key={c.id}>
                   <span className={styles.icone} aria-hidden="true">🎉</span>
                   <div>
-                    <strong>Parabéns {c.nome}, pelo seu grande dia!</strong>
+                    <strong>Parabéns pelo(a) {c.nome}, pelo seu grande dia!</strong>
                     {c.funcao && <span className={styles.funcao}>{c.funcao}</span>}
                   </div>
                 </li>

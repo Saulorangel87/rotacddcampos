@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { MapContainer, TileLayer, GeoJSON, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import { corDoDistrito } from '../data/distritos.js'
 import { buscarDistritosGeoJSON } from '../api/distritos.js'
+import { listarRuas } from '../api/ruas.js'
 import styles from './LeafletMap.module.css'
 
 const CENTRO_CAMPOS = [-21.7649, -41.3211]
@@ -17,15 +18,43 @@ function criarIconeAlfinete(codigo, cor) {
   })
 }
 
-export default function LeafletMap({ distritoAtivo, onSelecionarDistrito }) {
+export default function LeafletMap({ distritoAtivo, onSelecionarDistrito, mostrarRuasReais = false }) {
   const [dados, setDados] = useState(null)
   const [centroAtivo, setCentroAtivo] = useState(null)
+  const [ruasGeoJSON, setRuasGeoJSON] = useState(null)
   const geoJsonRef = useRef(null)
   const mapRef = useRef(null)
 
   useEffect(() => {
     buscarDistritosGeoJSON().then(setDados)
   }, [])
+
+  // Camada opcional com o traçado real das ruas (vindo do OpenStreetMap, via
+  // ruas.geometria) — só busca quando a camada é ligada, e só uma vez.
+  useEffect(() => {
+    if (!mostrarRuasReais || ruasGeoJSON) return
+    listarRuas().then((ruas) => {
+      const features = ruas
+        .filter((r) => r.geometria)
+        .map((r) => {
+          try {
+            return { type: 'Feature', properties: { nome: r.nome_rua, distrito: r.distrito }, geometry: JSON.parse(r.geometria) }
+          } catch {
+            return null
+          }
+        })
+        .filter(Boolean)
+      setRuasGeoJSON({ type: 'FeatureCollection', features })
+    })
+  }, [mostrarRuasReais, ruasGeoJSON])
+
+  // Só mostra as ruas do distrito selecionado — sem distrito ativo, não mostra
+  // nenhuma (evita poluir o mapa com 1252 linhas de uma vez só).
+  const ruasDoDistrito = useMemo(() => {
+    if (!ruasGeoJSON || !distritoAtivo) return null
+    const features = ruasGeoJSON.features.filter((f) => f.properties.distrito === distritoAtivo)
+    return { type: 'FeatureCollection', features }
+  }, [ruasGeoJSON, distritoAtivo])
 
   function estiloPorDistrito(feature) {
     const codigo = feature.properties.name
@@ -93,6 +122,16 @@ export default function LeafletMap({ distritoAtivo, onSelecionarDistrito }) {
             data={dados}
             style={estiloPorDistrito}
             onEachFeature={aoAdicionarFeature}
+          />
+        )}
+        {mostrarRuasReais && ruasDoDistrito && (
+          <GeoJSON
+            key={distritoAtivo}
+            data={ruasDoDistrito}
+            style={{ color: '#0b3d91', weight: 3, opacity: 0.9 }}
+            onEachFeature={(feature, layer) => {
+              if (feature.properties?.nome) layer.bindTooltip(feature.properties.nome, { sticky: true })
+            }}
           />
         )}
         {centroAtivo && distritoAtivo && (
