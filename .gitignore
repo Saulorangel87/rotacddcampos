@@ -3,12 +3,14 @@ node_modules/
 dist/
 .vite/
 *.local
+scripts
 
 # ===== Variáveis de ambiente =====
 .env
 .env.local
 .env.*.local
 Backend/.env
+scripts/
 
 # ===== Backend (Go) =====
 Backend/tmp/
