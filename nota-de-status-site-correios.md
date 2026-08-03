@@ -1,66 +1,67 @@
 # Nota de status — Site Correios (CDD Campos dos Goytacazes)
+_Atualizado em 02/08/2026_
 
-_Gerado em 29/07/2026_
+## Visão geral
 
-## Visão geral do projeto
+Ferramenta interna da unidade CDD Campos dos Goytacazes: mapa interativo dos 24 distritos postais (601–624), consulta de ruas/CEP, cadastro de colaboradores, e ajuste de rotas (mover rua entre distritos).
 
-Ferramenta interna pra substituir mapas de papel na sua unidade: consulta e gestão das ruas atendidas pelos 24 distritos postais (601–624) do CDD Campos dos Goytacazes.
+- **Frontend**: React + Vite, mapa real com **React Leaflet + OpenStreetMap**
+- **Backend**: Go (Fiber + GORM), PostgreSQL 17 local (`rotas_db`)
+- **Banco**: 2122 ruas ativas, 49 colaboradores, 24 distritos com polígono real
 
-- **Frontend**: React + Vite (migrado do HTML/CSS/JS puro original)
-- **Backend**: Go (Fiber + GORM), PostgreSQL 17 (`rotas_db`)
-- **Banco**: 2264 ruas importadas, todas ativas
+## Modelo de acesso combinado (ainda não implementado — é o próximo passo)
+
+- **Visitante / usuário comum (qualquer pessoa, sem login)**: acesso total de **consulta** — mapa, busca de trecho/rota, e **imprimir a listagem de ruas** (ex: carteiro novo confere sua rota e imprime). Nada disso pode ficar atrás de login.
+- **Administrador (login obrigatório)**: único nível com permissão de editar/cadastrar — mover rua de distrito, criar/excluir rua, criar/excluir colaborador, etc. Por enquanto só **2 pessoas**: Saulo e o gerente.
+- Login simples: matrícula + senha (bcrypt), JWT (~8h de validade, carrega id/matrícula/papel), guardado em `localStorage` + header `Authorization`. Trava real sempre no backend (middleware confere o papel antes de qualquer escrita); o front só esconde/mostra botão por UX.
+- Diagrama de arquitetura de acesso já desenhado e aprovado nesta conversa (visitante/consulta → só leitura; admin → leitura + escrita).
 
 ## O que já está funcionando
 
 ### Backend (Go)
-
-- API sobe local com `go run main.go`, porta 8080
-- `GET /ruas` com filtros `?distrito=` e `?nome=` — testado e validado contra os dados reais
-- `PUT /ruas/:id` — usado pra gravar mudança de distrito
-- CORS configurado liberando `http://localhost:5173` (necessário pro front conversar com a API)
-- API `GET /colaboradores` agora aceita `?carteiro=true` no backend para filtrar apenas colaboradores cujo cargo/funcao indica carteiro (motorizado/ciclista)
-- API `GET /colaboradores/aniversariantes-hoje` passou a aceitar data simulada no formato `DD/MM` ou `DD-MM`
-- Datas no JSON de colaboradores agora são serializadas em formato brasileiro `dd/mm/yyyy`
-- Tabela `ruas` já tem colunas preparadas pro futuro: `ativo`, `latitude`, `longitude`, `rota_id`, `rota` — **mas o model Go (`models/rua.go`) ainda não expõe `ativo`/`latitude`/`longitude`/`rota_id`**, só usa os 9 campos originais
+- Sobe com `go run main.go`, porta 8080, CORS liberado pro front (`localhost:5173`)
+- Tabelas: `ruas`, `colaboradores`, `distritos`, `historico_alteracoes` (+ `carteiros` e `rotas`, criadas à toa em algum momento, vazias, sem uso)
+- `ruas`: CRUD completo (`GET/POST/PUT/DELETE /ruas`), campo `geometria` (GeoJSON do OpenStreetMap) e `ativo` (soft-delete)
+- `colaboradores`: CRUD completo, incluindo `?carteiro=true`, `/aniversariantes-hoje?data=DD/MM`
+- `distritos`: `GET /distritos` e `/distritos/:codigo`, cada um com `geo_json` (polígono real, chave = código tipo "601")
+- `historico_alteracoes`: grava **sozinho**, automaticamente, toda vez que `PUT /ruas/:id` muda o distrito de uma rua de verdade (não precisa chamar endpoint separado)
+- `GET /historico?pagina=&limite=` — paginado
+- `GET /estatisticas/operacao` — números da unidade (distritos, colaboradores, motos/carros/ciclistas/interno/administrativo/OTT/OT/supervisor/gerente), tudo calculado ao vivo do banco, nunca fixo no código
 
 ### Frontend (React)
+- Header com logo real, 24 distritos com cores únicas, **nenhum distrito selecionado por padrão**
+- **Mapa real (Leaflet + OpenStreetMap)**: os 24 polígonos de distrito vêm do banco (`GET /distritos`), com fallback pro arquivo estático se a API cair. Clique no polígono ou no botão do distrito: destaque forte no contorno + zoom automático + alfinete no centro
+- **Camada opcional "Ruas reais (OSM)"**: liga/desliga por cima do mapa de distritos, mostra o traçado real das ruas do distrito selecionado (dado do OpenStreetMap, casado por nome — ver seção abaixo)
+- **Ajustes de Rotas**: assistente de 3 passos (selecionar ruas → escolher distrito → confirmar), paginado, altura travada na tela
+- **Ruas**: tabela com abas, busca (corrigida: distrito exato / CEP por prefixo / texto livre), paginação 30, exportar CSV, **imprimir** (tabela própria com bordas, mesmo filtro do exportar), **+ Nova rua** e excluir por linha (com modal de confirmação estilizado)
+- **Colaboradores**: modal com busca, **+ Novo** (função por seletor fixo, não texto livre — evita quebrar a contagem de estatísticas), excluir (mesmo modal de confirmação)
+- **🎂 Aniversariante do dia**: ícone no header, popover ao passar o mouse, busca de `/colaboradores/aniversariantes-hoje`
+- **CEP**: busca por nome de rua → mostra CEP/bairro/distrito
+- **Relatórios**: paginado de 10, mostra mudanças da **sessão atual do navegador** (ainda não persistente na tela — o backend já grava no `historico_alteracoes`, só falta o front puxar de lá em vez do estado local)
+- **Operação em números**: faixa embaixo do mapa com todos os totais, atualiza sozinha quando colaborador é criado/excluído (sem precisar F5)
 
-- Layout seguindo o mockup: header com logo real dos Correios, nav de 24 distritos (cores únicas, sem repetir), sidebar, mapa esquemático em SVG
-- Painel **Ajustes de Rotas**: assistente de 3 passos (selecionar ruas → escolher distrito → confirmar), com paginação (12 por página) e altura travada na tela (não empurra mais o botão "Próximo" pra fora)
-- Tabela de ruas: abas (todas/distrito/carteiro/CEP), paginação (30 por página), exportar CSV
-- Busca corrigida: distrito por igualdade exata, CEP por prefixo, rua/carteiro por substring (antes misturava tudo e trazia resultado errado tipo buscar "620" e vir CEPs de outros distritos)
-- Bug de zoom do mapa central corrigido (tinha teto de tamanho errado, ajustado)
+## Higienização de dados (concluída)
 
-## Pendências conhecidas (nada urgente, só registro)
+- Banco de 2264 → **2122 ruas ativas** (duplicidade removida direto pela interface)
+- Planilha higienizada importada e casada por CEP (script SQL com staging table), sem perder histórico
+- Restaram 11 CEPs com nomes ligeiramente diferentes → **3 resolvidos manualmente** (Pedro Maciel Neto, Estrada Antônio Moacir Batista, Rua Saldanha Marinho), os outros 8 eram legítimos (rua cruzando fronteira de 2 distritos, não é duplicidade)
 
-1. **Model Go desatualizado** — adicionar `ativo`, `latitude`, `longitude`, `rota_id` em `models/rua.go` pra API enxergar essas colunas que já existem no banco
-2. **Latitude/longitude vazias** — 0 de 2264 ruas geocodificadas; precisa de rotina de geocodificação em lote (CEP → coordenada) quando for trabalhar nisso
-3. **Endpoint de mover em lote + histórico** — hoje o "Ajustes de Rotas" faz um `PUT` por rua; falta `POST /ruas/mover-lote` + tabela `historico_alteracoes` no backend
-4. **Ajuste visual pequeno** — texto "Correios" um pouco desalinhado do ícone no selo do header
-5. **Modelo relacional (carteiros/rotas)** — documentação técnica já descreve `carteiros` → `rotas` → `ruas`, mas ainda não implementado (tabela `carteiros`/`rotas` não existem no banco ainda)
+## Ruas ↔ OpenStreetMap (concluído, com pendência de revisão)
 
-## Planejado pra mais à frente (só desenho, não implementar ainda)
+- Script `casar_ruas_osm.py` (Overpass API + fuzzy matching): **1252 de 2115 ruas ativas** casaram com confiança alta (≥85%) e já têm geometria real gravada em `ruas.geometria`
+- **751 ficaram em `revisao_matches_baixos.csv`**, confiança 60-84%, não aplicadas automaticamente — pendente de revisão manual quando houver tempo
+- Detalhe técnico que já foi resolvido, se precisar rodar de novo: Windows + `psycopg2` tem bug de encoding conhecido, script já corrige forçando `PGCLIENTENCODING=LATIN1` antes de conectar
 
-### Autenticação simples (admin vs. carteiro)
+## Pendências conhecidas
 
-- Sem login complexo — matrícula + senha, JWT simples
-- Padrão: **somente leitura pra todos**
-- Só você (Saulo) é admin no início; botão "gerenciar usuários" futuro permite conceder acesso admin a outras pessoas
-- Trava sempre no backend (middleware verifica papel antes de qualquer escrita), front só esconde botão por UX
-
-### Redistribuição automática de ruas órfãs
-
-Pra quando o número de distritos cair (hoje 24, pode diminuir):
-
-- Motor de sugestão por heurística (proximidade + carga de trabalho) — **não IA decidindo sozinha**
-- IA entra só pra gerar a justificativa em texto de cada sugestão, e pra interpretar nomes de rua bagunçados
-- Sugestões caem pré-preenchidas dentro do próprio Ajustes de Rotas, humano sempre confirma
+1. **Autenticação** — é o próximo passo combinado, modelo já definido acima, falta implementar (tabela `usuarios`, bcrypt, JWT, middleware, telas de login)
+2. **Relatórios persistente** — trocar o front pra puxar de `GET /historico` em vez do estado local da sessão
+3. **751 ruas** em `revisao_matches_baixos.csv` aguardando revisão manual de nome
+4. **Botão "Por Carteiro"** na tabela de ruas não filtra de verdade (só reordena) — combinamos deixar parado, sem prioridade
+5. Ajuste visual pequeno: texto "Correios" um pouco desalinhado do ícone no selo do header
+6. **Tabelas `carteiros` e `rotas`** existem no banco vazias, sem uso — foram criadas sem querer em algum momento, podem ser ignoradas ou removidas depois
+7. Modelo relacional completo (carteiros→rotas→ruas com FK) da documentação técnica original nunca foi implementado — decidimos reaproveitar `colaboradores` em vez disso, então essa pendência está efetivamente substituída/resolvida por outro caminho
 
 ## Próxima ação combinada
 
-Amanhã: você traz a planilha dos carteiros (nome + matrícula) → eu preparo a importação pro banco + ajusto o model Go junto.
-
-## Arquivos entregues
-
-- `frontend-react-ajustes-rotas.zip` — projeto React completo (última versão, com todos os fixes desta sessão)
-- `.gitignore` já orientado (cobre `node_modules`, `.env` de ambas as pastas, artefatos de build Go)
+Implementar autenticação: tabela `usuarios` (matrícula, senha com hash, papel: admin), login com JWT, middleware no backend travando `POST/PUT/DELETE` pra admin, e no front esconder os botões de editar/cadastrar/excluir de quem não estiver logado como admin. Consulta, busca e impressão continuam livres pra qualquer pessoa, sem login.
