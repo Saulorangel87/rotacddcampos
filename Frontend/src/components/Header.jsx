@@ -1,9 +1,15 @@
 import { useState } from 'react'
 import AniversarioBadge from './AniversarioBadge.jsx'
+import LoginModal from './LoginModal.jsx'
+import TrocarSenhaModal from './TrocarSenhaModal.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import styles from './Header.module.css'
 
-export default function Header({ usuario = 'Saulo' }) {
+export default function Header() {
+  const { sessao, autenticado, sair } = useAuth()
   const [busca, setBusca] = useState('')
+  const [loginAberto, setLoginAberto] = useState(false)
+  const [trocarSenhaAberto, setTrocarSenhaAberto] = useState(false)
 
   return (
     <header className={styles.header}>
@@ -33,11 +39,37 @@ export default function Header({ usuario = 'Saulo' }) {
 
         <AniversarioBadge />
 
-        <button className={styles.usuario} type="button">
-          <span className={styles.avatar} aria-hidden="true">{usuario.charAt(0)}</span>
-          {usuario}
-        </button>
+        {autenticado ? (
+          <div className={styles.usuarioLogado}>
+            <button
+              className={styles.usuario}
+              type="button"
+              onClick={() => setTrocarSenhaAberto(true)}
+              title="Trocar senha"
+            >
+              <span className={styles.avatar} aria-hidden="true">{sessao.matricula.charAt(0)}</span>
+              {sessao.matricula}
+              {sessao.papel === 'admin' && <span className={styles.selo}>admin</span>}
+            </button>
+            <button className={styles.btnSair} type="button" onClick={sair}>
+              Sair
+            </button>
+          </div>
+        ) : (
+          <button className={styles.usuario} type="button" onClick={() => setLoginAberto(true)}>
+            <span className={styles.avatar} aria-hidden="true">?</span>
+            Entrar
+          </button>
+        )}
       </div>
+
+      <LoginModal aberto={loginAberto} onFechar={() => setLoginAberto(false)} onEntrou={() => setLoginAberto(false)} />
+      <TrocarSenhaModal
+        aberto={trocarSenhaAberto}
+        obrigatorio={false}
+        onFechar={() => setTrocarSenhaAberto(false)}
+        onTrocada={() => setTrocarSenhaAberto(false)}
+      />
     </header>
   )
 }

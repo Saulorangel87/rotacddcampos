@@ -109,6 +109,13 @@ func (h *RuaHandler) UpdateRua(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	// O campo "usuario" do histórico vem da matrícula autenticada (injetada pelo
+	// middleware ExigirAdmin), nunca do corpo da requisição — senão qualquer um
+	// poderia mandar {"usuario": "outra pessoa"} e forjar o registro de auditoria.
+	if matricula, ok := c.Locals("matricula").(string); ok && matricula != "" {
+		dto.Usuario = matricula
+	}
+
 	rua, err := h.service.Update(c.Context(), uint(id), dto)
 	if err != nil {
 		if err.Error() == "rua não encontrada" {

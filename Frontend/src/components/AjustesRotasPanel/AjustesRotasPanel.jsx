@@ -18,6 +18,8 @@ export default function AjustesRotasPanel({ distritoOrigem, onFechar, onConcluid
   const [carteiroResponsavel, setCarteiroResponsavel] = useState('')
   const [motivo, setMotivo] = useState('')
   const [resultado, setResultado] = useState(null)
+  const [salvando, setSalvando] = useState(false)
+  const [erroSalvar, setErroSalvar] = useState('')
 
   useEffect(() => {
     let ativo = true
@@ -55,13 +57,24 @@ export default function AjustesRotasPanel({ distritoOrigem, onFechar, onConcluid
 
   async function confirmarMudanca() {
     const ids = [...selecionadas]
-    await moverRuasEmLote(ids, distritoDestino)
-    setResultado({
-      quantidade: ids.length,
-      de: distritoOrigem,
-      para: distritoDestino,
-    })
-    setPasso(2)
+    setErroSalvar('')
+    setSalvando(true)
+    try {
+      await moverRuasEmLote(ids, distritoDestino)
+      setResultado({
+        quantidade: ids.length,
+        de: distritoOrigem,
+        para: distritoDestino,
+      })
+      setPasso(2)
+    } catch (err) {
+      // Antes esse erro era engolido silenciosamente (atualizarDistritoDaRua
+      // devolvia null em vez de lançar) — a tela ia direto pro "sucesso" mesmo
+      // quando a API recusava com 401/403. Agora mostra o erro de verdade.
+      setErroSalvar(err.message)
+    } finally {
+      setSalvando(false)
+    }
   }
 
   function finalizar() {
@@ -207,17 +220,19 @@ export default function AjustesRotasPanel({ distritoOrigem, onFechar, onConcluid
             </div>
           )}
 
+          {erroSalvar && <p className={styles.erro}>{erroSalvar}</p>}
+
           <footer className={styles.rodapePasso}>
-            <button type="button" className={styles.botaoSecundario} onClick={() => setPasso(0)}>
+            <button type="button" className={styles.botaoSecundario} onClick={() => setPasso(0)} disabled={salvando}>
               ← Voltar
             </button>
             <button
               type="button"
               className={styles.botaoPrimario}
-              disabled={!distritoDestino}
+              disabled={!distritoDestino || salvando}
               onClick={confirmarMudanca}
             >
-              ✓ Confirmar
+              {salvando ? 'Salvando…' : '✓ Confirmar'}
             </button>
           </footer>
         </div>

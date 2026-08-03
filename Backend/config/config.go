@@ -9,26 +9,35 @@ import (
 )
 
 type Config struct {
-	ServerPort string
-	DBHost     string
-	DBPort     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBSSLMode  string
+	ServerPort        string
+	DBHost            string
+	DBPort            string
+	DBUser            string
+	DBPassword        string
+	DBName            string
+	DBSSLMode         string
+	JWTSecret         string
+	JWTExpiracaoHoras int
 }
 
 func Load() *Config {
 	_ = godotenv.Load()
 
 	cfg := &Config{
-		ServerPort: getEnv("SERVER_PORT", "8080"),
-		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPort:     getEnv("DB_PORT", "5432"),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", "postgres"),
-		DBName:     getEnv("DB_NAME", "rotas_entrega"),
-		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
+		ServerPort:        getEnv("SERVER_PORT", "8080"),
+		DBHost:            getEnv("DB_HOST", "localhost"),
+		DBPort:            getEnv("DB_PORT", "5432"),
+		DBUser:            getEnv("DB_USER", "postgres"),
+		DBPassword:        getEnv("DB_PASSWORD", "postgres"),
+		DBName:            getEnv("DB_NAME", "rotas_entrega"),
+		DBSSLMode:         getEnv("DB_SSLMODE", "disable"),
+		JWTSecret:         getEnv("JWT_SECRET", ""),
+		JWTExpiracaoHoras: 8,
+	}
+
+	if cfg.JWTSecret == "" {
+		slog.Warn("JWT_SECRET não definido — usando valor de desenvolvimento, NUNCA use isso em produção")
+		cfg.JWTSecret = "dev-secret-trocar-em-producao"
 	}
 
 	return cfg

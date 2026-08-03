@@ -196,3 +196,27 @@
   cursor: not-allowed;
   opacity: 0.5;
 }
+
+.mensagemInline {
+  font-size: 0.78rem;
+  color: var(--cinza-600);
+  margin: 0;
+}
+
+.seloAdmin {
+  background: var(--cor-amarela);
+  color: var(--cor-azul-escuro);
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.avisoSenha {
+  font-size: 0.78rem;
+  color: var(--cinza-600);
+  line-height: 1.5;
+  margin: 0;
+}

@@ -48,11 +48,11 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
     AllowOrigins: "http://localhost:5173",
-    AllowHeaders: "Origin, Content-Type, Accept",
+    AllowHeaders: "Origin, Content-Type, Accept, Authorization",
     AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
 }))
 
-	routes.SetupRoutes(app, db)
+	routes.SetupRoutes(app, db, cfg.JWTSecret, cfg.JWTExpiracaoHoras)
 
 	slog.Info("servidor iniciado", "port", cfg.ServerPort)
 	if err := app.Listen(":" + cfg.ServerPort); err != nil {

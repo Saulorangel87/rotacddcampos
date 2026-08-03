@@ -7,12 +7,15 @@ const ITENS = [
   { id: 'cep', label: 'CEP', icone: '📮' },
   { id: 'colaboradores', label: 'Colaboradores', icone: '👤' },
   { id: 'relatorios', label: 'Relatórios', icone: '📊' },
+  { id: 'usuarios', label: 'Usuários', icone: '🔑', soAdmin: true },
 ]
 
-export default function Sidebar({ ativo, onSelecionar }) {
+export default function Sidebar({ ativo, onSelecionar, admin }) {
+  const itensVisiveis = ITENS.filter((item) => !item.soAdmin || admin)
+
   return (
     <aside className={styles.sidebar} aria-label="Navegação principal">
-      {ITENS.map((item) => (
+      {itensVisiveis.map((item) => (
         <button
           key={item.id}
           type="button"

@@ -77,6 +77,33 @@
   cursor: pointer;
 }
 
+.usuarioLogado {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.selo {
+  background: var(--cor-amarela);
+  color: var(--cor-azul-escuro);
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.btnSair {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--branco);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
 .avatar {
   width: 28px;
   height: 28px;

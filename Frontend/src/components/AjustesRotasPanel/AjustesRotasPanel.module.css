@@ -224,3 +224,11 @@
   margin-top: 6px;
   color: var(--cinza-800);
 }
+
+.erro {
+  background: #fdecea;
+  color: #b3261e;
+  border-radius: var(--raio-sm);
+  padding: 8px 12px;
+  font-size: 0.8rem;
+}

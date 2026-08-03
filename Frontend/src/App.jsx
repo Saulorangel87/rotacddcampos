@@ -11,31 +11,61 @@ import OperacaoResumo from './components/OperacaoResumo.jsx'
 import CepLookup from './components/CepLookup.jsx'
 import RelatorioMovimentacoes from './components/RelatorioMovimentacoes.jsx'
 import ColaboradoresModal from './components/ColaboradoresModal.jsx'
+import UsuariosModal from './components/UsuariosModal.jsx'
+import LoginModal from './components/LoginModal.jsx'
+import TrocarSenhaModal from './components/TrocarSenhaModal.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 import styles from './App.module.css'
 
 export default function App() {
+  const { sessao, autenticado, admin } = useAuth()
   const [distritoAtivo, setDistritoAtivo] = useState('')
   const [secaoAtiva, setSecaoAtiva] = useState('mapa')
   const [painelAjustesAberto, setPainelAjustesAberto] = useState(false)
   const [colaboradoresAberto, setColaboradoresAberto] = useState(false)
+  const [usuariosAberto, setUsuariosAberto] = useState(false)
+  const [loginAberto, setLoginAberto] = useState(false)
   const [statsVersao, setStatsVersao] = useState(0)
+  const [historicoVersao, setHistoricoVersao] = useState(0)
   const [alteracoes, setAlteracoes] = useState([])
 
   function registrarAlteracao(resultado) {
     setAlteracoes((prev) => [
-      { ...resultado, quando: 'Agora', por: 'Saulo' },
+      { ...resultado, quando: 'Agora', por: sessao?.matricula || '—' },
       ...prev,
     ])
+    setHistoricoVersao((v) => v + 1)
     setPainelAjustesAberto(false)
   }
 
   function selecionarSidebar(id) {
     if (id === 'ajustes') {
+      // Mover rua de distrito é escrita — exige admin. Sem isso, o painel
+      // abre normalmente mas toda tentativa de salvar toma 401/403 no backend.
+      if (!admin) {
+        setLoginAberto(true)
+        return
+      }
       setPainelAjustesAberto(true)
       return
     }
     if (id === 'colaboradores') {
+      // Ver colaboradores exige qualquer usuário autenticado.
+      if (!autenticado) {
+        setLoginAberto(true)
+        return
+      }
       setColaboradoresAberto(true)
+      return
+    }
+    if (id === 'usuarios') {
+      // Gerenciar usuários é admin-only — o item nem aparece na sidebar pra
+      // quem não é admin, mas a checagem fica aqui também por segurança.
+      if (!admin) {
+        setLoginAberto(true)
+        return
+      }
+      setUsuariosAberto(true)
       return
     }
     if (id === 'ruas') {
@@ -64,6 +94,7 @@ export default function App() {
         <Sidebar
           ativo={painelAjustesAberto ? 'ajustes' : secaoAtiva}
           onSelecionar={selecionarSidebar}
+          admin={admin}
         />
 
         <main className={styles.principal}>
@@ -73,10 +104,10 @@ export default function App() {
                 <MapPanel
                   distritoAtivo={distritoAtivo}
                   onSelecionarDistrito={setDistritoAtivo}
-                  onAbrirAjustes={() => setPainelAjustesAberto(true)}
+                  onAbrirAjustes={() => selecionarSidebar('ajustes')}
                 />
 
-                {painelAjustesAberto && (
+                {painelAjustesAberto && admin && (
                   <AjustesRotasPanel
                     distritoOrigem={distritoAtivo}
                     onFechar={() => setPainelAjustesAberto(false)}
@@ -100,15 +131,28 @@ export default function App() {
 
           {secaoAtiva === 'cep' && <CepLookup />}
 
-          {secaoAtiva === 'relatorios' && <RelatorioMovimentacoes alteracoes={alteracoes} />}
+          {secaoAtiva === 'relatorios' && <RelatorioMovimentacoes versao={historicoVersao} />}
         </main>
       </div>
 
-      <ColaboradoresModal
-        aberto={colaboradoresAberto}
-        onFechar={() => setColaboradoresAberto(false)}
-        onAlterado={() => setStatsVersao((v) => v + 1)}
-      />
+      {autenticado && (
+        <ColaboradoresModal
+          aberto={colaboradoresAberto}
+          onFechar={() => setColaboradoresAberto(false)}
+          onAlterado={() => setStatsVersao((v) => v + 1)}
+        />
+      )}
+
+      {admin && (
+        <UsuariosModal aberto={usuariosAberto} onFechar={() => setUsuariosAberto(false)} />
+      )}
+
+      <LoginModal aberto={loginAberto} onFechar={() => setLoginAberto(false)} onEntrou={() => setLoginAberto(false)} />
+
+      {/* Senha provisória (primeiro login ou reset pelo admin) — bloqueia o resto até trocar */}
+      {autenticado && sessao.senhaProvisoria && (
+        <TrocarSenhaModal aberto obrigatorio onFechar={() => {}} onTrocada={() => {}} />
+      )}
     </div>
   )
 }

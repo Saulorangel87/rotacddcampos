@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { listarRuas, excluirRua } from '../api/ruas.js'
 import { corDoDistrito } from '../data/distritos.js'
+import { useAuth } from '../context/AuthContext.jsx'
 import NovaRuaModal from './NovaRuaModal.jsx'
 import ConfirmModal from './ConfirmModal.jsx'
 import styles from './RuasTable.module.css'
@@ -16,6 +17,7 @@ const ABAS = [
 const ITENS_POR_PAGINA = 30
 
 export default function RuasTable() {
+  const { admin } = useAuth()
   const [aba, setAba] = useState('todas')
   const [busca, setBusca] = useState('')
   const [ruas, setRuas] = useState([])
@@ -112,9 +114,11 @@ export default function RuasTable() {
           ))}
         </div>
 
-        <button type="button" className={styles.btnNovaRua} onClick={() => setNovaRuaAberta(true)}>
-          + Nova rua
-        </button>
+        {admin && (
+          <button type="button" className={styles.btnNovaRua} onClick={() => setNovaRuaAberta(true)}>
+            + Nova rua
+          </button>
+        )}
 
         <div className={styles.busca}>
           <input
@@ -158,16 +162,18 @@ export default function RuasTable() {
                 <td>{r.rota}</td>
                 <td className={styles.status}>Atualizado {r.atualizado_em}</td>
                 <td>
-                  <button
-                    type="button"
-                    className={styles.btnExcluir}
-                    onClick={() => aoExcluirRua(r)}
-                    disabled={excluindoId === r.id}
-                    aria-label={`Excluir ${r.nome_rua}`}
-                    title="Excluir rua"
-                  >
-                    {excluindoId === r.id ? '…' : '🗑️'}
-                  </button>
+                  {admin && (
+                    <button
+                      type="button"
+                      className={styles.btnExcluir}
+                      onClick={() => aoExcluirRua(r)}
+                      disabled={excluindoId === r.id}
+                      aria-label={`Excluir ${r.nome_rua}`}
+                      title="Excluir rua"
+                    >
+                      {excluindoId === r.id ? '…' : '🗑️'}
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -30,6 +30,7 @@ services:
       DB_PASSWORD: postgres
       DB_NAME: rotas_entrega
       DB_SSLMODE: disable
+      JWT_SECRET: ${JWT_SECRET}
     ports:
       - "8080:8080"
     depends_on:

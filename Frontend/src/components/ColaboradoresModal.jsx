@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { listarColaboradores, criarColaborador, excluirColaborador } from '../api/colaboradores.js'
 import { FUNCOES } from '../data/funcoes.js'
+import { useAuth } from '../context/AuthContext.jsx'
 import ConfirmModal from './ConfirmModal.jsx'
 import styles from './ColaboradoresModal.module.css'
 
 export default function ColaboradoresModal({ aberto, onFechar, onAlterado }) {
+  const { admin } = useAuth()
   const [colaboradores, setColaboradores] = useState([])
   const [carregando, setCarregando] = useState(true)
+  const [erroCarregar, setErroCarregar] = useState('')
   const [busca, setBusca] = useState('')
   const [formAberto, setFormAberto] = useState(false)
   const [excluindoId, setExcluindoId] = useState(null)
@@ -19,10 +22,11 @@ export default function ColaboradoresModal({ aberto, onFechar, onAlterado }) {
 
   function carregar() {
     setCarregando(true)
-    listarColaboradores().then((dados) => {
-      setColaboradores(dados)
-      setCarregando(false)
-    })
+    setErroCarregar('')
+    listarColaboradores()
+      .then(setColaboradores)
+      .catch((err) => setErroCarregar(err.message))
+      .finally(() => setCarregando(false))
   }
 
   function fecharTudo() {
@@ -80,13 +84,17 @@ export default function ColaboradoresModal({ aberto, onFechar, onAlterado }) {
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
               />
-              <button type="button" className={styles.btnNovo} onClick={() => setFormAberto(true)}>
-                + Novo
-              </button>
+              {admin && (
+                <button type="button" className={styles.btnNovo} onClick={() => setFormAberto(true)}>
+                  + Novo
+                </button>
+              )}
             </div>
 
             {carregando ? (
               <p className={styles.mensagem}>Carregando…</p>
+            ) : erroCarregar ? (
+              <p className={styles.mensagem}>{erroCarregar}</p>
             ) : filtrados.length === 0 ? (
               <p className={styles.mensagem}>Nenhum colaborador encontrado.</p>
             ) : (
@@ -104,6 +112,7 @@ export default function ColaboradoresModal({ aberto, onFechar, onAlterado }) {
                       disabled={excluindoId === c.id}
                       aria-label={`Excluir ${c.nome}`}
                       title="Excluir colaborador"
+                      hidden={!admin}
                     >
                       {excluindoId === c.id ? '…' : '🗑️'}
                     </button>
