@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/empresa/rotas-entrega/config"
 	"github.com/empresa/rotas-entrega/database"
@@ -12,6 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 )
 
 // @title API Rotas de Entrega
@@ -47,10 +49,24 @@ func main() {
 	app.Use(logger.New())
 
 	app.Use(cors.New(cors.Config{
-    AllowOrigins: "http://localhost:5173",
+    AllowOrigins: cfg.CORSOrigins,
     AllowHeaders: "Origin, Content-Type, Accept, Authorization",
     AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
 }))
+
+	// Proteção extra contra força bruta: no máximo 10 tentativas de login por IP
+	// a cada minuto. O bloqueio por conta (5 tentativas/15min) já existe no
+	// service e continua valendo — isso aqui trava a varredura de matrículas
+	// diferentes vindas do mesmo IP, o que o bloqueio por conta sozinho não pega.
+	app.Use("/auth/login", limiter.New(limiter.Config{
+		Max:        10,
+		Expiration: 1 * time.Minute,
+		LimitReached: func(c *fiber.Ctx) error {
+			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+				"error": "muitas tentativas de login vindas daqui, aguarde um minuto",
+			})
+		},
+	}))
 
 	routes.SetupRoutes(app, db, cfg.JWTSecret, cfg.JWTExpiracaoHoras)
 

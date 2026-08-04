@@ -18,7 +18,7 @@ function criarIconeAlfinete(codigo, cor) {
   })
 }
 
-export default function LeafletMap({ distritoAtivo, onSelecionarDistrito, mostrarRuasReais = false }) {
+export default function LeafletMap({ distritoAtivo, onSelecionarDistrito, mostrarRuasReais = false, versao = 0 }) {
   const [dados, setDados] = useState(null)
   const [centroAtivo, setCentroAtivo] = useState(null)
   const [ruasGeoJSON, setRuasGeoJSON] = useState(null)
@@ -29,8 +29,16 @@ export default function LeafletMap({ distritoAtivo, onSelecionarDistrito, mostra
     buscarDistritosGeoJSON().then(setDados)
   }, [])
 
+  // Depois de mover uma rua de distrito, o cache abaixo fica desatualizado
+  // (continua mostrando a rua no distrito antigo). Zerar aqui força o efeito
+  // seguinte a buscar de novo.
+  useEffect(() => {
+    if (versao > 0) setRuasGeoJSON(null)
+  }, [versao])
+
   // Camada opcional com o traçado real das ruas (vindo do OpenStreetMap, via
-  // ruas.geometria) — só busca quando a camada é ligada, e só uma vez.
+  // ruas.geometria) — só busca quando a camada é ligada (ou quando o cache
+  // foi invalidado por uma movimentação, acima).
   useEffect(() => {
     if (!mostrarRuasReais || ruasGeoJSON) return
     listarRuas().then((ruas) => {

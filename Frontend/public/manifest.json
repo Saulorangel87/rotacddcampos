@@ -1,0 +1,17 @@
+{
+  "name": "Guia de Logística: CDD Campos dos Goytacazes",
+  "short_name": "CDD Campos",
+  "description": "Mapa de distritos, ruas e rotas do CDD Campos dos Goytacazes",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#005DAA",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/images/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/images/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

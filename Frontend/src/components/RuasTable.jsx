@@ -16,7 +16,7 @@ const ABAS = [
 
 const ITENS_POR_PAGINA = 30
 
-export default function RuasTable() {
+export default function RuasTable({ versao = 0 }) {
   const { admin } = useAuth()
   const [aba, setAba] = useState('todas')
   const [busca, setBusca] = useState('')
@@ -28,7 +28,7 @@ export default function RuasTable() {
 
   useEffect(() => {
     listarRuas().then(setRuas)
-  }, [])
+  }, [versao])
 
   useEffect(() => {
     setPagina(1)

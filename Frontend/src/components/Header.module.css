@@ -1,11 +1,11 @@
 .header {
   background: var(--cor-azul);
   color: var(--branco);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 14px 28px;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  padding: 12px 28px;
   box-shadow: var(--sombra);
 }
 
@@ -16,6 +16,7 @@
   border-radius: 999px;
   padding: 6px 14px;
   box-shadow: var(--sombra);
+  flex-shrink: 0;
 }
 
 .logo {
@@ -25,17 +26,19 @@
 }
 
 .titulo {
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   font-weight: 600;
-  text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  flex: 1 1 240px;
+  min-width: 0;
 }
 
 .acoes {
   display: flex;
   align-items: center;
   gap: 12px;
-  justify-self: end;
+  margin-left: auto;
+  flex-wrap: wrap;
 }
 
 .busca {
@@ -47,6 +50,12 @@
   border-radius: 999px;
   padding: 7px 14px;
   color: var(--branco);
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.busca svg {
+  flex-shrink: 0;
 }
 
 .busca input {
@@ -54,7 +63,8 @@
   border: none;
   color: var(--branco);
   font-size: 0.85rem;
-  width: 220px;
+  width: 100%;
+  min-width: 0;
 }
 
 .busca input::placeholder {
@@ -75,12 +85,14 @@
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .usuarioLogado {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .selo {
@@ -102,6 +114,7 @@
   padding: 5px 10px;
   border-radius: 999px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .avatar {
@@ -114,17 +127,29 @@
   align-items: center;
   justify-content: center;
   font-weight: 800;
+  flex-shrink: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 720px) {
   .header {
-    grid-template-columns: 1fr;
-    text-align: center;
+    padding: 10px 14px;
+  }
+  .titulo {
+    order: 3;
+    flex-basis: 100%;
+    font-size: 0.92rem;
   }
   .acoes {
-    justify-self: center;
+    order: 2;
+    margin-left: 0;
+    width: 100%;
   }
-  .busca input {
-    width: 160px;
+  .busca {
+    order: 3;
+    flex-basis: 100%;
+  }
+  .usuarioLogado,
+  .usuario {
+    margin-left: auto;
   }
 }

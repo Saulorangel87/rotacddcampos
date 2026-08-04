@@ -105,6 +105,7 @@ export default function App() {
                   distritoAtivo={distritoAtivo}
                   onSelecionarDistrito={setDistritoAtivo}
                   onAbrirAjustes={() => selecionarSidebar('ajustes')}
+                  versao={historicoVersao}
                 />
 
                 {painelAjustesAberto && admin && (
@@ -124,7 +125,7 @@ export default function App() {
               </div>
 
               <div id="tabela-ruas">
-                <RuasTable />
+                <RuasTable versao={historicoVersao} />
               </div>
             </>
           )}

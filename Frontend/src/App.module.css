@@ -43,3 +43,10 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 600px) {
+  .principal {
+    padding: 12px;
+    gap: 14px;
+  }
+}

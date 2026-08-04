@@ -18,6 +18,7 @@ type Config struct {
 	DBSSLMode         string
 	JWTSecret         string
 	JWTExpiracaoHoras int
+	CORSOrigins       string
 }
 
 func Load() *Config {
@@ -33,6 +34,8 @@ func Load() *Config {
 		DBSSLMode:         getEnv("DB_SSLMODE", "disable"),
 		JWTSecret:         getEnv("JWT_SECRET", ""),
 		JWTExpiracaoHoras: 8,
+		// Lista separada por vírgula, sem espaço, ex: "https://devsaulo.com.br,http://localhost:5173"
+		CORSOrigins: getEnv("CORS_ORIGINS", "http://localhost:5173"),
 	}
 
 	if cfg.JWTSecret == "" {

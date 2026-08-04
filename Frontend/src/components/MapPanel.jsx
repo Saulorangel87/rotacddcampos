@@ -3,7 +3,7 @@ import LeafletMap from './LeafletMap.jsx'
 import { DISTRITOS } from '../data/distritos.js'
 import styles from './MapPanel.module.css'
 
-export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirAjustes }) {
+export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirAjustes, versao = 0 }) {
   const [mostrarRuasReais, setMostrarRuasReais] = useState(false)
 
   return (
@@ -34,6 +34,7 @@ export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirA
           distritoAtivo={distritoAtivo}
           onSelecionarDistrito={onSelecionarDistrito}
           mostrarRuasReais={mostrarRuasReais}
+          versao={versao}
         />
 
         <ul className={styles.legenda} aria-label="Legenda de distritos">

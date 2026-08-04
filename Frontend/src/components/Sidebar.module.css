@@ -48,7 +48,11 @@
     flex-direction: row;
     width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border-right: none;
     border-bottom: 1px solid var(--cinza-200);
+  }
+  .item {
+    flex-shrink: 0;
   }
 }
