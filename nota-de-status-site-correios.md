@@ -1,67 +1,78 @@
-# Nota de status — Site Correios (CDD Campos dos Goytacazes)
-_Atualizado em 02/08/2026_
+# Notas de Deploy — Guia de Logística CDD Campos
 
-## Visão geral
+_Atualizado em 04/08/2026_
 
-Ferramenta interna da unidade CDD Campos dos Goytacazes: mapa interativo dos 24 distritos postais (601–624), consulta de ruas/CEP, cadastro de colaboradores, e ajuste de rotas (mover rua entre distritos).
+## Status atual
 
-- **Frontend**: React + Vite, mapa real com **React Leaflet + OpenStreetMap**
-- **Backend**: Go (Fiber + GORM), PostgreSQL 17 local (`rotas_db`)
-- **Banco**: 2122 ruas ativas, 49 colaboradores, 24 distritos com polígono real
+Ainda **não publicado** na VPS. Rodando localmente (dev), com toda a
+autenticação, PWA e revisão de dados já concluídos. Caminho de deploy
+(Docker) preparado, faltando execução do primeiro deploy.
 
-## Modelo de acesso combinado (ainda não implementado — é o próximo passo)
+## O que já está pronto pro deploy
 
-- **Visitante / usuário comum (qualquer pessoa, sem login)**: acesso total de **consulta** — mapa, busca de trecho/rota, e **imprimir a listagem de ruas** (ex: carteiro novo confere sua rota e imprime). Nada disso pode ficar atrás de login.
-- **Administrador (login obrigatório)**: único nível com permissão de editar/cadastrar — mover rua de distrito, criar/excluir rua, criar/excluir colaborador, etc. Por enquanto só **2 pessoas**: Saulo e o gerente.
-- Login simples: matrícula + senha (bcrypt), JWT (~8h de validade, carrega id/matrícula/papel), guardado em `localStorage` + header `Authorization`. Trava real sempre no backend (middleware confere o papel antes de qualquer escrita); o front só esconde/mostra botão por UX.
-- Diagrama de arquitetura de acesso já desenhado e aprovado nesta conversa (visitante/consulta → só leitura; admin → leitura + escrita).
+- `Backend/Dockerfile` — build multi-stage, sem segredo gravado na imagem
+- `Frontend/Dockerfile` + `nginx.conf` — build Vite + serve estático,
+  com `sw.js`/`manifest.json`/`index.html` sempre revalidados (nunca em
+  cache agressivo, senão o Service Worker não atualiza sozinho)
+- `docker-compose.yml` (raiz) — junta postgres + api + frontend
+- `.env.example` (raiz) — variáveis que o compose de produção espera
+- `.dockerignore` nos dois lados (não copia `.env`/`node_modules` pro build)
+- CORS configurável por `CORS_ORIGINS` (não fica mais travado em localhost)
+- Rate limit de login por IP (10/min) além do bloqueio por conta (5/15min)
 
-## O que já está funcionando
+## Pendente antes do primeiro deploy
 
-### Backend (Go)
-- Sobe com `go run main.go`, porta 8080, CORS liberado pro front (`localhost:5173`)
-- Tabelas: `ruas`, `colaboradores`, `distritos`, `historico_alteracoes` (+ `carteiros` e `rotas`, criadas à toa em algum momento, vazias, sem uso)
-- `ruas`: CRUD completo (`GET/POST/PUT/DELETE /ruas`), campo `geometria` (GeoJSON do OpenStreetMap) e `ativo` (soft-delete)
-- `colaboradores`: CRUD completo, incluindo `?carteiro=true`, `/aniversariantes-hoje?data=DD/MM`
-- `distritos`: `GET /distritos` e `/distritos/:codigo`, cada um com `geo_json` (polígono real, chave = código tipo "601")
-- `historico_alteracoes`: grava **sozinho**, automaticamente, toda vez que `PUT /ruas/:id` muda o distrito de uma rua de verdade (não precisa chamar endpoint separado)
-- `GET /historico?pagina=&limite=` — paginado
-- `GET /estatisticas/operacao` — números da unidade (distritos, colaboradores, motos/carros/ciclistas/interno/administrativo/OTT/OT/supervisor/gerente), tudo calculado ao vivo do banco, nunca fixo no código
+1. **Escolher os subdomínios definitivos** — sugestão: `rotas.devsaulo.com.br`
+   (frontend) e `rotas-api.devsaulo.com.br` (backend). Ajustar no `.env` da
+   VPS e no Cloudflare/Nginx Proxy Manager.
+2. **Migrar os dados reais** — o Postgres do `docker-compose.yml` sobe
+   vazio. As ~2122 ruas, colaboradores e distritos estão no Postgres local.
+   Precisa `pg_dump` local → `pg_restore`/`psql` na VPS.
+3. **Gerar segredos de produção** — `JWT_SECRET` novo (`openssl rand -hex 32`)
+   e senha forte pro Postgres, diferentes dos usados em dev.
+4. **Configurar Cloudflare Tunnel + Nginx Proxy Manager** apontando os dois
+   subdomínios pras portas do host (`8081` api, `8082` frontend, conforme
+   o compose atual — ajustável).
+5. **Criar o primeiro admin dentro do container** depois do primeiro
+   `docker compose up`:
+```bash
+   sudo docker compose run --rm api go run cmd/seed-admin/main.go -matricula SUA_MATRICULA -senha "SenhaTemporaria123"
+```
+6. Considerar apagar o `.github/workflows/deploy.yml` (workflow antigo pro
+   GitHub Pages, nunca ativado — Pages Source está em "None") já que o
+   deploy real vai ser via VPS/Docker, pra não confundir depois.
 
-### Frontend (React)
-- Header com logo real, 24 distritos com cores únicas, **nenhum distrito selecionado por padrão**
-- **Mapa real (Leaflet + OpenStreetMap)**: os 24 polígonos de distrito vêm do banco (`GET /distritos`), com fallback pro arquivo estático se a API cair. Clique no polígono ou no botão do distrito: destaque forte no contorno + zoom automático + alfinete no centro
-- **Camada opcional "Ruas reais (OSM)"**: liga/desliga por cima do mapa de distritos, mostra o traçado real das ruas do distrito selecionado (dado do OpenStreetMap, casado por nome — ver seção abaixo)
-- **Ajustes de Rotas**: assistente de 3 passos (selecionar ruas → escolher distrito → confirmar), paginado, altura travada na tela
-- **Ruas**: tabela com abas, busca (corrigida: distrito exato / CEP por prefixo / texto livre), paginação 30, exportar CSV, **imprimir** (tabela própria com bordas, mesmo filtro do exportar), **+ Nova rua** e excluir por linha (com modal de confirmação estilizado)
-- **Colaboradores**: modal com busca, **+ Novo** (função por seletor fixo, não texto livre — evita quebrar a contagem de estatísticas), excluir (mesmo modal de confirmação)
-- **🎂 Aniversariante do dia**: ícone no header, popover ao passar o mouse, busca de `/colaboradores/aniversariantes-hoje`
-- **CEP**: busca por nome de rua → mostra CEP/bairro/distrito
-- **Relatórios**: paginado de 10, mostra mudanças da **sessão atual do navegador** (ainda não persistente na tela — o backend já grava no `historico_alteracoes`, só falta o front puxar de lá em vez do estado local)
-- **Operação em números**: faixa embaixo do mapa com todos os totais, atualiza sozinha quando colaborador é criado/excluído (sem precisar F5)
+## Deploy inicial (primeira vez)
 
-## Higienização de dados (concluída)
+```bash
+cd ~/apps
+git clone <url-do-repo> site-correios
+cd site-correios
+cp .env.example .env   # preencher com valores reais de produção
+sudo docker compose up -d --build
+```
 
-- Banco de 2264 → **2122 ruas ativas** (duplicidade removida direto pela interface)
-- Planilha higienizada importada e casada por CEP (script SQL com staging table), sem perder histórico
-- Restaram 11 CEPs com nomes ligeiramente diferentes → **3 resolvidos manualmente** (Pedro Maciel Neto, Estrada Antônio Moacir Batista, Rua Saldanha Marinho), os outros 8 eram legítimos (rua cruzando fronteira de 2 distritos, não é duplicidade)
+## Atualizações de rotina (depois do primeiro deploy)
 
-## Ruas ↔ OpenStreetMap (concluído, com pendência de revisão)
+No PC:
+```bash
+git add .
+git commit -m "..."
+git push
+```
 
-- Script `casar_ruas_osm.py` (Overpass API + fuzzy matching): **1252 de 2115 ruas ativas** casaram com confiança alta (≥85%) e já têm geometria real gravada em `ruas.geometria`
-- **751 ficaram em `revisao_matches_baixos.csv`**, confiança 60-84%, não aplicadas automaticamente — pendente de revisão manual quando houver tempo
-- Detalhe técnico que já foi resolvido, se precisar rodar de novo: Windows + `psycopg2` tem bug de encoding conhecido, script já corrige forçando `PGCLIENTENCODING=LATIN1` antes de conectar
+Na VPS:
+```bash
+cd ~/apps/site-correios
+git pull
+sudo docker compose up -d --build
+```
 
-## Pendências conhecidas
+## Segurança — pontos já revisados
 
-1. **Autenticação** — é o próximo passo combinado, modelo já definido acima, falta implementar (tabela `usuarios`, bcrypt, JWT, middleware, telas de login)
-2. **Relatórios persistente** — trocar o front pra puxar de `GET /historico` em vez do estado local da sessão
-3. **751 ruas** em `revisao_matches_baixos.csv` aguardando revisão manual de nome
-4. **Botão "Por Carteiro"** na tabela de ruas não filtra de verdade (só reordena) — combinamos deixar parado, sem prioridade
-5. Ajuste visual pequeno: texto "Correios" um pouco desalinhado do ícone no selo do header
-6. **Tabelas `carteiros` e `rotas`** existem no banco vazias, sem uso — foram criadas sem querer em algum momento, podem ser ignoradas ou removidas depois
-7. Modelo relacional completo (carteiros→rotas→ruas com FK) da documentação técnica original nunca foi implementado — decidimos reaproveitar `colaboradores` em vez disso, então essa pendência está efetivamente substituída/resolvida por outro caminho
-
-## Próxima ação combinada
-
-Implementar autenticação: tabela `usuarios` (matrícula, senha com hash, papel: admin), login com JWT, middleware no backend travando `POST/PUT/DELETE` pra admin, e no front esconder os botões de editar/cadastrar/excluir de quem não estiver logado como admin. Consulta, busca e impressão continuam livres pra qualquer pessoa, sem login.
+- `.env` nunca foi commitado no histórico do Git (conferido — zero
+  ocorrências em `git log --all --full-history`)
+- Nenhum segredo real (senha, JWT_SECRET) encontrado em nenhum commit
+- Dockerfile do backend não grava mais `.env` dentro da imagem
+- Gap conhecido, aceito por ora: resetar senha de um usuário não invalida
+  token JWT já emitido (fica válido até completar 8h sozinho)

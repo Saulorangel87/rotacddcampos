@@ -1,57 +1,98 @@
-# CDD Campos — Ajustes de Rotas (Frontend React)
+# Guia de Logística — CDD Campos dos Goytacazes
 
-Refatoração do site estático (`Frontend/index.html` etc.) para React + Vite,
-seguindo o mockup da interface "Ajustes de Rotas".
+Ferramenta interna da unidade CDD Campos dos Goytacazes (Correios): mapa
+interativo dos 24 distritos postais (601–624), consulta de ruas/CEP,
+cadastro de colaboradores e ajuste de rotas (mover rua entre distritos).
 
-## Rodando
+## Stack
 
+- **Frontend**: React 19 + Vite, mapa real com React Leaflet + OpenStreetMap
+- **Backend**: Go (Fiber + GORM), PostgreSQL 17 (PostGIS)
+- **Autenticação**: JWT + bcrypt, 3 níveis de acesso (público / colaborador / admin)
+- **PWA**: instalável no celular, com Service Worker (só cacheia estático, nunca dado de API)
+- **Deploy**: Docker Compose (postgres + api + frontend), atrás de Cloudflare Tunnel
+
+## Estrutura
+
+```
+Backend/
+  cmd/              # comandos standalone: seed-admin, criar-usuario
+  config/           # variáveis de ambiente
+  database/         # conexão + migrations (GORM AutoMigrate)
+  handlers/         # camada HTTP (Fiber)
+  services/         # regras de negócio
+  repositories/      # acesso ao banco
+  models/           # structs GORM
+  middlewares/      # auth (JWT), error handler
+  routes/           # todas as rotas e o que é público/autenticado/admin
+
+Frontend/
+  src/
+    api/            # chamadas para o backend (client.js centraliza token + erro)
+    context/        # AuthContext (sessão, login/logout)
+    components/     # UI (Header, Sidebar, MapPanel/LeafletMap, RuasTable, modais...)
+  public/           # favicon, ícones PWA, manifest.json, sw.js
+```
+
+## Modelo de acesso
+
+| Nível | O que faz | Precisa de login? |
+|---|---|---|
+| Público | mapa, busca de rua/CEP, imprimir listagem, aniversariante do dia | Não |
+| Colaborador | + ver colaboradores, relatórios/histórico | Sim (matrícula + senha) |
+| Admin | + criar/editar/excluir ruas e colaboradores, gerenciar usuários | Sim, papel admin |
+
+Login é matrícula + senha (bcrypt), JWT de 8h. Conta trava por 15min após 5
+tentativas erradas (por conta) + limite de 10 tentativas/minuto por IP.
+Senha sempre nasce provisória — troca obrigatória no primeiro login.
+
+## Rodando localmente
+
+**Backend:**
 ```bash
+cd Backend
+cp .env.example .env    # ajuste DB_PASSWORD, gere um JWT_SECRET novo
+go mod tidy
+go run main.go
+```
+Sobe em `localhost:8080`. As tabelas são criadas sozinhas (AutoMigrate).
+
+Criar o primeiro admin:
+```bash
+go run cmd/seed-admin/main.go -matricula SUA_MATRICULA -senha "SenhaTemporaria123"
+```
+
+**Frontend:**
+```bash
+cd Frontend
+cp .env.example .env    # VITE_API_URL=http://localhost:8080
 npm install
-cp .env.example .env    # ajuste VITE_API_URL se a API Go não estiver em localhost:8080
 npm run dev
 ```
+Abre em `localhost:5173`.
 
-Abre em `http://localhost:5173`.
+## Deploy em produção
 
-## Como está organizado
+Ver `NOTAS-DEPLOY.md` para o passo a passo completo, status atual e pendências.
 
-```
-src/
-  api/ruas.js           # chamadas para a API Go (Backend/) — cai para dados de exemplo se a API não responder
-  data/distritos.js      # cores e layout dos 9 distritos (mesmas cores da legenda atual)
-  data/mockRuas.js        # dados de exemplo, no formato do model Rua do backend
-  components/
-    Header.jsx            # topo azul com busca
-    DistrictNav.jsx        # faixa amarela com os botões 601-609
-    Sidebar.jsx            # menu lateral (Mapa Geral, Ajustes de Rotas, Ruas, CEP, Carteiros, Relatórios)
-    DistrictMap.jsx        # mini-mapa esquemático em SVG (não é geográfico, é um diagrama de blocos)
-    MapPanel.jsx           # painel principal com o mapa + legenda
-    AjustesRotasPanel/     # assistente de 3 passos: selecionar ruas → escolher distrito → confirmar
-    RecentChanges.jsx      # log de alterações (hoje só em memória, na sessão)
-    RuasTable.jsx          # tabela com abas (todas/distrito/carteiro/cep), busca e exportar CSV
-  App.jsx                  # junta tudo
-```
+## Funcionalidades
 
-## O que já conversa com o backend Go
+- Mapa real (Leaflet + OpenStreetMap) com os 24 distritos, camada opcional
+  de traçado real das ruas
+- Busca de rua por nome/CEP/distrito, exportar CSV, imprimir
+- Ajustes de Rotas: mover rua entre distritos (admin), com histórico
+  persistido no banco (quem moveu, quando, de onde pra onde)
+- Colaboradores: cadastro, busca, exclusão (admin), aniversariante do dia
+  em destaque (público, sem login)
+- Gerenciar usuários: criar conta, definir papel, resetar senha — tudo
+  pela interface, sem precisar de terminal
+- PWA: instalável no celular, funciona offline pro casco estático
 
-- `GET /ruas` (com filtro por `distrito`) — usado para listar as ruas no painel de ajustes e na tabela.
-- `PUT /ruas/:id` — usado (uma vez por rua) para gravar o novo distrito quando você confirma uma mudança.
+## Pendências conhecidas
 
-## O que ainda é só front (precisa de trabalho no backend depois)
-
-- **Mover em lote com histórico**: hoje `moverRuasEmLote` faz um `PUT` por rua, um de cada vez. O ideal
-  é criar `POST /ruas/mover-lote` no Go que já grave um registro de histórico (rua, distrito de origem,
-  distrito de destino, carteiro, motivo, usuário, data) — daí o "Alterações recentes" deixa de ser só
-  da sessão e passa a vir do banco.
-- **Carteiro responsável**: o model `Rua` no backend não tem esse campo ainda; o mock usa `rota` para
-  simular. Quando adicionar a coluna, é só ajustar `api/ruas.js`.
-- **Login/usuário**: o nome "Saulo" no cabeçalho e no histórico está fixo — sem autenticação ainda.
-- **Mapa geográfico real**: o `DistrictMap` é um diagrama esquemático (SVG), não usa Google Maps/PostGIS.
-  Serve para orientar visualmente qual distrito está em foco; se quiser o mapa real depois, dá pra trocar
-  esse componente por um mapa com Leaflet ou Google Maps JS API usando as coordenadas do PostGIS.
-
-## Próximos passos sugeridos
-
-1. Terminar a importação das ~2 mil ruas no PostgreSQL.
-2. Adicionar `POST /ruas/mover-lote` + tabela `historico_alteracoes` no backend Go.
-3. Trocar o `DistrictMap` esquemático pelo mapa real quando o PostGIS estiver populado.
+- Ajuste visual pequeno: texto "Correios" levemente desalinhado do ícone
+  no selo do header (baixa prioridade)
+- Resetar/bloquear um usuário não invalida um token JWT já emitido (fica
+  válido até expirar sozinho em 8h) — aceitável pro tamanho da equipe hoje
+- Botão "Por Carteiro" na tabela de ruas não filtra de verdade, só reordena
+  (combinado deixar parado, sem prioridade)
