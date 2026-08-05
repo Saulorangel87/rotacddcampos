@@ -35,3 +35,13 @@
   font-weight: 800;
   white-space: nowrap;
 }
+
+@media (max-width: 600px) {
+  .container {
+    height: 320px;
+  }
+  .mapa {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}

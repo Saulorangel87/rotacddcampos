@@ -4,8 +4,8 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px 24px;
-  padding: 12px 28px;
+  gap: 10px 16px;
+  padding: 10px 20px;
   box-shadow: var(--sombra);
 }
 
@@ -14,112 +14,113 @@
   align-items: center;
   background: var(--branco);
   border-radius: 999px;
-  padding: 6px 14px;
+  padding: 5px 12px;
   box-shadow: var(--sombra);
   flex-shrink: 0;
 }
 
 .logo {
-  height: 22px;
+  height: 20px;
   width: auto;
   display: block;
 }
 
 .titulo {
-  font-size: 1.02rem;
+  font-size: 0.95rem;
   font-weight: 600;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-  flex: 1 1 240px;
+  flex: 1 1 200px;
   min-width: 0;
 }
 
 .acoes {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   margin-left: auto;
-  flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .busca {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 999px;
-  padding: 7px 14px;
+  padding: 6px 12px;
   color: var(--branco);
-  flex-shrink: 1;
   min-width: 0;
+  flex: 1 1 140px;
 }
 
-.busca svg {
-  flex-shrink: 0;
-}
+.busca svg { flex-shrink: 0; }
 
 .busca input {
   background: transparent;
   border: none;
   color: var(--branco);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   width: 100%;
   min-width: 0;
 }
 
-.busca input::placeholder {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.busca input:focus {
-  outline: none;
-}
+.busca input::placeholder { color: rgba(255, 255, 255, 0.75); }
+.busca input:focus { outline: none; }
 
 .usuario {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: transparent;
   border: none;
   color: var(--branco);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .usuarioLogado {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   flex-shrink: 0;
+}
+
+.matriculaLabel {
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
 .selo {
   background: var(--cor-amarela);
   color: var(--cor-azul-escuro);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 800;
   text-transform: uppercase;
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: 999px;
+  white-space: nowrap;
 }
 
 .btnSair {
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: var(--branco);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  padding: 5px 10px;
+  padding: 4px 8px;
   border-radius: 999px;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .avatar {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--cor-amarela);
   color: var(--cor-azul-escuro);
@@ -127,29 +128,35 @@
   align-items: center;
   justify-content: center;
   font-weight: 800;
+  font-size: 0.8rem;
   flex-shrink: 0;
 }
 
-@media (max-width: 720px) {
+/* Mobile */
+@media (max-width: 600px) {
   .header {
-    padding: 10px 14px;
+    padding: 8px 12px;
+    gap: 8px;
   }
+
+  /* Linha 1: logo + ações (aniversário + usuário) */
+  .marca { order: 1; }
+  .acoes { order: 2; gap: 6px; }
+
+  /* Linha 2: título (ocupa linha inteira) */
   .titulo {
     order: 3;
     flex-basis: 100%;
-    font-size: 0.92rem;
+    font-size: 0.85rem;
+    text-align: center;
   }
-  .acoes {
-    order: 2;
-    margin-left: 0;
-    width: 100%;
-  }
+
+  /* Linha 3: busca (ocupa linha inteira) */
   .busca {
-    order: 3;
+    order: 4;
     flex-basis: 100%;
   }
-  .usuarioLogado,
-  .usuario {
-    margin-left: auto;
-  }
+
+  /* Esconde o label da matrícula no mobile pra não estourar */
+  .matriculaLabel { display: none; }
 }

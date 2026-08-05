@@ -13,41 +13,43 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
+  padding: 10px 12px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .tituloBox {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .acoesCabecalho {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .btnCamada {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: transparent;
   color: var(--branco);
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: var(--raio-sm);
-  padding: 8px 14px;
+  padding: 6px 10px;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: background 0.12s, border-color 0.12s;
+  white-space: nowrap;
 }
 
-.btnCamada:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
+.btnCamada:hover { background: rgba(255, 255, 255, 0.1); }
 
 .btnCamada[data-ativo='true'] {
   background: var(--cor-amarela);
@@ -58,38 +60,36 @@
 .btnAjustes {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: var(--cor-azul);
   color: var(--branco);
   border: none;
   border-radius: var(--raio-sm);
-  padding: 8px 14px;
+  padding: 6px 10px;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: background 0.12s;
+  white-space: nowrap;
 }
 
-.btnAjustes:hover {
-  background: var(--cor-azul-escuro);
-}
+.btnAjustes:hover { background: var(--cor-azul-escuro); }
 
 .corpo {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 120px;
-  gap: 12px;
-  padding: 16px;
+  grid-template-columns: minmax(0, 1fr) 110px;
+  gap: 10px;
+  padding: 12px;
 }
 
 .legenda {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 6px 10px;
+  gap: 4px 8px;
   background: var(--cinza-100);
   border-radius: var(--raio-sm);
-  padding: 12px;
-  font-size: 0.78rem;
+  padding: 10px;
+  font-size: 0.75rem;
   font-weight: 700;
   align-self: start;
 }
@@ -97,27 +97,37 @@
 .legenda li {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .corLegenda {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .rodape {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--cinza-600);
-  padding: 0 16px 14px;
+  padding: 0 12px 12px;
 }
 
 @media (max-width: 700px) {
+  .cabecalho {
+    padding: 8px 10px;
+  }
+  .tituloBox {
+    font-size: 0.82rem;
+  }
   .corpo {
     grid-template-columns: 1fr;
+    padding: 8px;
+    gap: 8px;
   }
   .legenda {
     grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
   }
 }

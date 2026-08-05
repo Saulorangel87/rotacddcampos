@@ -173,3 +173,28 @@
 .paginaAtual {
   white-space: nowrap;
 }
+
+@media (max-width: 600px) {
+  .barra {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .busca {
+    flex: 1 1 100%;
+  }
+
+  .busca input {
+    width: 100%;
+  }
+
+  .btnExportar {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+
+  .btnNovaRua {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+}

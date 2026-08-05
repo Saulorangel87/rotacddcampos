@@ -1,0 +1,39 @@
+# Guia de Logística — CDD Campos dos Goytacazes
+
+Ferramenta interna de gestão de rotas e distritos postais da unidade CDD
+Campos dos Goytacazes dos Correios (ECT).
+
+## O que este site faz
+
+- Exibe um mapa interativo dos 24 distritos postais (601–624) com polígonos
+  reais baseados no OpenStreetMap
+- Permite consultar ruas por nome, CEP ou distrito
+- Permite imprimir a listagem de ruas de um distrito (útil para carteiros
+  novos conferirem suas rotas)
+- Permite mover ruas entre distritos (ajuste de rotas — requer login admin)
+- Exibe colaboradores da unidade e destaca aniversariantes do dia
+- Mantém histórico persistente de movimentações entre distritos
+
+## Acesso
+
+- Consulta de ruas, mapa e impressão: público, sem necessidade de login
+- Colaboradores e relatórios: requer login (matrícula + senha)
+- Edição e cadastros: requer papel de administrador
+
+## API
+
+A API está disponível em https://cddcampos-api.devsaulo.com.br
+Documentação Swagger: https://cddcampos-api.devsaulo.com.br/swagger/index.html
+
+## Rotas públicas relevantes
+
+- GET /distritos — lista os 24 distritos com polígonos GeoJSON
+- GET /ruas?nome=X&cep=Y&distrito=Z — busca ruas com filtros
+- GET /estatisticas/operacao — totais da unidade (distritos, colaboradores, veículos)
+- GET /colaboradores/aniversariantes-hoje — aniversariantes do dia
+
+## Tecnologias
+
+Frontend: React 19 + Vite, Leaflet (OpenStreetMap)
+Backend: Go (Fiber + GORM), PostgreSQL 17
+Deploy: Docker Compose, Cloudflare Tunnel
