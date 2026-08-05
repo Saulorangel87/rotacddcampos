@@ -22,15 +22,15 @@ Campos dos Goytacazes dos Correios (ECT).
 
 ## API
 
-A API está disponível em https://cddcampos-api.devsaulo.com.br
-Documentação Swagger: https://cddcampos-api.devsaulo.com.br/swagger/index.html
+A API está disponível em [https://cddcampos-api.devsaulo.com.br](https://cddcampos-api.devsaulo.com.br)
+Documentação Swagger: [https://cddcampos-api.devsaulo.com.br/swagger/index.html](https://cddcampos-api.devsaulo.com.br/swagger/index.html)
 
 ## Rotas públicas relevantes
 
-- GET /distritos — lista os 24 distritos com polígonos GeoJSON
-- GET /ruas?nome=X&cep=Y&distrito=Z — busca ruas com filtros
-- GET /estatisticas/operacao — totais da unidade (distritos, colaboradores, veículos)
-- GET /colaboradores/aniversariantes-hoje — aniversariantes do dia
+- [GET /distritos](https://cddcampos-api.devsaulo.com.br/distritos) — lista os 24 distritos com polígonos GeoJSON
+- [GET /ruas?nome=X&cep=Y&distrito=Z](https://cddcampos-api.devsaulo.com.br/ruas?nome=X&cep=Y&distrito=Z) — busca ruas com filtros
+- [GET /estatisticas/operacao](https://cddcampos-api.devsaulo.com.br/estatisticas/operacao) — totais da unidade (distritos, colaboradores, veículos)
+- [GET /colaboradores/aniversariantes-hoje](https://cddcampos-api.devsaulo.com.br/colaboradores/aniversariantes-hoje) — aniversariantes do dia
 
 ## Tecnologias
 
