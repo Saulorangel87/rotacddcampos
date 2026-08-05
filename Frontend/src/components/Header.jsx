@@ -5,11 +5,18 @@ import TrocarSenhaModal from './TrocarSenhaModal.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import styles from './Header.module.css'
 
-export default function Header() {
+export default function Header({ onBuscar }) {
   const { sessao, autenticado, sair } = useAuth()
   const [busca, setBusca] = useState('')
   const [loginAberto, setLoginAberto] = useState(false)
   const [trocarSenhaAberto, setTrocarSenhaAberto] = useState(false)
+
+  function aoSubmeterBusca(e) {
+    e.preventDefault()
+    const termo = busca.trim()
+    if (!termo) return
+    onBuscar?.(termo)
+  }
 
   return (
     <header className={styles.header}>
@@ -29,11 +36,7 @@ export default function Header() {
       <h1 className={styles.titulo}>Guia de Logística: CDD Campos dos Goytacazes</h1>
 
       <div className={styles.acoes}>
-        <label className={styles.busca}>
-          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
-            <circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" strokeWidth="2" />
-            <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
+        <form className={styles.busca} onSubmit={aoSubmeterBusca}>
           <input
             type="search"
             placeholder="Pesquisar rua, CEP ou distrito"
@@ -41,7 +44,13 @@ export default function Header() {
             onChange={(e) => setBusca(e.target.value)}
             aria-label="Pesquisar rua, CEP ou distrito"
           />
-        </label>
+          <button type="submit" className={styles.btnBuscar} aria-label="Buscar">
+            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+              <circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" strokeWidth="2" />
+              <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+        </form>
 
         <AniversarioBadge />
 

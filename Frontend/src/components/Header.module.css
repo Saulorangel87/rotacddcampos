@@ -68,6 +68,17 @@
 .busca input::placeholder { color: rgba(255, 255, 255, 0.75); }
 .busca input:focus { outline: none; }
 
+.btnBuscar {
+  background: transparent;
+  border: none;
+  color: var(--branco);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 2px;
+}
+
 .usuario {
   display: flex;
   align-items: center;

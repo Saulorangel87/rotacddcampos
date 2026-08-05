@@ -93,6 +93,11 @@ a {
 }
 
 @media print {
+  html, body {
+    overflow: visible !important;
+    height: auto !important;
+  }
+
   #root {
     display: none !important;
   }

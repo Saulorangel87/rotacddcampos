@@ -2,7 +2,44 @@
   width: 100%;
   border-radius: var(--raio);
   overflow: hidden;
+  position: relative;
 }
+
+.avisoBusca {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  background: var(--branco);
+  color: var(--cinza-950);
+  border-radius: var(--raio-sm);
+  box-shadow: var(--sombra-flutuante);
+  padding: 8px 10px 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  max-width: calc(100% - 20px);
+}
+
+.avisoBusca[data-erro='true'] {
+  background: #fdecea;
+  color: #b3261e;
+}
+
+.avisoBusca button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: inherit;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.avisoBusca button:hover { opacity: 1; }
 
 .container {
   width: 100%;

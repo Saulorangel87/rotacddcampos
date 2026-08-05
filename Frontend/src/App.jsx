@@ -14,6 +14,8 @@ import ColaboradoresModal from './components/ColaboradoresModal.jsx'
 import UsuariosModal from './components/UsuariosModal.jsx'
 import LoginModal from './components/LoginModal.jsx'
 import TrocarSenhaModal from './components/TrocarSenhaModal.jsx'
+import Footer from './components/Footer.jsx'
+import { listarRuas } from './api/ruas.js'
 import { useAuth } from './context/AuthContext.jsx'
 import styles from './App.module.css'
 
@@ -28,6 +30,24 @@ export default function App() {
   const [statsVersao, setStatsVersao] = useState(0)
   const [historicoVersao, setHistoricoVersao] = useState(0)
   const [alteracoes, setAlteracoes] = useState([])
+  const [resultadoBusca, setResultadoBusca] = useState(null)
+
+  async function executarBusca(termo) {
+    // A busca sempre leva pro Mapa Geral, senão o resultado não teria onde
+    // aparecer (se a pessoa estiver em CEP ou Relatórios, por exemplo).
+    setSecaoAtiva('mapa')
+    setPainelAjustesAberto(false)
+    try {
+      const ruas = await listarRuas({ nome: termo })
+      // Prioriza um match exato de nome (ex: buscou "Alberto Torres" e existe
+      // uma rua com esse nome exato); senão usa o primeiro resultado parcial.
+      const exata = ruas.find((r) => r.nome_rua?.toLowerCase() === termo.toLowerCase())
+      const encontrada = exata || ruas[0] || null
+      setResultadoBusca({ termo, rua: encontrada })
+    } catch {
+      setResultadoBusca({ termo, rua: null })
+    }
+  }
 
   function registrarAlteracao(resultado) {
     setAlteracoes((prev) => [
@@ -87,7 +107,7 @@ export default function App() {
 
   return (
     <div className={styles.app}>
-      <Header />
+      <Header onBuscar={executarBusca} />
       <DistrictNav distritoAtivo={distritoAtivo} onSelecionar={setDistritoAtivo} />
 
       <div className={styles.corpo}>
@@ -106,6 +126,8 @@ export default function App() {
                   onSelecionarDistrito={setDistritoAtivo}
                   onAbrirAjustes={() => selecionarSidebar('ajustes')}
                   versao={historicoVersao}
+                  resultadoBusca={resultadoBusca}
+                  onLimparBusca={() => setResultadoBusca(null)}
                 />
 
                 {painelAjustesAberto && admin && (
@@ -135,6 +157,8 @@ export default function App() {
           {secaoAtiva === 'relatorios' && <RelatorioMovimentacoes versao={historicoVersao} />}
         </main>
       </div>
+
+      <Footer />
 
       {autenticado && (
         <ColaboradoresModal

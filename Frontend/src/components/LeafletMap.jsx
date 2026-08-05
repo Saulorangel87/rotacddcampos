@@ -18,10 +18,18 @@ function criarIconeAlfinete(codigo, cor) {
   })
 }
 
-export default function LeafletMap({ distritoAtivo, onSelecionarDistrito, mostrarRuasReais = false, versao = 0 }) {
+export default function LeafletMap({
+  distritoAtivo,
+  onSelecionarDistrito,
+  mostrarRuasReais = false,
+  versao = 0,
+  resultadoBusca = null,
+  onLimparBusca,
+}) {
   const [dados, setDados] = useState(null)
   const [centroAtivo, setCentroAtivo] = useState(null)
   const [ruasGeoJSON, setRuasGeoJSON] = useState(null)
+  const [ruaDestacada, setRuaDestacada] = useState(null)
   const geoJsonRef = useRef(null)
   const mapRef = useRef(null)
 
@@ -111,8 +119,60 @@ export default function LeafletMap({ distritoAtivo, onSelecionarDistrito, mostra
     }
   }, [distritoAtivo])
 
+  // Resultado de uma busca por rua (Header): destaca a rua encontrada e dá
+  // zoom nela. Se a rua não tiver geometria real cadastrada, cai pro
+  // fallback de selecionar o distrito dela. Se não achou nada, só limpa
+  // qualquer destaque anterior — o aviso "não encontrada" é mostrado
+  // separado, fora do mapa em si.
+  useEffect(() => {
+    if (!resultadoBusca) {
+      setRuaDestacada(null)
+      return
+    }
+
+    const rua = resultadoBusca.rua
+    if (!rua) {
+      setRuaDestacada(null)
+      return
+    }
+
+    if (rua.geometria && mapRef.current) {
+      try {
+        const geometry = JSON.parse(rua.geometria)
+        const feature = { type: 'Feature', properties: { nome: rua.nome_rua }, geometry }
+        const camadaTemporaria = L.geoJSON(feature)
+        const bounds = camadaTemporaria.getBounds()
+        if (bounds.isValid()) {
+          mapRef.current.flyToBounds(bounds, { padding: [60, 60], duration: 0.6 })
+        }
+        setRuaDestacada(feature)
+        return
+      } catch {
+        // geometria inválida — cai pro fallback abaixo
+      }
+    }
+
+    // Sem geometria real: melhor que nada é levar pelo menos até o distrito
+    // onde a rua fica.
+    setRuaDestacada(null)
+    if (rua.distrito) onSelecionarDistrito?.(rua.distrito)
+  }, [resultadoBusca])
+
+  const semResultado = resultadoBusca && !resultadoBusca.rua
+
   return (
     <div className={styles.mapa}>
+      {(ruaDestacada || semResultado) && (
+        <div className={styles.avisoBusca} data-erro={semResultado ? 'true' : 'false'}>
+          <span>
+            {semResultado
+              ? `Rua "${resultadoBusca.termo}" não encontrada.`
+              : `Mostrando: ${ruaDestacada.properties.nome}`}
+          </span>
+          <button type="button" onClick={onLimparBusca} aria-label="Fechar aviso">✕</button>
+        </div>
+      )}
+
       <MapContainer
         center={CENTRO_CAMPOS}
         zoom={13}
@@ -140,6 +200,13 @@ export default function LeafletMap({ distritoAtivo, onSelecionarDistrito, mostra
             onEachFeature={(feature, layer) => {
               if (feature.properties?.nome) layer.bindTooltip(feature.properties.nome, { sticky: true })
             }}
+          />
+        )}
+        {ruaDestacada && (
+          <GeoJSON
+            key={`destaque-${ruaDestacada.properties.nome}`}
+            data={ruaDestacada}
+            style={{ color: '#ff5722', weight: 7, opacity: 0.95 }}
           />
         )}
         {centroAtivo && distritoAtivo && (

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -33,7 +34,7 @@ func Load() *Config {
 		DBName:            getEnv("DB_NAME", "rotas_entrega"),
 		DBSSLMode:         getEnv("DB_SSLMODE", "disable"),
 		JWTSecret:         getEnv("JWT_SECRET", ""),
-		JWTExpiracaoHoras: 8,
+		JWTExpiracaoHoras: getEnvInt("JWT_EXPIRACAO_HORAS", 3),
 		// Lista separada por vírgula, sem espaço, ex: "https://devsaulo.com.br,http://localhost:5173"
 		CORSOrigins: getEnv("CORS_ORIGINS", "http://localhost:5173"),
 	}
@@ -61,4 +62,17 @@ func getEnv(key, defaultValue string) string {
 		slog.Warn("variável de ambiente não definida", "key", key)
 	}
 	return defaultValue
+}
+
+func getEnvInt(key string, defaultValue int) int {
+	valor := os.Getenv(key)
+	if valor == "" {
+		return defaultValue
+	}
+	numero, err := strconv.Atoi(valor)
+	if err != nil {
+		slog.Warn("valor inválido pra variável numérica, usando padrão", "key", key, "valor", valor)
+		return defaultValue
+	}
+	return numero
 }

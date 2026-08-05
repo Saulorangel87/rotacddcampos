@@ -1,0 +1,45 @@
+.rodape {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 20px;
+  background: var(--cinza-950);
+  color: rgba(255, 255, 255, 0.75);
+  font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.icones {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icones a {
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease;
+}
+
+.icones a:hover,
+.icones a:focus-visible {
+  color: var(--branco);
+}
+
+@media (max-width: 480px) {
+  .rodape {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+}
