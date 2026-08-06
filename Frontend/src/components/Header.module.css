@@ -5,30 +5,43 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 10px 16px;
-  padding: 10px 20px;
+  padding: 12px 20px;
+  min-height: 32px;
   box-shadow: var(--sombra);
 }
 
 .marca {
   display: flex;
   align-items: center;
-  background: var(--branco);
-  border-radius: 999px;
-  padding: 5px 12px;
-  box-shadow: var(--sombra);
+  gap: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
   flex-shrink: 0;
 }
 
 .logo {
-  height: 20px;
+  height: clamp(56px, 7.5vh, 140px);
+  max-height: 160px;
   width: auto;
   display: block;
 }
 
+@media (min-width: 1100px) {
+  .header {
+    padding: 10px 18px;
+    min-height: 68px;
+  }
+  .logo {
+    height: clamp(56px, 6.5vh, 150px);
+  }
+}
+
 .titulo {
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   flex: 1 1 200px;
   min-width: 0;
 }
@@ -54,7 +67,9 @@
   flex: 1 1 140px;
 }
 
-.busca svg { flex-shrink: 0; }
+.busca svg {
+  flex-shrink: 0;
+}
 
 .busca input {
   background: transparent;
@@ -65,8 +80,12 @@
   min-width: 0;
 }
 
-.busca input::placeholder { color: rgba(255, 255, 255, 0.75); }
-.busca input:focus { outline: none; }
+.busca input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+.busca input:focus {
+  outline: none;
+}
 
 .btnBuscar {
   background: transparent;
@@ -109,13 +128,14 @@
   background: var(--cor-amarela);
   color: var(--cor-azul-escuro);
   font-size: 0.6rem;
+  vertical-align: middle;
   font-weight: 800;
   text-transform: uppercase;
   padding: 2px 5px;
   border-radius: 999px;
-  white-space: nowrap;
 }
 
+/* removed duplicate .logo block */
 .btnSair {
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -143,31 +163,82 @@
   flex-shrink: 0;
 }
 
+.aniversarioGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* when not authenticated, reduce gap slightly */
+@media (max-width: 600px) {
+  .aniversarioGroup {
+    gap: 4px;
+  }
+}
+
 /* Mobile */
 @media (max-width: 600px) {
   .header {
     padding: 8px 12px;
-    gap: 8px;
+    gap: 4px 12px;
+  }
+  /* Linha 1: logo centered */
+  .marca {
+    order: 1;
+    width: 100%;
+    justify-content: center;
   }
 
-  /* Linha 1: logo + ações (aniversário + usuário) */
-  .marca { order: 1; }
-  .acoes { order: 2; gap: 6px; }
-
-  /* Linha 2: título (ocupa linha inteira) */
+  /* Linha 2: título logo abaixo da logo */
   .titulo {
-    order: 3;
+    order: 2;
     flex-basis: 100%;
-    font-size: 0.85rem;
+    font-size: 1rem;
     text-align: center;
+    margin-top: 0;
   }
 
-  /* Linha 3: busca (ocupa linha inteira) */
-  .busca {
-    order: 4;
-    flex-basis: 100%;
+  /* Linha 3: ações com badge/entrar juntos e busca reduzida */
+  .acoes {
+    order: 3;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .acoes > * {
+    flex: 0 0 auto;
+  }
+
+  .acoes .aniversarioGroup {
+    order: 1;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .acoes .busca {
+    order: 2;
+    flex: 0 0 110px;
+    max-width: 210px;
+    min-width: 200px;
+    margin: 0;
+    padding: 6px 8px;
+    font-size: 0.88rem;
   }
 
   /* Esconde o label da matrícula no mobile pra não estourar */
-  .matriculaLabel { display: none; }
+  .matriculaLabel {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .brandText {
+    font-size: 0.92rem;
+    margin-left: 6px;
+  }
+  /* logo size handled by primary .logo rule */
 }

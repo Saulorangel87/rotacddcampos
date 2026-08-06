@@ -22,6 +22,22 @@
   gap: 12px;
 }
 
+@media (max-width: 720px) {
+  .fundo {
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: min(calc(100vh - 20px), calc(100svh - 20px));
+    overflow-y: auto;
+    border-radius: 18px;
+    box-sizing: border-box;
+  }
+}
+
 .cabecalho {
   display: flex;
   align-items: center;
