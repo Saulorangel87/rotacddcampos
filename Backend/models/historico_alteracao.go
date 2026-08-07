@@ -2,15 +2,18 @@ package models
 
 import "time"
 
-// HistoricoAlteracao registra toda vez que uma rua muda de distrito.
-// Criado automaticamente pelo backend quando o distrito de uma rua muda
-// (ver services/rua_service.go), não precisa ser chamado manualmente pelo front.
+// HistoricoAlteracao registra toda movimentação sensível do sistema — hoje
+// dois tipos: "rua" (rua mudou de distrito) e "folga" (crédito/débito de
+// folga lançado ou excluído). Criado automaticamente pelos services
+// correspondentes, nunca chamado direto pelo front.
 type HistoricoAlteracao struct {
 	ID              uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	RuaID           uint      `gorm:"not null;index" json:"rua_id"`
-	NomeRua         string    `gorm:"type:varchar(255)" json:"nome_rua"`
-	DistritoOrigem  string    `gorm:"type:varchar(10)" json:"distrito_origem"`
-	DistritoDestino string    `gorm:"type:varchar(10)" json:"distrito_destino"`
+	Tipo            string    `gorm:"type:varchar(20);not null;default:'rua'" json:"tipo"`
+	RuaID           uint      `gorm:"index" json:"rua_id,omitempty"`
+	NomeRua         string    `gorm:"type:varchar(255)" json:"nome_rua,omitempty"`
+	DistritoOrigem  string    `gorm:"type:varchar(10)" json:"distrito_origem,omitempty"`
+	DistritoDestino string    `gorm:"type:varchar(10)" json:"distrito_destino,omitempty"`
+	Descricao       string    `gorm:"type:varchar(255)" json:"descricao,omitempty"`
 	Usuario         string    `gorm:"type:varchar(150)" json:"usuario"`
 	CreatedAt       time.Time `json:"data"`
 }

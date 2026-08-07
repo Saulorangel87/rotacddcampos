@@ -1,0 +1,300 @@
+.fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 24, 31, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: 20px;
+}
+
+.modal {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-flutuante);
+  width: 100%;
+  max-width: 440px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+@media (max-width: 720px) {
+  .fundo {
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: min(calc(100vh - 20px), calc(100svh - 20px));
+    border-radius: 18px;
+    box-sizing: border-box;
+  }
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cabecalho h2 {
+  font-size: 1.05rem;
+}
+
+.fechar {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--cinza-600);
+}
+
+.barraBusca {
+  display: flex;
+  gap: 8px;
+}
+
+.campoBusca {
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  flex: 1;
+}
+
+.btnBuscar {
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btnBuscar:disabled {
+  background: var(--cinza-400);
+  cursor: not-allowed;
+}
+
+.mensagemErro {
+  background: #fdecea;
+  color: #b3261e;
+  border-radius: var(--raio-sm);
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.mensagem {
+  text-align: center;
+  color: var(--cinza-400);
+  font-size: 0.85rem;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.saldoCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eaf2fb;
+  border-radius: var(--raio);
+  padding: 14px 16px;
+}
+
+.nome {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--cor-azul-escuro);
+}
+
+.matriculaTexto {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--cinza-600);
+  font-family: var(--fonte-mono);
+  margin-top: 2px;
+}
+
+.saldoValor {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--cor-azul);
+  line-height: 1;
+}
+
+.saldoValor[data-negativo='true'] {
+  color: #b3261e;
+}
+
+.saldoValor span {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--cinza-600);
+  margin-top: 3px;
+}
+
+.btnNovo {
+  align-self: flex-start;
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.extrato {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--cinza-100);
+}
+
+.tipoSelo {
+  flex-shrink: 0;
+  min-width: 34px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.82rem;
+  border-radius: var(--raio-sm);
+  padding: 4px 6px;
+}
+
+.tipoSelo[data-tipo='credito'] {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+.tipoSelo[data-tipo='debito'] {
+  background: #fdecea;
+  color: #b3261e;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.motivo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cinza-950);
+}
+
+.itemMeta {
+  font-size: 0.72rem;
+  color: var(--cinza-600);
+}
+
+.btnExcluir {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px 6px;
+  border-radius: var(--raio-sm);
+  flex-shrink: 0;
+}
+
+.btnExcluir:hover {
+  background: #fdecea;
+}
+
+.btnExcluir:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--cinza-800);
+}
+
+.campo input,
+.campo select {
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 8px 10px;
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.erro {
+  background: #fdecea;
+  color: #b3261e;
+  border-radius: var(--raio-sm);
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.rodapeForm {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.botaoPrimario {
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.botaoPrimario:disabled {
+  background: var(--cinza-400);
+  cursor: not-allowed;
+}
+
+.botaoSecundario {
+  background: var(--branco);
+  color: var(--cinza-800);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}

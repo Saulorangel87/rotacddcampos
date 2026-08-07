@@ -166,6 +166,16 @@ export function IconeBussola(props) {
   );
 }
 
+export function IconeFolgas(props) {
+  return (
+    <Svg {...props}>
+      <path d="M4 5h16v15H4z" />
+      <path d="M4 9.5h16M8 3v4M16 3v4" />
+      <path d="m9 14 2 2 4-4" />
+    </Svg>
+  );
+}
+
 export function IconeEstrela(props) {
   return (
     <Svg {...props}>

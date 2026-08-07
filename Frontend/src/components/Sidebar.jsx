@@ -7,6 +7,7 @@ import {
   IconeColaboradores,
   IconeRelatorios,
   IconeUsuarios,
+  IconeFolgas,
 } from './icons/Icons.jsx'
 
 const ITENS = [
@@ -14,6 +15,7 @@ const ITENS = [
   { id: 'ajustes', label: 'Ajustes de Rotas', Icone: IconeAjustes },
   { id: 'ruas', label: 'Ruas', Icone: IconeRuas },
   { id: 'cep', label: 'CEP', Icone: IconeCep },
+  { id: 'folgas', label: 'Folgas', Icone: IconeFolgas },
   { id: 'colaboradores', label: 'Colaboradores', Icone: IconeColaboradores },
   { id: 'relatorios', label: 'Relatórios', Icone: IconeRelatorios },
   { id: 'usuarios', label: 'Usuários', Icone: IconeUsuarios, soAdmin: true },

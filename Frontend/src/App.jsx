@@ -11,6 +11,7 @@ import OperacaoResumo from "./components/OperacaoResumo.jsx";
 import CepLookup from "./components/CepLookup.jsx";
 import RelatorioMovimentacoes from "./components/RelatorioMovimentacoes.jsx";
 import ColaboradoresModal from "./components/ColaboradoresModal.jsx";
+import FolgasModal from "./components/FolgasModal.jsx";
 import UsuariosModal from "./components/UsuariosModal.jsx";
 import LoginModal from "./components/LoginModal.jsx";
 import TrocarSenhaModal from "./components/TrocarSenhaModal.jsx";
@@ -25,6 +26,7 @@ export default function App() {
   const [secaoAtiva, setSecaoAtiva] = useState("mapa");
   const [painelAjustesAberto, setPainelAjustesAberto] = useState(false);
   const [colaboradoresAberto, setColaboradoresAberto] = useState(false);
+  const [folgasAberto, setFolgasAberto] = useState(false);
   const [usuariosAberto, setUsuariosAberto] = useState(false);
   const [loginAberto, setLoginAberto] = useState(false);
   const [statsVersao, setStatsVersao] = useState(0);
@@ -69,6 +71,12 @@ export default function App() {
         return;
       }
       setPainelAjustesAberto(true);
+      return;
+    }
+    if (id === "folgas") {
+      // Consulta é pública de propósito — qualquer carteiro pode ver o
+      // próprio saldo digitando a matrícula, sem precisar de login.
+      setFolgasAberto(true);
       return;
     }
     if (id === "colaboradores") {
@@ -166,6 +174,12 @@ export default function App() {
       </div>
 
       <Footer />
+
+      <FolgasModal
+        aberto={folgasAberto}
+        onFechar={() => setFolgasAberto(false)}
+        onAlterado={() => setHistoricoVersao((v) => v + 1)}
+      />
 
       {autenticado && (
         <ColaboradoresModal

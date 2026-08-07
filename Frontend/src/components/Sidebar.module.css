@@ -7,6 +7,9 @@
   gap: 18px;
   width: 216px;
   flex-shrink: 0;
+  align-self: flex-start;
+  position: sticky;
+  top: 16px;
 }
 
 .nav {
@@ -54,7 +57,6 @@
 }
 
 .marca {
-  margin-top: auto;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -94,6 +96,7 @@
     gap: 8px;
     border-right: none;
     border-bottom: 1px solid var(--cinza-200);
+    position: static;
   }
 
   .nav {

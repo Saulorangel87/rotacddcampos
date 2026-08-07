@@ -82,6 +82,20 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int) {
 		colaboradores.Delete("/:id", somenteAdmin, colaboradorHandler.DeleteColaborador)
 	}
 
+	// Injeção de dependências - Folgas
+	// Consulta por matrícula é pública (não exige login), mas precisa da
+	// matrícula exata — não lista colaboradores. Lançar/excluir é admin-only.
+	folgaRepo := repositories.NewFolgaRepository(db)
+	folgaService := services.NewFolgaService(folgaRepo, colaboradorRepo, historicoRepo)
+	folgaHandler := handlers.NewFolgaHandler(folgaService)
+
+	folgas := app.Group("/folgas")
+	{
+		folgas.Get("/saldo", folgaHandler.ConsultarSaldo)
+		folgas.Post("/", somenteAdmin, folgaHandler.LancarFolga)
+		folgas.Delete("/:id", somenteAdmin, folgaHandler.ExcluirLancamento)
+	}
+
 	// Injeção de dependências - Distritos (mapa é público)
 	distritoRepo := repositories.NewDistritoRepository(db)
 	distritoService := services.NewDistritoService(distritoRepo)

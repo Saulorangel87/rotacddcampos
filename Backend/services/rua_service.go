@@ -122,6 +122,7 @@ func (s *ruaService) Update(ctx context.Context, id uint, dto UpdateRuaDTO) (*mo
 			usuario = "Não identificado (sem login)"
 		}
 		_ = s.historicoRepo.Create(ctx, &models.HistoricoAlteracao{
+			Tipo:            "rua",
 			RuaID:           rua.ID,
 			NomeRua:         rua.NomeRua,
 			DistritoOrigem:  distritoAntigo,

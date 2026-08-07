@@ -53,15 +53,25 @@ export default function RelatorioMovimentacoes({ versao }) {
       ) : (
         <>
           <ul className={styles.lista}>
-            {dados.itens.map((a) => (
-              <li key={a.id}>
-                <span className={styles.ponto} style={{ background: corDoDistrito(a.distrito_destino) }} aria-hidden="true" />
-                <div className={styles.conteudo}>
-                  <p>{a.nome_rua}: {a.distrito_origem || '—'} → {a.distrito_destino}</p>
-                  <span className={styles.meta}>{formatarData(a.data)} · Por: {a.usuario || '—'}</span>
-                </div>
-              </li>
-            ))}
+            {dados.itens.map((a) =>
+              a.tipo === 'folga' ? (
+                <li key={a.id}>
+                  <span className={styles.ponto} style={{ background: 'var(--cor-azul)' }} aria-hidden="true" />
+                  <div className={styles.conteudo}>
+                    <p>{a.descricao}</p>
+                    <span className={styles.meta}>{formatarData(a.data)} · Por: {a.usuario || '—'}</span>
+                  </div>
+                </li>
+              ) : (
+                <li key={a.id}>
+                  <span className={styles.ponto} style={{ background: corDoDistrito(a.distrito_destino) }} aria-hidden="true" />
+                  <div className={styles.conteudo}>
+                    <p>{a.nome_rua}: {a.distrito_origem || '—'} → {a.distrito_destino}</p>
+                    <span className={styles.meta}>{formatarData(a.data)} · Por: {a.usuario || '—'}</span>
+                  </div>
+                </li>
+              ),
+            )}
           </ul>
 
           <footer className={styles.paginacao}>
