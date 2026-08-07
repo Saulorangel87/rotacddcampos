@@ -1,13 +1,22 @@
 import styles from './Sidebar.module.css'
+import {
+  IconeMapa,
+  IconeAjustes,
+  IconeRuas,
+  IconeCep,
+  IconeColaboradores,
+  IconeRelatorios,
+  IconeUsuarios,
+} from './icons/Icons.jsx'
 
 const ITENS = [
-  { id: 'mapa', label: 'Mapa Geral', icone: '🗺️' },
-  { id: 'ajustes', label: 'Ajustes de Rotas', icone: '🛠️' },
-  { id: 'ruas', label: 'Ruas', icone: '🛣️' },
-  { id: 'cep', label: 'CEP', icone: '📮' },
-  { id: 'colaboradores', label: 'Colaboradores', icone: '👤' },
-  { id: 'relatorios', label: 'Relatórios', icone: '📊' },
-  { id: 'usuarios', label: 'Usuários', icone: '🔑', soAdmin: true },
+  { id: 'mapa', label: 'Mapa Geral', Icone: IconeMapa },
+  { id: 'ajustes', label: 'Ajustes de Rotas', Icone: IconeAjustes },
+  { id: 'ruas', label: 'Ruas', Icone: IconeRuas },
+  { id: 'cep', label: 'CEP', Icone: IconeCep },
+  { id: 'colaboradores', label: 'Colaboradores', Icone: IconeColaboradores },
+  { id: 'relatorios', label: 'Relatórios', Icone: IconeRelatorios },
+  { id: 'usuarios', label: 'Usuários', Icone: IconeUsuarios, soAdmin: true },
 ]
 
 export default function Sidebar({ ativo, onSelecionar, admin }) {
@@ -15,18 +24,35 @@ export default function Sidebar({ ativo, onSelecionar, admin }) {
 
   return (
     <aside className={styles.sidebar} aria-label="Navegação principal">
-      {itensVisiveis.map((item) => (
-        <button
-          key={item.id}
-          type="button"
-          className={styles.item}
-          data-ativo={item.id === ativo}
-          onClick={() => onSelecionar(item.id)}
-        >
-          <span className={styles.icone} aria-hidden="true">{item.icone}</span>
-          <span className={styles.label}>{item.label}</span>
-        </button>
-      ))}
+      <nav className={styles.nav}>
+        {itensVisiveis.map(({ id, label, Icone }) => (
+          <button
+            key={id}
+            type="button"
+            className={styles.item}
+            data-ativo={id === ativo}
+            onClick={() => onSelecionar(id)}
+          >
+            <span className={styles.icone} aria-hidden="true">
+              <Icone size={19} />
+            </span>
+            <span className={styles.label}>{label}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div className={styles.marca}>
+        <img
+          className={styles.marcaLogo}
+          src="/images/logocorreios.png?v=2"
+          alt=""
+          aria-hidden="true"
+        />
+        <div>
+          <strong>Correios</strong>
+          <span>Entrega que conecta o Brasil</span>
+        </div>
+      </div>
     </aside>
   )
 }

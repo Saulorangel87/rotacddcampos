@@ -1,5 +1,18 @@
 import { useEffect, useState } from 'react'
 import styles from './OperacaoResumo.module.css'
+import {
+  IconeMapa,
+  IconeColaboradores,
+  IconeMoto,
+  IconeCarro,
+  IconeBike,
+  IconePredio,
+  IconePasta,
+  IconeCaixa,
+  IconeEnvelope,
+  IconeBussola,
+  IconeEstrela,
+} from './icons/Icons.jsx'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
@@ -20,27 +33,29 @@ export default function OperacaoResumo({ versao = 0 }) {
   if (erro || !dados) return null
 
   const itens = [
-    { icone: '🗺️', valor: dados.total_distritos, label: 'Distritos' },
-    { icone: '👥', valor: dados.total_colaboradores, label: 'Colaboradores' },
-    { icone: '🏍️', valor: dados.motorizados_moto, label: 'Motos' },
-    { icone: '🚐', valor: dados.motorizados_carro, label: 'Carros' },
-    { icone: '🚲', valor: dados.ciclistas, label: 'Ciclistas' },
-    { icone: '🏢', valor: dados.internos, label: 'Interno' },
-    { icone: '🗂️', valor: dados.administrativos, label: 'Administrativo' },
-    { icone: '📦', valor: dados.ott, label: 'OTT' },
-    { icone: '✉️', valor: dados.ot, label: 'OT' },
-    { icone: '🧭', valor: dados.supervisores, label: 'Supervisor' },
-    { icone: '⭐', valor: dados.gerentes, label: 'Gerente' },
+    { Icone: IconeMapa, valor: dados.total_distritos, label: 'Distritos' },
+    { Icone: IconeColaboradores, valor: dados.total_colaboradores, label: 'Colaboradores' },
+    { Icone: IconeMoto, valor: dados.motorizados_moto, label: 'Motos' },
+    { Icone: IconeCarro, valor: dados.motorizados_carro, label: 'Carros' },
+    { Icone: IconeBike, valor: dados.ciclistas, label: 'Ciclistas' },
+    { Icone: IconePredio, valor: dados.internos, label: 'Interno' },
+    { Icone: IconePasta, valor: dados.administrativos, label: 'Administrativo' },
+    { Icone: IconeCaixa, valor: dados.ott, label: 'OTT' },
+    { Icone: IconeEnvelope, valor: dados.ot, label: 'OT' },
+    { Icone: IconeBussola, valor: dados.supervisores, label: 'Supervisor' },
+    { Icone: IconeEstrela, valor: dados.gerentes, label: 'Gerente' },
   ]
 
   return (
     <section className={styles.faixa} aria-label="Operação da unidade em números">
-      {itens.map((item) => (
-        <div key={item.label} className={styles.item}>
-          <span className={styles.icone} aria-hidden="true">{item.icone}</span>
-          <div>
-            <strong className={styles.valor}>{item.valor}</strong>
-            <span className={styles.label}>{item.label}</span>
+      {itens.map(({ Icone, valor, label }) => (
+        <div key={label} className={styles.item}>
+          <span className={styles.icone} aria-hidden="true">
+            <Icone size={18} />
+          </span>
+          <div className={styles.texto}>
+            <strong className={styles.valor}>{valor}</strong>
+            <span className={styles.label}>{label}</span>
           </div>
         </div>
       ))}

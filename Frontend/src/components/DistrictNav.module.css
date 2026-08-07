@@ -7,13 +7,6 @@
   flex-wrap: wrap;
 }
 
-@media (max-width: 720px) {
-  .nav {
-    padding: 10px 14px;
-    gap: 10px;
-  }
-}
-
 .rotulo {
   font-weight: 700;
   font-size: 0.8rem;
@@ -22,6 +15,7 @@
   padding: 6px 12px;
   border-radius: 999px;
   box-shadow: var(--sombra);
+  flex-shrink: 0;
 }
 
 .lista {
@@ -65,4 +59,27 @@
   border-color: var(--cor-azul-escuro);
   background: var(--cor-azul-escuro);
   color: var(--branco);
+}
+
+/* Mobile: em vez de quebrar os 24 distritos em várias linhas espremidas,
+   vira uma faixa horizontal com rolagem — mesma solução já usada no Sidebar
+   mobile, fica mais previsível de usar com o polegar. */
+@media (max-width: 720px) {
+  .nav {
+    padding: 10px 14px;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .lista {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+
+  .item {
+    flex-shrink: 0;
+  }
 }

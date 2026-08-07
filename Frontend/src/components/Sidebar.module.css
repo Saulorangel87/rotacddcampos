@@ -1,58 +1,122 @@
 .sidebar {
   background: var(--branco);
   border-right: 1px solid var(--cinza-200);
-  padding: 16px 8px;
+  padding: 18px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  width: 92px;
+  gap: 18px;
+  width: 216px;
+  flex-shrink: 0;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
   background: transparent;
   border: none;
   border-radius: var(--raio-sm);
-  padding: 10px 4px;
+  padding: 10px 12px;
   cursor: pointer;
   color: var(--cinza-600);
-  transition: background 0.12s, color 0.12s;
+  font-weight: 600;
+  text-align: left;
+  transition: background 0.14s ease, color 0.14s ease;
 }
 
 .item:hover {
   background: var(--cinza-100);
+  color: var(--cinza-950);
 }
 
 .item[data-ativo='true'] {
   background: #eaf2fb;
   color: var(--cor-azul);
-  outline: 2px solid var(--cor-azul);
 }
 
 .icone {
-  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: inherit;
 }
 
 .label {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.15;
+  font-size: 0.86rem;
+  line-height: 1.2;
+}
+
+.marca {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--cor-azul-escuro);
+  color: var(--branco);
+  border-radius: var(--raio);
+  padding: 14px;
+}
+
+.marcaLogo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+}
+
+.marca strong {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.marca span {
+  display: block;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.25;
+  margin-top: 2px;
 }
 
 @media (max-width: 900px) {
   .sidebar {
     flex-direction: row;
     width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    padding: 8px;
+    gap: 8px;
     border-right: none;
     border-bottom: 1px solid var(--cinza-200);
   }
+
+  .nav {
+    flex-direction: row;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    gap: 4px;
+  }
+
   .item {
     flex-shrink: 0;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 10px;
+  }
+
+  .label {
+    font-size: 0.66rem;
+    text-align: center;
+  }
+
+  .marca {
+    display: none;
   }
 }
