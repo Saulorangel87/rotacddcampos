@@ -4,7 +4,7 @@
 // sempre vão direto pra rede, sem passar pelo cache. Isso evita tanto servir
 // dado desatualizado quanto guardar informação sensível no dispositivo.
 
-const CACHE_NAME = "cdd-campos-v1";
+const CACHE_NAME = "cdd-campos-v2";
 
 const CAMINHOS_API = [
   "/auth",
@@ -21,7 +21,9 @@ function ehRequisicaoDeApi(url) {
 }
 
 function ehAssetEstatico(url) {
-  return /\.(js|css|png|jpg|jpeg|svg|webp|ico|woff2?|json)$/i.test(url.pathname);
+  return /\.(js|css|png|jpg|jpeg|svg|webp|ico|woff2?|json)$/i.test(
+    url.pathname,
+  );
 }
 
 self.addEventListener("install", (evento) => {
@@ -30,9 +32,13 @@ self.addEventListener("install", (evento) => {
 
 self.addEventListener("activate", (evento) => {
   evento.waitUntil(
-    caches.keys().then((chaves) =>
-      Promise.all(chaves.filter((c) => c !== CACHE_NAME).map((c) => caches.delete(c)))
-    )
+    caches
+      .keys()
+      .then((chaves) =>
+        Promise.all(
+          chaves.filter((c) => c !== CACHE_NAME).map((c) => caches.delete(c)),
+        ),
+      ),
   );
   self.clients.claim();
 });
@@ -57,10 +63,12 @@ self.addEventListener("fetch", (evento) => {
     evento.respondWith(
       fetch(req)
         .then((resposta) => {
-          caches.open(CACHE_NAME).then((cache) => cache.put("/index.html", resposta.clone()));
+          caches
+            .open(CACHE_NAME)
+            .then((cache) => cache.put("/index.html", resposta.clone()));
           return resposta;
         })
-        .catch(() => caches.match("/index.html"))
+        .catch(() => caches.match("/index.html")),
     );
     return;
   }
@@ -73,13 +81,15 @@ self.addEventListener("fetch", (evento) => {
         const buscaRede = fetch(req)
           .then((resposta) => {
             if (resposta.ok) {
-              caches.open(CACHE_NAME).then((cache) => cache.put(req, resposta.clone()));
+              caches
+                .open(CACHE_NAME)
+                .then((cache) => cache.put(req, resposta.clone()));
             }
             return resposta;
           })
           .catch(() => cacheado);
         return cacheado || buscaRede;
-      })
+      }),
     );
   }
 });

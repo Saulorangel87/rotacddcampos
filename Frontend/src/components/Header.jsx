@@ -23,7 +23,7 @@ export default function Header({ onBuscar }) {
       <div className={styles.marca}>
         <img
           className={styles.logo}
-          src="/images/logocorreios.png"
+          src="/images/logocorreios.png?v=2"
           alt="Correios"
           height="32"
         />
