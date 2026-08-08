@@ -43,8 +43,8 @@ export default function AniversarioBadge() {
                 <li key={c.id}>
                   <span className={styles.icone} aria-hidden="true">🎉</span>
                   <div>
-                    <strong>Parabéns {c.nome}, a equipe Cdd Campos te deseja um feliz aniversário!</strong>
-                    {c.funcao && <span className={styles.funcao}>{c.funcao}</span>}
+                    <strong>Parabéns, {c.nome}! A equipe CDD Campos te deseja um feliz aniversário!</strong>
+                    {/* {c.funcao && <span className={styles.funcao}>{c.funcao}</span>} */}
                   </div>
                 </li>
               ))}
