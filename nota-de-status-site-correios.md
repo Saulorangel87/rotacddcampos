@@ -1,58 +1,64 @@
 # Notas de Deploy — Guia de Logística CDD Campos
 
-_Atualizado em 04/08/2026_
+_Atualizado em 08/08/2026_
 
 ## Status atual
 
-Ainda **não publicado** na VPS. Rodando localmente (dev), com toda a
-autenticação, PWA e revisão de dados já concluídos. Caminho de deploy
-(Docker) preparado, faltando execução do primeiro deploy.
+**No ar em produção**, na VPS (Oracle Cloud), via Docker Compose.
+Domínios: `cddcampos.devsaulo.com.br` (frontend) e
+`cddcampos-api.devsaulo.com.br` (backend).
 
-## O que já está pronto pro deploy
+## O que foi feito desde a última nota (04/08)
 
-- `Backend/Dockerfile` — build multi-stage, sem segredo gravado na imagem
-- `Frontend/Dockerfile` + `nginx.conf` — build Vite + serve estático,
-  com `sw.js`/`manifest.json`/`index.html` sempre revalidados (nunca em
-  cache agressivo, senão o Service Worker não atualiza sozinho)
-- `docker-compose.yml` (raiz) — junta postgres + api + frontend
-- `.env.example` (raiz) — variáveis que o compose de produção espera
-- `.dockerignore` nos dois lados (não copia `.env`/`node_modules` pro build)
-- CORS configurável por `CORS_ORIGINS` (não fica mais travado em localhost)
-- Rate limit de login por IP (10/min) além do bloqueio por conta (5/15min)
+- **Primeiro deploy concluído**: dados reais migrados (pg_dump local →
+  restore na VPS, corrigido problema de versão do Postgres — igualado
+  pra `postgres:17-alpine` nos dois lados)
+- **Repaginação visual completa**: ícones de linha (SVG próprio, sem lib
+  nova) substituindo emoji no Sidebar e nos cards de estatística, cards
+  de "Operação em números" com badge de ícone, Sidebar com cartão de
+  marca fixo logo abaixo do menu (não mais grudado no fundo da página —
+  bug corrigido), pills de distrito voltaram ao estilo original a pedido
+- **Nova funcionalidade: Consulta de Folgas**
+  - Modelo de livro-razão (`folgas_lancamentos`): créditos e débitos
+    justificados, nunca sobrescritos
+  - Consulta pública por matrícula exata (`GET /folgas/saldo`) — não
+    lista ninguém, precisa digitar a matrícula certa
+  - Lançar/excluir restrito a admin, sempre com auditoria (matrícula de
+    quem fez vem do token, nunca do que o front manda)
+  - Toda movimentação de folga também entra em `historico_alteracoes`
+    (`tipo: "folga"`) e aparece junto com as movimentações de rua na aba
+    Relatórios
+  - **Importação do saldo real concluída**: 61 lançamentos, 35
+    colaboradores, 121 folgas em aberto, importados a partir da
+    planilha oficial (`cmd/importar-folgas-iniciais`) — conferido
+    matrícula por matrícula, 100% confiável
+- **Bug de fuso horário corrigido**: aniversariante aparecia com ~3h de
+  antecedência (container Docker roda em UTC, Brasil é UTC-3). Fix:
+  `time.FixedZone("America/Sao_Paulo", -3*60*60)` em vez de
+  `time.Now()` puro, sem precisar instalar `tzdata` na imagem (Brasil
+  não tem mais horário de verão desde 2019)
+- `Backend/Dockerfile` agora compila dois binários (`main` +
+  `importar-folgas-iniciais`), reutilizável pra futuros comandos
+  `cmd/` sem precisar de outro Dockerfile
 
-## Pendente antes do primeiro deploy
+## Pendências conhecidas
 
-1. **Escolher os subdomínios definitivos** — sugestão: `rotas.devsaulo.com.br`
-   (frontend) e `rotas-api.devsaulo.com.br` (backend). Ajustar no `.env` da
-   VPS e no Cloudflare/Nginx Proxy Manager.
-2. **Migrar os dados reais** — o Postgres do `docker-compose.yml` sobe
-   vazio. As ~2122 ruas, colaboradores e distritos estão no Postgres local.
-   Precisa `pg_dump` local → `pg_restore`/`psql` na VPS.
-3. **Gerar segredos de produção** — `JWT_SECRET` novo (`openssl rand -hex 32`)
-   e senha forte pro Postgres, diferentes dos usados em dev.
-4. **Configurar Cloudflare Tunnel + Nginx Proxy Manager** apontando os dois
-   subdomínios pras portas do host (`8081` api, `8082` frontend, conforme
-   o compose atual — ajustável).
-5. **Criar o primeiro admin dentro do container** depois do primeiro
-   `docker compose up`:
-```bash
-   sudo docker compose run --rm api go run cmd/seed-admin/main.go -matricula SUA_MATRICULA -senha "SenhaTemporaria123"
-```
-6. Considerar apagar o `.github/workflows/deploy.yml` (workflow antigo pro
-   GitHub Pages, nunca ativado — Pages Source está em "None") já que o
-   deploy real vai ser via VPS/Docker, pra não confundir depois.
+- **Revisão do restante das ruas** — próximo passo combinado agora.
+  Contexto: das ~2115 ruas ativas, 1252 já casaram com geometria real
+  do OpenStreetMap (alta confiança) e 573 grupos de baixa confiança já
+  foram revisados manualmente (306 aceitas). Ainda sobra revisar o
+  resto que ficou de fora dessas duas levas.
+- Alguns ajustes pontuais de digitação identificados na planilha de
+  folgas durante a conferência final (nada estrutural, só correções
+  pontuais de matrícula/valor — a se resolver direto pelo painel admin
+  quando aparecer)
+- Considerar apagar `.github/workflows/deploy.yml` (workflow antigo pro
+  GitHub Pages, nunca ativado — o deploy real é VPS/Docker)
+- Gap de segurança aceito por ora: resetar senha de um usuário não
+  invalida token JWT já emitido (fica válido até expirar sozinho, hoje
+  configurado pra 3h)
 
-## Deploy inicial (primeira vez)
-
-```bash
-cd ~/apps
-git clone <url-do-repo> site-correios
-cd site-correios
-cp .env.example .env   # preencher com valores reais de produção
-sudo docker compose up -d --build
-```
-
-## Atualizações de rotina (depois do primeiro deploy)
+## Atualizações de rotina
 
 No PC:
 ```bash
@@ -68,11 +74,14 @@ git pull
 sudo docker compose up -d --build
 ```
 
-## Segurança — pontos já revisados
+## Comandos únicos disponíveis (`Backend/cmd/`)
 
-- `.env` nunca foi commitado no histórico do Git (conferido — zero
-  ocorrências em `git log --all --full-history`)
-- Nenhum segredo real (senha, JWT_SECRET) encontrado em nenhum commit
-- Dockerfile do backend não grava mais `.env` dentro da imagem
-- Gap conhecido, aceito por ora: resetar senha de um usuário não invalida
-  token JWT já emitido (fica válido até completar 8h sozinho)
+- `seed-admin` — cria o primeiro usuário admin
+- `criar-usuario` — cria usuário adicional
+- `importar-folgas-iniciais [-confirmar]` — importação de saldo (já
+  rodado; idempotente, seguro rodar de novo sem duplicar)
+
+Todos rodam dentro do container já buildado:
+```bash
+docker compose exec api ./nome-do-binario
+```
