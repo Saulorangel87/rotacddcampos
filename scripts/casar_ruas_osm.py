@@ -173,12 +173,13 @@ def main():
     conexao.commit()
     print(f"{aplicados} ruas atualizadas com geometria do OpenStreetMap.")
 
-    with open("revisao_matches_baixos.csv", "w", encoding="utf-8") as arquivo:
+    caminho_csv = os.path.join(os.path.dirname(os.path.abspath(__file__)), "revisao_matches_baixos.csv")
+    with open(caminho_csv, "w", encoding="utf-8") as arquivo:
         arquivo.write("rua_id;nome_banco;nome_osm_sugerido;confianca\n")
         for rua_id, nome_rua, nome_osm, score in matches_baixos:
             arquivo.write(f"{rua_id};{nome_rua};{nome_osm};{score:.2f}\n")
 
-    print("Lista de revisão salva em revisao_matches_baixos.csv (mesma pasta do script).")
+    print(f"Lista de revisão salva em {caminho_csv}")
 
     cursor.close()
     conexao.close()

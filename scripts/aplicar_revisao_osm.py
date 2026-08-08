@@ -32,7 +32,7 @@ DB_USER = os.environ.get("DB_USER", "postgres")
 DB_PASSWORD = os.environ["DB_PASSWORD"]
 # ────────────────────────────────────────────────────────────────────────
 
-ARQUIVO_DECISOES = "decisoes_revisao_osm.json"
+ARQUIVO_DECISOES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "decisoes_revisao_osm.json")
 
 OVERPASS_URLS = [
     "https://overpass-api.de/api/interpreter",
