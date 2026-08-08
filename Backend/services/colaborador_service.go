@@ -42,6 +42,7 @@ func (s *colaboradorService) List(ctx context.Context, nome, matricula, carteiro
 		"matricula": strings.TrimSpace(matricula),
 		"carteiro":  strings.TrimSpace(carteiro),
 	}
+
 	return s.repo.FindAll(ctx, filters)
 }
 
@@ -50,7 +51,13 @@ func (s *colaboradorService) GetByID(ctx context.Context, id uint) (*models.Cola
 }
 
 func (s *colaboradorService) AniversariantesDeHoje(ctx context.Context) ([]models.Colaborador, error) {
-	hoje := time.Now()
+	loc, err := time.LoadLocation("America/Sao_Paulo")
+	if err != nil {
+		return nil, err
+	}
+
+	hoje := time.Now().In(loc)
+
 	return s.repo.FindAniversariantes(ctx, int(hoje.Month()), hoje.Day())
 }
 
@@ -61,6 +68,7 @@ func (s *colaboradorService) AniversariantesDaData(ctx context.Context, mes, dia
 func (s *colaboradorService) Create(ctx context.Context, dto NovoColaboradorDTO) (*models.Colaborador, error) {
 	nome := strings.TrimSpace(dto.Nome)
 	matricula := strings.TrimSpace(dto.Matricula)
+
 	if nome == "" || matricula == "" {
 		return nil, errors.New("nome e matrícula são obrigatórios")
 	}
@@ -77,6 +85,7 @@ func (s *colaboradorService) Create(ctx context.Context, dto NovoColaboradorDTO)
 		if err != nil {
 			return nil, errors.New("data de admissão inválida, use DD/MM/AAAA")
 		}
+
 		colaborador.DataAdmissao = &data
 	}
 
@@ -85,12 +94,14 @@ func (s *colaboradorService) Create(ctx context.Context, dto NovoColaboradorDTO)
 		if err != nil {
 			return nil, errors.New("data de nascimento inválida, use DD/MM/AAAA")
 		}
+
 		colaborador.DataNascimento = &data
 	}
 
 	if err := s.repo.Create(ctx, colaborador); err != nil {
 		return nil, err
 	}
+
 	return colaborador, nil
 }
 
