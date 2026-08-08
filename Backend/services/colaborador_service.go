@@ -42,7 +42,6 @@ func (s *colaboradorService) List(ctx context.Context, nome, matricula, carteiro
 		"matricula": strings.TrimSpace(matricula),
 		"carteiro":  strings.TrimSpace(carteiro),
 	}
-
 	return s.repo.FindAll(ctx, filters)
 }
 
@@ -50,14 +49,17 @@ func (s *colaboradorService) GetByID(ctx context.Context, id uint) (*models.Cola
 	return s.repo.FindByID(ctx, id)
 }
 
+// fusoBrasil é fixo em -03:00: o Brasil aboliu o horário de verão em 2019,
+// então não existe mais variação sazonal a considerar. Usar um FixedZone em
+// vez de time.LoadLocation("America/Sao_Paulo") evita depender do pacote
+// tzdata estar instalado na imagem Docker (Alpine não vem com ele por
+// padrão) — sem isso, o container roda em UTC e um colaborador que faz
+// aniversário aparecia "adiantado" a partir das 21h (UTC-3 vira o dia
+// seguinte em UTC três horas antes da meia-noite local).
+var fusoBrasil = time.FixedZone("America/Sao_Paulo", -3*60*60)
+
 func (s *colaboradorService) AniversariantesDeHoje(ctx context.Context) ([]models.Colaborador, error) {
-	loc, err := time.LoadLocation("America/Sao_Paulo")
-	if err != nil {
-		return nil, err
-	}
-
-	hoje := time.Now().In(loc)
-
+	hoje := time.Now().In(fusoBrasil)
 	return s.repo.FindAniversariantes(ctx, int(hoje.Month()), hoje.Day())
 }
 
@@ -68,7 +70,6 @@ func (s *colaboradorService) AniversariantesDaData(ctx context.Context, mes, dia
 func (s *colaboradorService) Create(ctx context.Context, dto NovoColaboradorDTO) (*models.Colaborador, error) {
 	nome := strings.TrimSpace(dto.Nome)
 	matricula := strings.TrimSpace(dto.Matricula)
-
 	if nome == "" || matricula == "" {
 		return nil, errors.New("nome e matrícula são obrigatórios")
 	}
@@ -85,7 +86,6 @@ func (s *colaboradorService) Create(ctx context.Context, dto NovoColaboradorDTO)
 		if err != nil {
 			return nil, errors.New("data de admissão inválida, use DD/MM/AAAA")
 		}
-
 		colaborador.DataAdmissao = &data
 	}
 
@@ -94,14 +94,12 @@ func (s *colaboradorService) Create(ctx context.Context, dto NovoColaboradorDTO)
 		if err != nil {
 			return nil, errors.New("data de nascimento inválida, use DD/MM/AAAA")
 		}
-
 		colaborador.DataNascimento = &data
 	}
 
 	if err := s.repo.Create(ctx, colaborador); err != nil {
 		return nil, err
 	}
-
 	return colaborador, nil
 }
 
