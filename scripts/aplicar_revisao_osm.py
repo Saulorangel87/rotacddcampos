@@ -129,13 +129,11 @@ def main():
 
     ruas_osm = buscar_ruas_osm()
 
+    # Sem client_encoding manual — mesmo motivo do casar_ruas_osm.py (causava
+    # acentos dobrados nos nomes gravados no banco).
     conexao = psycopg2.connect(
         host=DB_HOST, port=DB_PORT, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD,
-        client_encoding="latin1",
     )
-    cursor_setup = conexao.cursor()
-    cursor_setup.execute("SET client_encoding TO 'UTF8';")
-    cursor_setup.close()
     cursor = conexao.cursor()
 
     aplicados = 0

@@ -1,0 +1,2227 @@
+[
+  {
+    "rua_id": 411,
+    "nome_osm": "ANTONIO RIBEIRO DE ALVARENGA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 576,
+    "nome_osm": "TAURINO SALES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 377,
+    "nome_osm": "JOAQUIM MACEDO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1562,
+    "nome_osm": "DOUTOR SILVIO BASTOS TAVARES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 966,
+    "nome_osm": "DOUTOR WALTER SALLES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 880,
+    "nome_osm": "FRANCISCO DE ASSIS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2179,
+    "nome_osm": "DOUTOR EDGARD ALVARENGA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 837,
+    "nome_osm": "FERREIRA DE ARAUJO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 737,
+    "nome_osm": "PROFESSORA JULIA CODECO DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1577,
+    "nome_osm": "VINTE E QUATRO DE OUTUBRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1702,
+    "nome_osm": "VINTE E QUATRO DE NOVEMBRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1518,
+    "nome_osm": "TEIXEIRA FREITAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 392,
+    "nome_osm": "ANTONIO SOARES BATISTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 633,
+    "nome_osm": "DO ARACA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1108,
+    "nome_osm": "MANOEL ANTONIO VIEIRA",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1018,
+    "nome_osm": "VALDEMIR MACHADO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1812,
+    "nome_osm": "SAPUCAI",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1822,
+    "nome_osm": "SAPUCAI",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1573,
+    "nome_osm": "VINTE E CINCO DE MAIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1587,
+    "nome_osm": "VINTE E CINCO DE MAIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1865,
+    "nome_osm": "MARIO BARRETO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1532,
+    "nome_osm": "DOUTOR CARLOS RIBEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1556,
+    "nome_osm": "DOUTOR CARLOS RIBEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 587,
+    "nome_osm": "MANOEL CHAVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 166,
+    "nome_osm": "AMARO RIBEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 673,
+    "nome_osm": "CAPITANIA DO ESPIRITO SANTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 640,
+    "nome_osm": "DE ALVARENGA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2002,
+    "nome_osm": "EVALDO RABELO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2011,
+    "nome_osm": "FRANCISCO BORGES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 569,
+    "nome_osm": "IDALINA OLIVEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 145,
+    "nome_osm": "OSCAR MACHADO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1054,
+    "nome_osm": "CRISTINA DE CARVALHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1268,
+    "nome_osm": "MANOEL BARBOSA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 601,
+    "nome_osm": "ARY PEREIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 826,
+    "nome_osm": "CASTELO BRANCO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2150,
+    "nome_osm": "CARLOS LUZ",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1189,
+    "nome_osm": "MOREIRA DA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 599,
+    "nome_osm": "JOA MARIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1572,
+    "nome_osm": "JOAO DE CARVALHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2070,
+    "nome_osm": "MIGUEL LAURINDO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 585,
+    "nome_osm": "MARIA DO CARMO BARRETO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 974,
+    "nome_osm": "PRACA MELVIN JONES",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2200,
+    "nome_osm": "ALMEIDA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 776,
+    "nome_osm": "TRES DE MAIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 775,
+    "nome_osm": "TRES DE MAIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1211,
+    "nome_osm": "ARMANDO PECANHA",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1436,
+    "nome_osm": "JOAO DA HORA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1089,
+    "nome_osm": "MANOEL ROSA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1516,
+    "nome_osm": "MANOEL ROSA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1718,
+    "nome_osm": "MANOEL FERREIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1965,
+    "nome_osm": "DURVAL DE SOUZA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1873,
+    "nome_osm": "FRANCISCO ALVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 691,
+    "nome_osm": "ANDRE PINHEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1384,
+    "nome_osm": "FRANCISCO COSTA",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1188,
+    "nome_osm": "FRANCISCO MANHAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1650,
+    "nome_osm": "DOS TEIXEIRAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1194,
+    "nome_osm": "JOAO DA COSTA",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1666,
+    "nome_osm": "MARIANA BARRETO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1904,
+    "nome_osm": "MARIO MAGALHAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1710,
+    "nome_osm": "MARIO MAGALHAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1698,
+    "nome_osm": "5 DE JANEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 35,
+    "nome_osm": "ARI MACHADO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1767,
+    "nome_osm": "MONTENEGRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1399,
+    "nome_osm": "TARTARUGA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 853,
+    "nome_osm": "SAO NICOLAU",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2262,
+    "nome_osm": "RANGEL BRANDAO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 833,
+    "nome_osm": "RANGEL BRANDAO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 845,
+    "nome_osm": "MANOEL RIBEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1869,
+    "nome_osm": "ALEXANDRE VARGAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1705,
+    "nome_osm": "ANGELO RANGEL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 85,
+    "nome_osm": "ANTONIO GUIMARAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1899,
+    "nome_osm": "DOUTOR SIQUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1632,
+    "nome_osm": "CAPITAO BERNARDO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 578,
+    "nome_osm": "MARIA DA PENHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1492,
+    "nome_osm": "MARIA DA PENHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1517,
+    "nome_osm": "MARIA DA PENHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 299,
+    "nome_osm": "BENICIO BARCELOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1942,
+    "nome_osm": "HUMBERTO CAMPOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2075,
+    "nome_osm": "VINTE E UM DE ABRIL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 608,
+    "nome_osm": "SERVIDAO VIEIRA DA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 744,
+    "nome_osm": "GILBERTO MANHAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 183,
+    "nome_osm": "JOSE MODESTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 779,
+    "nome_osm": "BENEDITO RIBEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1138,
+    "nome_osm": "MARIA SANTANA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 846,
+    "nome_osm": "MARIA SANTANA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1493,
+    "nome_osm": "MARIA SANTANA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1131,
+    "nome_osm": "OPERARIO 1",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1459,
+    "nome_osm": "ALTO SANTO ANTONIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 367,
+    "nome_osm": "JOAO PINHEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 356,
+    "nome_osm": "SAO FRANCISCO DE ASSIS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2142,
+    "nome_osm": "SAO FRANCISCO DE ASSIS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1736,
+    "nome_osm": "G DA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 381,
+    "nome_osm": "JOAO CHAVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 597,
+    "nome_osm": "JOAO CHAVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2066,
+    "nome_osm": "FERNANDO PESSOA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 375,
+    "nome_osm": "HENRIQUE SOUZA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1011,
+    "nome_osm": "HENRIQUE SOUZA",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 454,
+    "nome_osm": "OSCAR FERREIRA DA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1489,
+    "nome_osm": "THOME DE SOUZA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1511,
+    "nome_osm": "THOME DE SOUZA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 602,
+    "nome_osm": "PAULO ALVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1687,
+    "nome_osm": "PAULO ALVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2130,
+    "nome_osm": "ATERRO SANITARIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1387,
+    "nome_osm": "EST DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 752,
+    "nome_osm": "MANOEL PECANHA FILHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 475,
+    "nome_osm": "VILA REGIA",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1460,
+    "nome_osm": "PROFESSORA GLORIA TEIXEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1951,
+    "nome_osm": "TRES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2042,
+    "nome_osm": "TRES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 721,
+    "nome_osm": "TRES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2059,
+    "nome_osm": "TRES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1854,
+    "nome_osm": "PROJETADA DOIS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 877,
+    "nome_osm": "GILBERTO PINTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 659,
+    "nome_osm": "GILBERTO PINTO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1465,
+    "nome_osm": "DA LUA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 24,
+    "nome_osm": "DOUTOR GONZAGA TINOCO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 572,
+    "nome_osm": "CARLOS DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 368,
+    "nome_osm": "CARLOS DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1983,
+    "nome_osm": "ANTONIO DE CASTRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 842,
+    "nome_osm": "JOCA CASTRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 574,
+    "nome_osm": "ARTUR EMILIANO COSTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 830,
+    "nome_osm": "JOAO NOGUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 486,
+    "nome_osm": "DELFINO PEIXOTO GOMES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 371,
+    "nome_osm": "ANTONIO GOMES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1588,
+    "nome_osm": "PAULISTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2233,
+    "nome_osm": "PROJETADA 14",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2243,
+    "nome_osm": "PRACA SAO CRISTOVAO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2054,
+    "nome_osm": "CORDEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1604,
+    "nome_osm": "GENERAL ESTILAC LEAL",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2084,
+    "nome_osm": "NOSSA SENHORA DA CONCEICAO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2127,
+    "nome_osm": "NOSSA SENHORA DA CONCEICAO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 570,
+    "nome_osm": "AMARITA MORAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 985,
+    "nome_osm": "ANTONIO PEREIRA DA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 965,
+    "nome_osm": "DOUTOR SIQUEIRA CAMPOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 993,
+    "nome_osm": "SILVA TAVARES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 125,
+    "nome_osm": "PERY PEIXOTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 117,
+    "nome_osm": "PERY PEIXOTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 847,
+    "nome_osm": "NOEMIO SAMPAIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 735,
+    "nome_osm": "DEZESSEIS",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 644,
+    "nome_osm": "DEZESSEIS",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 407,
+    "nome_osm": "ANTONIETA FERNANDES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 90,
+    "nome_osm": "MARIANO DOS SANTOS FARIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 828,
+    "nome_osm": "MANOEL CARNEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1590,
+    "nome_osm": "BATISTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1943,
+    "nome_osm": "ZILA DE CARVALHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1186,
+    "nome_osm": "VICENTE PEREGRINO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 582,
+    "nome_osm": "ZENITA DE OLIVEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1400,
+    "nome_osm": "VINTE E NOVE DE JULHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 632,
+    "nome_osm": "SETE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1406,
+    "nome_osm": "ALBERTO FERREIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1148,
+    "nome_osm": "EDWIRGES RANGEL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1096,
+    "nome_osm": "VINTE E OITO DE MARCO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1571,
+    "nome_osm": "VINTE E OITO DE MARCO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1579,
+    "nome_osm": "VINTE E OITO DE MARCO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1585,
+    "nome_osm": "VINTE E OITO DE MARCO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1589,
+    "nome_osm": "VINTE E OITO DE MARCO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1003,
+    "nome_osm": "OSMANI DA SILVA SALES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 628,
+    "nome_osm": "OSMANI DA SILVA SALES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 772,
+    "nome_osm": "NAZARENO BENSI",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 268,
+    "nome_osm": "BERENICE RIBEIRO DIAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1545,
+    "nome_osm": "VISCONDE DE INHAUMA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 594,
+    "nome_osm": "FRANCISCO RIBEIRO RANGEL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 598,
+    "nome_osm": "NILO PINTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 571,
+    "nome_osm": "NILO PINTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 577,
+    "nome_osm": "ADELSON DE SOUZA LOPES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 575,
+    "nome_osm": "GERALDO SALDANHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 590,
+    "nome_osm": "MENDONCA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 372,
+    "nome_osm": "SILVA PINTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 964,
+    "nome_osm": "RANULFO DE MATOS FERNANDES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 385,
+    "nome_osm": "NUNO TAVARES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 864,
+    "nome_osm": "CLERIO PINHEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 273,
+    "nome_osm": "SERVIDAO ECELINO SALLES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2138,
+    "nome_osm": "HUMBERTO ALVARO GUSMAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 469,
+    "nome_osm": "MACAE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1947,
+    "nome_osm": "VIEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1411,
+    "nome_osm": "BARRA FRIA",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1959,
+    "nome_osm": "JOAO SOARES DA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1982,
+    "nome_osm": "GERALDO TAVARES FERNANDES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 580,
+    "nome_osm": "GERALDO TAVARES FERNANDES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1984,
+    "nome_osm": "SUBTENENTE MARINS COUTINHO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 163,
+    "nome_osm": "DOUTOR BEDA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 378,
+    "nome_osm": "EDSON GABRIEL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 400,
+    "nome_osm": "NINA ARUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1764,
+    "nome_osm": "JORGE AREIAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1911,
+    "nome_osm": "JORGE EMILIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 247,
+    "nome_osm": "OLIMPIA ROSA FREITAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1487,
+    "nome_osm": "AYER CAMPOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2107,
+    "nome_osm": "MARIA DO CARMO VILADA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1923,
+    "nome_osm": "MARQUES DE VALENCA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 306,
+    "nome_osm": "EDVALDO DA SILVA TRINDADE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 103,
+    "nome_osm": "PROJETADA CINCO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2036,
+    "nome_osm": "SERVIDAO AMARAL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 410,
+    "nome_osm": "SERVIDAO AMARAL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 496,
+    "nome_osm": "JOSE AMARO PEIXOTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 185,
+    "nome_osm": "ANTONIO DIAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1416,
+    "nome_osm": "MARIA BONITA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1921,
+    "nome_osm": "MARIA BONITA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 911,
+    "nome_osm": "MARIA BONITA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 18,
+    "nome_osm": "SAO FRANCISCO DE PAULA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 443,
+    "nome_osm": "SAO FRANCISCO DE PAULA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1094,
+    "nome_osm": "JOAO PINTO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1833,
+    "nome_osm": "JAIR DIAS NOGUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 928,
+    "nome_osm": "ALEXANDRE ATHIE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2099,
+    "nome_osm": "CORREGO BONSUCESSO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 583,
+    "nome_osm": "JOAO CARLOS DE OLIVEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1787,
+    "nome_osm": "JOAO CARLOS DE OLIVEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 592,
+    "nome_osm": "EDIMAR GOMES DIAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2067,
+    "nome_osm": "ABELARDO DE VASCONCELOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2134,
+    "nome_osm": "ABELARDO DE VASCONCELOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 584,
+    "nome_osm": "VILA RANGEL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2145,
+    "nome_osm": "GOIANIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 732,
+    "nome_osm": "QUATRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 887,
+    "nome_osm": "QUATRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 104,
+    "nome_osm": "JOSE PACHECO DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1172,
+    "nome_osm": "MANOEL CORDEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1150,
+    "nome_osm": "MANOEL FERREIRA DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1656,
+    "nome_osm": "MANOEL FERREIRA DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1856,
+    "nome_osm": "PROJETADA UM",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1620,
+    "nome_osm": "ITAPERUNA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2218,
+    "nome_osm": "ITAPERUNA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 241,
+    "nome_osm": "DOUTOR PEREIRA NUNES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 242,
+    "nome_osm": "DOUTOR PEREIRA NUNES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 325,
+    "nome_osm": "DOUTOR PEREIRA NUNES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 600,
+    "nome_osm": "DAS PEDRAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 839,
+    "nome_osm": "CABO VERDE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1917,
+    "nome_osm": "CABO VERDE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1931,
+    "nome_osm": "CABO VERDE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1732,
+    "nome_osm": "SANTA RITA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1744,
+    "nome_osm": "ELDORADO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1782,
+    "nome_osm": "MANOEL JOAQUIM JARDIM DA CRUZ",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1769,
+    "nome_osm": "MANGARATIBA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 307,
+    "nome_osm": "ANTONIO CORDEIRO DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 586,
+    "nome_osm": "ANTONIO CORDEIRO DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1798,
+    "nome_osm": "NOVA ORNELAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1019,
+    "nome_osm": "PROFESSOR MANHAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 370,
+    "nome_osm": "SILVA ARCOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 489,
+    "nome_osm": "DAS ACACIAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 80,
+    "nome_osm": "ANTONIO DE SOUZA MOCO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1051,
+    "nome_osm": "AMARO ALVES FILHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 677,
+    "nome_osm": "INACIO NETO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1123,
+    "nome_osm": "INACIO NETO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1362,
+    "nome_osm": "CAPITAO DA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 581,
+    "nome_osm": "CAPITAO DA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 841,
+    "nome_osm": "JOSE DE ALENCAR",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 836,
+    "nome_osm": "JOSE DE ALENCAR",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1102,
+    "nome_osm": "PEDRO BARROSO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 634,
+    "nome_osm": "AMARO DOS SANTOS BARROSO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1871,
+    "nome_osm": "SANTA MARIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 869,
+    "nome_osm": "DOUTOR JOAO MARIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 867,
+    "nome_osm": "DOUTOR JOAO MARIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 868,
+    "nome_osm": "DOUTOR JOAO MARIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 844,
+    "nome_osm": "FLORINDA OLIVEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 388,
+    "nome_osm": "CAROLINA RAMALHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 386,
+    "nome_osm": "BENTO JOSE SAMPAIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1985,
+    "nome_osm": "VICENCIA PEREIRA DE BARROS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1668,
+    "nome_osm": "JOAO MANHAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2190,
+    "nome_osm": "JUVENAL ALMEIDA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 994,
+    "nome_osm": "MARURICIO FILHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 831,
+    "nome_osm": "ANGRA DOS REIS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 670,
+    "nome_osm": "ERNESTO VIANA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 680,
+    "nome_osm": "ERNESTO VIANA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1185,
+    "nome_osm": "SALVADOR CORREA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1944,
+    "nome_osm": "ARISIO LESSA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1205,
+    "nome_osm": "PROFESSOR JOAO HORA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1433,
+    "nome_osm": "MANDUCA QUINTANILHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1092,
+    "nome_osm": "JOAO RAMALHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1126,
+    "nome_osm": "JOAO RAMALHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1176,
+    "nome_osm": "JOAO RAMALHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1085,
+    "nome_osm": "JOAQUIM PEREIRA GARCEZ",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1181,
+    "nome_osm": "MANOEL PORFIRIO SOARES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 181,
+    "nome_osm": "BARAO DE MIRACEMA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 52,
+    "nome_osm": "DOUTOR NILO PECANHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2229,
+    "nome_osm": "DOUTOR NILO PECANHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2234,
+    "nome_osm": "DOUTOR NILO PECANHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 494,
+    "nome_osm": "MANGUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 343,
+    "nome_osm": "MANGUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1043,
+    "nome_osm": "MANGUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2096,
+    "nome_osm": "MARIO PINHEIRO MOTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2109,
+    "nome_osm": "MEDYAL VILACA VENANCIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1792,
+    "nome_osm": "MANOEL DE FREITAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1814,
+    "nome_osm": "ATANAGILDO DE FREITAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2261,
+    "nome_osm": "PINHEIRO MACHADO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1827,
+    "nome_osm": "MAURICIO PRATES DE CAMPOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2083,
+    "nome_osm": "SANTA TERESA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 108,
+    "nome_osm": "DA LIMEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1437,
+    "nome_osm": "MANOEL GOMES DA SILVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1393,
+    "nome_osm": "PAU BRASIL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1855,
+    "nome_osm": "CA-65",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1857,
+    "nome_osm": "CA-65",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 567,
+    "nome_osm": "BARAO DE MIRANDA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 341,
+    "nome_osm": "ANCHOVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1475,
+    "nome_osm": "DOUTOR ALIPIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2095,
+    "nome_osm": "WALTER BARRETO DE MORAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 690,
+    "nome_osm": "CAXIAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 91,
+    "nome_osm": "DA BALANCA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1981,
+    "nome_osm": "DA RAIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 573,
+    "nome_osm": "DA FARMACIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 365,
+    "nome_osm": "DA FARMACIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 566,
+    "nome_osm": "GERALDO MIRANDA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 834,
+    "nome_osm": "QUERO QUERO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 649,
+    "nome_osm": "ALCIR FERREIRA MONTEIRO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 829,
+    "nome_osm": "VICENTE LIMA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 648,
+    "nome_osm": "JOAO FERREIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1574,
+    "nome_osm": "JOAO VINTE E TRES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1761,
+    "nome_osm": "JORNALISTA NILO TERRA AREAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1763,
+    "nome_osm": "JORNALISTA NILO TERRA AREAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 373,
+    "nome_osm": "TATAO GOMES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1896,
+    "nome_osm": "ALFENAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2119,
+    "nome_osm": "MANOEL TEIXEIRA FULLY",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 885,
+    "nome_osm": "ALVARO BAPTISTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1701,
+    "nome_osm": "ALVARO BAPTISTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 369,
+    "nome_osm": "PROFESSOR MESQUITA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1804,
+    "nome_osm": "DO COLOMINS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 380,
+    "nome_osm": "CORONEL JOAO TAVARES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 832,
+    "nome_osm": "SAO CARLOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 931,
+    "nome_osm": "CARIVALDINO PINTO MARTINS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1688,
+    "nome_osm": "MORADA DO SOL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 910,
+    "nome_osm": "TANCREDO NEVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 958,
+    "nome_osm": "WALTER AREIAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1133,
+    "nome_osm": "ANGELO GONCALVES DIAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2052,
+    "nome_osm": "ARABE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1938,
+    "nome_osm": "RODRIGUES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1936,
+    "nome_osm": "RODRIGUES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 711,
+    "nome_osm": "PESCADA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 710,
+    "nome_osm": "LUIZ GOMES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 719,
+    "nome_osm": "JOSE BERNADINO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 230,
+    "nome_osm": "CAMPOS SALES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1610,
+    "nome_osm": "SAO LINO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 274,
+    "nome_osm": "SERAFIM PESSANHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1055,
+    "nome_osm": "AUTA SOUZA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1010,
+    "nome_osm": "VILA OPERARIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1203,
+    "nome_osm": "AMILAR ALVES DE SOUZA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 998,
+    "nome_osm": "AMILAR ALVES DE SOUZA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2258,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2263,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2082,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2087,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2089,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2093,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2094,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2097,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2105,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2225,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2114,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2246,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2137,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 2144,
+    "nome_osm": "TRAVESSAO",
+    "decisao": "aceito"
+  },
+  {
+    "rua_id": 1424,
+    "nome_osm": "DA FRUTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 383,
+    "nome_osm": "DA FRUTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1723,
+    "nome_osm": "BENEDITO QUEIROZ",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1658,
+    "nome_osm": "BENEDITO QUEIROZ",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 79,
+    "nome_osm": "WALDIR RODRIGUES DE MORAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2203,
+    "nome_osm": "WALDIR RODRIGUES DE MORAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 558,
+    "nome_osm": "WALDIR RODRIGUES DE MORAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2255,
+    "nome_osm": "VICENTE DA PENHA SIGUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 498,
+    "nome_osm": "JOSE PEIXOTO SIQUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1415,
+    "nome_osm": "AMARAL ALVES PEREIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 596,
+    "nome_osm": "AMARAL ALVES PEREIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2205,
+    "nome_osm": "JOSE FERNANDES DOS REIS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 651,
+    "nome_osm": "JOSE FERNANDES DOS REIS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 843,
+    "nome_osm": "MARMENTINO GALAXE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 387,
+    "nome_osm": "CAPITAO JULIO NOGUEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 357,
+    "nome_osm": "DOUTOR FRANCISCO PEREIRA CRESPO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2111,
+    "nome_osm": "PEREGRINO LOPES DE ALMEIDA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 358,
+    "nome_osm": "RAUL MIRANDA PINTO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1118,
+    "nome_osm": "DA RUA SANTA RITA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1130,
+    "nome_osm": "DA RUA SANTA RITA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1140,
+    "nome_osm": "DA RUA SANTA RITA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1109,
+    "nome_osm": "GONCALVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1141,
+    "nome_osm": "LUIZ GRAIN",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 25,
+    "nome_osm": "ALBERTO LAMEGO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 366,
+    "nome_osm": "ALBERTO LAMEGO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 793,
+    "nome_osm": "ALBERTO LAMEGO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 863,
+    "nome_osm": "PARA CONSELHEIRO JOSINO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1976,
+    "nome_osm": "CAMPISTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1978,
+    "nome_osm": "CAMPISTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1974,
+    "nome_osm": "CAMPISTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1972,
+    "nome_osm": "CAMPISTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1097,
+    "nome_osm": "ARI SA VIANA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1622,
+    "nome_osm": "SAO PEDRO DA ALDEIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1636,
+    "nome_osm": "SAO PEDRO DA ALDEIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1640,
+    "nome_osm": "SAO PEDRO DA ALDEIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 359,
+    "nome_osm": "SAO PEDRO DA ALDEIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 990,
+    "nome_osm": "DOM DINIZ",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 379,
+    "nome_osm": "HOMERO XAVIER",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 840,
+    "nome_osm": "CRISANTO NEVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1897,
+    "nome_osm": "DOS BANCARIOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1778,
+    "nome_osm": "LUIZ OTAVIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1685,
+    "nome_osm": "RUBENS NEIVA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 317,
+    "nome_osm": "EPITACIO PESSOA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1056,
+    "nome_osm": "ANTONIO LUIZ DA SILVEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2141,
+    "nome_osm": "SANTA RITA PERNAMBUCA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 179,
+    "nome_osm": "DIAS DA CRUZ",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2259,
+    "nome_osm": "GONCALVES DIAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1151,
+    "nome_osm": "PLINIO BARCELAR",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1136,
+    "nome_osm": "BRUNO DE AZEVEDO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1122,
+    "nome_osm": "ALCANTARA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1183,
+    "nome_osm": "NAMORADO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 457,
+    "nome_osm": "ALDENOR ALVES DOS SANTOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1987,
+    "nome_osm": "OLGA MARIA DE OLIVEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2133,
+    "nome_osm": "SEBASTIAO DE OLIVEIRA LEITAO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2140,
+    "nome_osm": "SANTA CLARA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 695,
+    "nome_osm": "ANTONIO MANHAES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 855,
+    "nome_osm": "JANILTON ARAUJO GOMES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1198,
+    "nome_osm": "DOUTOR CARLOS DA SILVA ALVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 484,
+    "nome_osm": "DA SANTA RITA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1149,
+    "nome_osm": "ALBINO RIOS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 137,
+    "nome_osm": "PARAISO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 12,
+    "nome_osm": "SEVERINO COUTINHO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 11,
+    "nome_osm": "ENTRADA DAS PALMEIRAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 860,
+    "nome_osm": "ENTRADA DAS PALMEIRAS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1394,
+    "nome_osm": "DIONISIO DA SILVA VIANA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2215,
+    "nome_osm": "DIONISIO DA SILVA VIANA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2090,
+    "nome_osm": "AMARO MACIEL TAVARES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2106,
+    "nome_osm": "DO CARVAO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 579,
+    "nome_osm": "SEBASTIAO GONCALVES DE SOUZA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 593,
+    "nome_osm": "LEONEL ALVES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 996,
+    "nome_osm": "ALVARO MACHADO RANGEL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 603,
+    "nome_osm": "ZECA POVOA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 595,
+    "nome_osm": "MARIA DA CONCEICAO RANGEL MACIEL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1667,
+    "nome_osm": "MARIO MANHAES DE ANDRADE",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 818,
+    "nome_osm": "MARIO ROCHA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2231,
+    "nome_osm": "PETROPOLIS",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 26,
+    "nome_osm": "BARAO DA LAGOA DOURADA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1057,
+    "nome_osm": "TRINTA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1605,
+    "nome_osm": "PINHALAO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1608,
+    "nome_osm": "BANANEIRA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 131,
+    "nome_osm": "JOSE TAVARES FIGUEIREDO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1113,
+    "nome_osm": "ABELARDO BARBOSA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1101,
+    "nome_osm": "MARIA TERESA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2104,
+    "nome_osm": "MARIA TERESA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1521,
+    "nome_osm": "DO ROSARIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1527,
+    "nome_osm": "DO ROSARIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1535,
+    "nome_osm": "DO ROSARIO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2115,
+    "nome_osm": "JOAO MARIA DE ALMEIDA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 477,
+    "nome_osm": "DIAS LACERDA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1158,
+    "nome_osm": "ARARUAMA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1624,
+    "nome_osm": "BALEIA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2100,
+    "nome_osm": "LUIZ FARIA DE AZEVEDO",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2126,
+    "nome_osm": "ANTONIO DE SOUZA GOMES",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2252,
+    "nome_osm": "MATA DA CANOA",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1034,
+    "nome_osm": "IGUACU",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 2139,
+    "nome_osm": "VALADARES RANGEL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 1609,
+    "nome_osm": "RANGEL",
+    "decisao": "rejeitado"
+  },
+  {
+    "rua_id": 186,
+    "nome_osm": "PETRO UBALDI",
+    "decisao": "rejeitado"
+  }
+]

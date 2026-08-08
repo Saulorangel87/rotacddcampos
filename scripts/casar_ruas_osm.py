@@ -129,13 +129,13 @@ def main():
     ruas_osm = buscar_ruas_osm()
     nomes_osm = list(ruas_osm.keys())
 
+    # Nada de client_encoding manual aqui — foi essa gambiarra (herdada de um
+    # workaround antigo pra Windows) que causava os acentos saírem dobrados
+    # no CSV ("ANTÃƒÂ”NIO" em vez de "ANTÔNIO"). psycopg2 conversa em UTF-8
+    # com o Postgres sem ajuda nenhuma, então não mexe.
     conexao = psycopg2.connect(
         host=DB_HOST, port=DB_PORT, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD,
-        client_encoding="latin1",  # evita UnicodeDecodeError conhecido no psycopg2 + Windows
     )
-    cursor_setup = conexao.cursor()
-    cursor_setup.execute("SET client_encoding TO 'UTF8';")
-    cursor_setup.close()
     cursor = conexao.cursor()
     cursor.execute("SELECT id, nome_rua FROM ruas WHERE ativo = true AND geometria IS NULL")
     ruas_banco = cursor.fetchall()
