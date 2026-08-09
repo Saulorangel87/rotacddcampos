@@ -1,4 +1,4 @@
-import styles from './Sidebar.module.css'
+import styles from "./Sidebar.module.css";
 import {
   IconeMapa,
   IconeAjustes,
@@ -8,21 +8,21 @@ import {
   IconeRelatorios,
   IconeUsuarios,
   IconeFolgas,
-} from './icons/Icons.jsx'
+} from "./icons/Icons.jsx";
 
 const ITENS = [
-  { id: 'mapa', label: 'Mapa Geral', Icone: IconeMapa },
-  { id: 'ajustes', label: 'Ajustes de Rotas', Icone: IconeAjustes },
-  { id: 'ruas', label: 'Ruas', Icone: IconeRuas },
-  { id: 'cep', label: 'CEP', Icone: IconeCep },
-  { id: 'folgas', label: 'Folgas', Icone: IconeFolgas },
-  { id: 'colaboradores', label: 'Colaboradores', Icone: IconeColaboradores },
-  { id: 'relatorios', label: 'Relatórios', Icone: IconeRelatorios },
-  { id: 'usuarios', label: 'Usuários', Icone: IconeUsuarios, soAdmin: true },
-]
+  { id: "mapa", label: "Mapa Geral", Icone: IconeMapa },
+  { id: "ajustes", label: "Ajustes de Rotas", Icone: IconeAjustes },
+  { id: "ruas", label: "Ruas", Icone: IconeRuas },
+  { id: "cep", label: "CEP", Icone: IconeCep },
+  { id: "folgas", label: "Folgas", Icone: IconeFolgas },
+  { id: "colaboradores", label: "Colaboradores", Icone: IconeColaboradores },
+  { id: "relatorios", label: "Relatórios", Icone: IconeRelatorios },
+  { id: "usuarios", label: "Usuários", Icone: IconeUsuarios, soAdmin: true },
+];
 
 export default function Sidebar({ ativo, onSelecionar, admin }) {
-  const itensVisiveis = ITENS.filter((item) => !item.soAdmin || admin)
+  const itensVisiveis = ITENS.filter((item) => !item.soAdmin || admin);
 
   return (
     <aside className={styles.sidebar} aria-label="Navegação principal">
@@ -55,6 +55,12 @@ export default function Sidebar({ ativo, onSelecionar, admin }) {
           <span>Entrega que conecta o Brasil!</span>
         </div>
       </div>
+      <div className={styles.endereco}>
+        <div>
+          Av Sete de Setembro, 342 Campos dos Goytacazes - RJ Cep: 28010-970</div>
+          <div>CNPJ: 34.028.316/1710-05</div>
+        
+      </div>
     </aside>
-  )
+  );
 }

@@ -90,6 +90,13 @@
   margin-top: 2px;
 }
 
+.endereco {
+  font-size: 0.8rem;
+  color: var(--cinza-600);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
 @media (max-width: 900px) {
   .sidebar {
     flex-direction: row;
@@ -122,6 +129,9 @@
   }
 
   .marca {
+    display: none;
+  }
+  .endereco {
     display: none;
   }
 }
