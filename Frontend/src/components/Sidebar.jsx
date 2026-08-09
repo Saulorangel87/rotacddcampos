@@ -51,8 +51,8 @@ export default function Sidebar({ ativo, onSelecionar, admin }) {
           aria-hidden="true"
         />
         <div>
-          <strong>Correios</strong>
-          <span>Entrega que conecta o Brasil</span>
+          {/* <strong>Correios</strong> */}
+          <span>Entrega que conecta o Brasil!</span>
         </div>
       </div>
     </aside>

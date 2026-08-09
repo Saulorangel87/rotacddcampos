@@ -9,7 +9,7 @@
   justify-content: center;
   gap: 16px;
   padding: 10px 20px;
-  background: var(--cinza-950);
+  background: var(--cor-azul);
   color: rgba(255, 255, 255, 0.75);
   font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
   font-size: 0.7rem;
