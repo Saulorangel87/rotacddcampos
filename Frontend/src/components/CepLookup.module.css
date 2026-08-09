@@ -17,12 +17,65 @@
   margin-bottom: 14px;
 }
 
+/* Wrapper para posicionar o botão dentro do input */
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .campo {
   width: 100%;
   border: 1px solid var(--cinza-200);
   border-radius: var(--raio-sm);
-  padding: 10px 14px;
+  padding: 10px 42px 10px 14px; /* Padding na direita reservado para o ícone */
   font-size: 0.9rem;
+}
+
+/* Botão do Microfone */
+.micBtn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.micBtn:hover {
+  transform: scale(1.1);
+}
+
+/* Estilo do Ícone SVG */
+.micIcon {
+  width: 16px;
+  height: 16px;
+  fill: var(--cinza-600);
+  transition: fill 0.2s ease;
+}
+
+.micBtn:hover .micIcon {
+  fill: var(--cinza-800, #333);
+}
+
+/* Animação quando estiver ouvindo/gravando */
+.ouvindo .micIcon {
+  fill: #ef4444; /* Vermelho */
+}
+
+.ouvindo {
+  animation: pulsar 1s infinite alternate;
+}
+
+@keyframes pulsar {
+  0% { opacity: 1; }
+  100% { opacity: 0.4; }
 }
 
 .mensagem {
