@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desenho manual de ruas — CDD Campos</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --azul: #003d73;
+    --azul-claro: #eaf2fb;
+    --amarelo: #ffd400;
+    --cinza-100: #f4f5f7;
+    --cinza-300: #d7dbe0;
+    --cinza-600: #5b6472;
+    --verde: #1e7e34;
+    --vermelho: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #1a1f28; }
+  #topo {
+    background: var(--azul); color: #fff; padding: 10px 16px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  #topo h1 { font-size: 0.95rem; margin: 0; font-weight: 800; }
+  #progresso { font-size: 0.8rem; opacity: 0.9; margin-left: auto; }
+  #layout { display: flex; height: calc(100vh - 48px); }
+  #painel {
+    width: 340px; flex-shrink: 0; padding: 14px; overflow-y: auto;
+    background: #fff; border-right: 1px solid var(--cinza-300);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  #mapa { flex: 1; }
+  .card {
+    background: var(--cinza-100); border-radius: 10px; padding: 12px;
+  }
+  .rotulo { font-size: 0.68rem; text-transform: uppercase; font-weight: 700; color: var(--cinza-600); letter-spacing: .03em; }
+  .nome-rua { font-size: 1.05rem; font-weight: 800; margin: 4px 0; line-height: 1.25; }
+  .distrito-selo {
+    display: inline-block; background: var(--amarelo); color: #1a1f28;
+    font-weight: 800; font-size: 0.72rem; padding: 2px 8px; border-radius: 999px;
+  }
+  input[type=text] {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--cinza-300);
+    border-radius: 8px; font-size: 0.85rem; margin-top: 6px;
+  }
+  button {
+    border: none; border-radius: 8px; padding: 9px 12px; font-weight: 700;
+    font-size: 0.82rem; cursor: pointer; width: 100%;
+  }
+  .btn-azul { background: var(--azul); color: #fff; }
+  .btn-azul:hover { background: #002e57; }
+  .btn-secundario { background: #fff; color: var(--azul); border: 1px solid var(--azul); }
+  .btn-secundario:hover { background: var(--azul-claro); }
+  .btn-linha { display: flex; gap: 8px; }
+  .btn-linha button { flex: 1; }
+  .btn-perigo { background: #fff; color: var(--vermelho); border: 1px solid var(--vermelho); }
+  #status-pontos { font-size: 0.78rem; color: var(--cinza-600); margin-top: 4px; }
+  #lista-ruas { max-height: 260px; overflow-y: auto; border: 1px solid var(--cinza-300); border-radius: 8px; }
+  .item-lista {
+    padding: 7px 10px; font-size: 0.78rem; cursor: pointer;
+    border-bottom: 1px solid var(--cinza-100); display: flex; justify-content: space-between; gap: 6px;
+  }
+  .item-lista:hover { background: var(--azul-claro); }
+  .item-lista.atual { background: var(--azul-claro); font-weight: 700; }
+  .marca-feito { color: var(--verde); font-weight: 800; flex-shrink: 0; }
+  .instrucoes { font-size: 0.76rem; color: var(--cinza-600); line-height: 1.5; }
+  .instrucoes b { color: #1a1f28; }
+  #baixar-json { margin-top: auto; }
+  a.link-google { display: block; text-align: center; font-size: 0.78rem; color: var(--azul); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div id="topo">
+  <h1>✏️ Desenho manual de ruas — CDD Campos</h1>
+  <div id="progresso">0 / 0 concluídas</div>
+</div>
+
+<div id="layout">
+  <div id="painel">
+
+    <div class="card">
+      <span class="rotulo">Rua atual</span>
+      <div class="distrito-selo" id="distrito-atual">—</div>
+      <div class="nome-rua" id="nome-atual">Carregando…</div>
+      <input type="text" id="campo-busca" placeholder="Termo de busca no mapa">
+      <button class="btn-secundario" id="btn-buscar" style="margin-top:8px;">🔍 Buscar no mapa</button>
+      <a class="link-google" id="link-google" href="#" target="_blank" rel="noopener">Abrir no Google Maps (referência)</a>
+    </div>
+
+    <div class="card">
+      <span class="rotulo">Desenho</span>
+      <div id="status-pontos">0 pontos marcados</div>
+      <div class="btn-linha" style="margin-top:8px;">
+        <button class="btn-secundario" id="btn-desfazer">↩ Desfazer ponto</button>
+        <button class="btn-perigo" id="btn-limpar">🗑 Limpar</button>
+      </div>
+      <button class="btn-azul" id="btn-salvar" style="margin-top:8px;">✔ Salvar e ir pra próxima</button>
+      <div class="btn-linha" style="margin-top:8px;">
+        <button class="btn-secundario" id="btn-anterior">◀ Anterior</button>
+        <button class="btn-secundario" id="btn-proxima">Pular ▶</button>
+      </div>
+    </div>
+
+    <div class="instrucoes">
+      <b>Como usar:</b> clique em "Buscar no mapa" pra tentar localizar a rua. Se não achar, procure visualmente pelo bairro/distrito. Clique nos pontos do mapa, em sequência, seguindo o traçado da rua — cada clique adiciona um ponto na linha. Quando terminar, clique em "Salvar e ir pra próxima". Dá pra desfazer o último ponto ou limpar tudo e recomeçar.
+    </div>
+
+    <div class="card" style="flex:1; min-height:0; display:flex; flex-direction:column;">
+      <span class="rotulo">Todas as ruas (112)</span>
+      <div id="lista-ruas" style="margin-top:8px;"></div>
+    </div>
+
+    <button class="btn-azul" id="baixar-json">⬇ Baixar JSON com tudo que foi desenhado</button>
+  </div>
+
+  <div id="mapa"></div>
+</div>
+
+<script>
+const DADOS = [{"ruaId": 30, "nome": "AVENIDA QUINZE DE NOVEMBRO - ATÉ 64/65", "distrito": "601"}, {"ruaId": 15, "nome": "RUA KIRK", "distrito": "601"}, {"ruaId": 73, "nome": "RUA TIRADENTE BATALHAO", "distrito": "602"}, {"ruaId": 347, "nome": "RUA DARIO MANINHO / COND 130", "distrito": "606"}, {"ruaId": 364, "nome": "RUA FREDERICO DE MENEZES VEIGA", "distrito": "606"}, {"ruaId": 360, "nome": "RUA G (PARQUE VISCONDE IL)", "distrito": "606"}, {"ruaId": 389, "nome": "RUA MARIA DE LOURDES TINOCO RIBEIRO GOMES / STA LUZIA", "distrito": "606"}, {"ruaId": 344, "nome": "RUA OSCAR NIEMEYER", "distrito": "606"}, {"ruaId": 350, "nome": "RUA OSWALDO MARCOS SOBRAL SORIANO / COND 130", "distrito": "606"}, {"ruaId": 376, "nome": "RUA SAMUEL SANTOS", "distrito": "606"}, {"ruaId": 550, "nome": "RUA AYRTON SENNA", "distrito": "608"}, {"ruaId": 512, "nome": "RUA PROJETADA C (LOT SUN SET JOCKEY)", "distrito": "608"}, {"ruaId": 511, "nome": "RUA PROJETADA D (LOT SUN SET JOCKEY)", "distrito": "608"}, {"ruaId": 662, "nome": "RUA PASTOR BENJAMIN LENZ DE ARAÚJO CÉSAR", "distrito": "609"}, {"ruaId": 692, "nome": "RUA EDÉSIO GUIMARÃES PEREIRA DA SILVA (VILA MANHÃES)", "distrito": "610"}, {"ruaId": 697, "nome": "RUA ELZA SOARES (VILA MENEZES)", "distrito": "610"}, {"ruaId": 671, "nome": "RUA JORGE EMÍLIO FONTES NEVES", "distrito": "610"}, {"ruaId": 703, "nome": "RUA JOSÉ ADRIANO LOPES (VILA MENEZES)", "distrito": "610"}, {"ruaId": 702, "nome": "RUA JUDITH LOPES (VILA MENEZES)", "distrito": "610"}, {"ruaId": 687, "nome": "RUA LÚCIO LOPES (ESTÂNCIA DA PENHA)", "distrito": "610"}, {"ruaId": 701, "nome": "RUA MARÍLIA AMARAL (VILA MENEZES)", "distrito": "610"}, {"ruaId": 700, "nome": "RUA MÁRIO QUEIROZ DE SOUZA (VILA MENEZES)", "distrito": "610"}, {"ruaId": 699, "nome": "RUA OSMAR FONSECA (VILA MENEZES)", "distrito": "610"}, {"ruaId": 688, "nome": "RUA ROSANA MARCONDE (ESTÂNCIA DA PENHA)", "distrito": "610"}, {"ruaId": 698, "nome": "RUA UMBELINA RIBEIRO (VILA MENEZES)", "distrito": "610"}, {"ruaId": 704, "nome": "RUA VALMOR BARBOSA (VILA MENEZES)", "distrito": "610"}, {"ruaId": 693, "nome": "TRAVESSA ANTÔNIO LICASALIO (VILA MANHÃES)", "distrito": "610"}, {"ruaId": 694, "nome": "TRAVESSA EDITE DE SOUZA LICASALIO (VILA MANHÃES)", "distrito": "610"}, {"ruaId": 835, "nome": "RUA RAMALHO ORTIGÃO", "distrito": "611"}, {"ruaId": 914, "nome": "RUA ONZE (RES JOCKEY II)", "distrito": "612"}, {"ruaId": 915, "nome": "RUA VINÍCIUS DE MORAES (RES JOCKEY II)", "distrito": "612"}, {"ruaId": 1128, "nome": "LOURDES, RUA NOSSA SRA DE", "distrito": "614"}, {"ruaId": 1165, "nome": "CONSTÂNCIA, RUA DONA", "distrito": "615"}, {"ruaId": 1154, "nome": "GRAÇAS, RUA NOSSA SRA DAS", "distrito": "615"}, {"ruaId": 1156, "nome": "THOMÉ, RUA SÃO", "distrito": "615"}, {"ruaId": 1440, "nome": "ARTHUR FRANCISCO EUGÊNIO ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1441, "nome": "BETRALDO MANHÃES  ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1420, "nome": "CANAVIEIRAS, RUA", "distrito": "616"}, {"ruaId": 1442, "nome": "CLÓVIS FRANCISCO DA SILVA  ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1443, "nome": "ESCRIVÃ MARIA DE JESUS PEREIRA ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1444, "nome": "ESCRIVÃ MARIA JOSÉ NEVES  ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1445, "nome": "JANETE CRUZ SIQUEIRA ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1446, "nome": "JOELSON GOMES GUIMARÃES ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1447, "nome": "MARCOS ANTÔNIO RIBEIRO DIAS ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1448, "nome": "MARIA DA PENHA BATISTA ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1449, "nome": "PAULO NOGUEIRA PAMPLONA  ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1376, "nome": "PRAÇA PAPA JOÃO XXIII", "distrito": "616"}, {"ruaId": 1450, "nome": "ROGÉRIA DE MIRANDA DA SILVA  ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1451, "nome": "ROSA MARIA SIQUEIRA PAMPLONA  ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1452, "nome": "TALES DE AZEREDO  ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 1549, "nome": "RUA H (PRQ PLANÍCIE)", "distrito": "618"}, {"ruaId": 1613, "nome": "VILA CUSTÓDIO", "distrito": "618"}, {"ruaId": 1630, "nome": "RUA C (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1642, "nome": "RUA F (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1646, "nome": "RUA G-1 (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1648, "nome": "RUA G-2 (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1654, "nome": "RUA H (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1660, "nome": "RUA I (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1662, "nome": "RUA J (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1670, "nome": "RUA L (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1672, "nome": "RUA M (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1818, "nome": "TRAVESSA HAITI", "distrito": "620"}, {"ruaId": 1837, "nome": "RUA AB-1", "distrito": "621"}, {"ruaId": 1839, "nome": "RUA AB-10", "distrito": "621"}, {"ruaId": 1841, "nome": "RUA AB-11", "distrito": "621"}, {"ruaId": 1843, "nome": "RUA AB-12", "distrito": "621"}, {"ruaId": 1845, "nome": "RUA AB-13", "distrito": "621"}, {"ruaId": 1847, "nome": "RUA AB-14", "distrito": "621"}, {"ruaId": 1849, "nome": "RUA AB-2", "distrito": "621"}, {"ruaId": 1851, "nome": "RUA AB-3", "distrito": "621"}, {"ruaId": 1853, "nome": "RUA AB-4", "distrito": "621"}, {"ruaId": 1859, "nome": "RUA AB-7", "distrito": "621"}, {"ruaId": 1861, "nome": "RUA AB-8", "distrito": "621"}, {"ruaId": 1863, "nome": "RUA AB-9", "distrito": "621"}, {"ruaId": 1879, "nome": "RUA B (RES LAPA I)", "distrito": "621"}, {"ruaId": 1916, "nome": "RUA RESENDE", "distrito": "621"}, {"ruaId": 2064, "nome": "PRAÇA DURVAL LIMA", "distrito": "623"}, {"ruaId": 2085, "nome": "PRAÇA ROCKEFELLER FELISBERTO DE LIMA -  TRAVESSÃO", "distrito": "623"}, {"ruaId": 2086, "nome": "PRAÇA SILÊNIO CÉSAR TERRA - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2101, "nome": "RUA CARLOS DE JESUS - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2102, "nome": "RUA CONSTANTINO BRAGANÇA - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2103, "nome": "RUA CÂNDIDO DUTRA -  TRAVESSÃO", "distrito": "623"}, {"ruaId": 2108, "nome": "RUA DORMÍRIO MUNIZ BARRETO - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2110, "nome": "RUA EDMUNDO LINS - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2098, "nome": "RUA ETELVINO NOGUEIRA - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2125, "nome": "RUA MONTE SIÃO - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2143, "nome": "TRAVESSA VICENTE SIQUEIRA -  TRAVESSÃO", "distrito": "623"}, {"ruaId": 2204, "nome": "RUA AMAPÁ -  KM 14", "distrito": "624"}, {"ruaId": 2206, "nome": "RUA AMARO SALES PINTO - TRAVESSÃO", "distrito": "624"}, {"ruaId": 2173, "nome": "RUA B (FAROFA)", "distrito": "624"}, {"ruaId": 2212, "nome": "RUA CINCO ( KM 15 ) TRAVESSÃO", "distrito": "624"}, {"ruaId": 2213, "nome": "RUA CINCO - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2214, "nome": "RUA DEZ - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2216, "nome": "RUA DOZE - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2217, "nome": "RUA GERICÓ -  KM 14", "distrito": "624"}, {"ruaId": 2164, "nome": "RUA LIONS CLUB DE CAMPOS PLANICE", "distrito": "624"}, {"ruaId": 2224, "nome": "RUA MARGEM DO ASFALTO - TRAVESSÃO", "distrito": "624"}, {"ruaId": 2227, "nome": "RUA MURIAÉ -  KM 14", "distrito": "624"}, {"ruaId": 2228, "nome": "RUA NOVE - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2230, "nome": "RUA ONZE - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2235, "nome": "RUA QUATRO - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2236, "nome": "RUA QUINZE - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2240, "nome": "RUA SEIS - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2241, "nome": "RUA SETE ( KM 15 ) - TRAVESSÃO", "distrito": "624"}, {"ruaId": 2242, "nome": "RUA SETE - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2249, "nome": "RUA TREZE - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2250, "nome": "RUA TRINTA E NOVE - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2251, "nome": "RUA TRÊS ( KM 15 ) - TRAVESSÃO", "distrito": "624"}, {"ruaId": 2253, "nome": "RUA UM ( KM 15 ) - TRAVESSÃO", "distrito": "624"}, {"ruaId": 2254, "nome": "RUA UM -  NOVA CANAÃ", "distrito": "624"}, {"ruaId": 2199, "nome": "RUA WALDOVINO MUNIZ MORGADO", "distrito": "624"}, {"ruaId": 2174, "nome": "RUA Z (JD AEROPORTO)", "distrito": "624"}];
+const CHAVE_STORAGE = "geometrias_manuais_v1";
+const CENTRO_CAMPOS = [-21.7545, -41.3244];
+
+let indiceAtual = 0;
+let pontosAtuais = []; // [[lat, lon], ...]
+let geometrias = carregarProgresso();
+
+const mapa = L.map('mapa').setView(CENTRO_CAMPOS, 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  maxZoom: 19,
+}).addTo(mapa);
+
+let linhaAtual = L.polyline([], { color: '#003d73', weight: 4 }).addTo(mapa);
+let marcadores = [];
+
+function carregarProgresso() {
+  try {
+    const bruto = localStorage.getItem(CHAVE_STORAGE);
+    return bruto ? JSON.parse(bruto) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function salvarProgresso() {
+  try {
+    localStorage.setItem(CHAVE_STORAGE, JSON.stringify(geometrias));
+  } catch (e) {
+    console.warn("não consegui salvar no localStorage", e);
+  }
+}
+
+function atualizarProgresso() {
+  const feitas = Object.keys(geometrias).length;
+  document.getElementById('progresso').textContent = `${feitas} / ${DADOS.length} concluídas`;
+}
+
+function renderizarLista() {
+  const container = document.getElementById('lista-ruas');
+  container.innerHTML = '';
+  DADOS.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'item-lista' + (i === indiceAtual ? ' atual' : '');
+    const feito = geometrias[item.ruaId] ? '<span class="marca-feito">✔</span>' : '';
+    div.innerHTML = `<span>${item.distrito} — ${item.nome}</span>${feito}`;
+    div.onclick = () => irPara(i);
+    container.appendChild(div);
+  });
+  const atualEl = container.querySelector('.atual');
+  if (atualEl) atualEl.scrollIntoView({ block: 'nearest' });
+}
+
+function limparDesenho() {
+  pontosAtuais = [];
+  marcadores.forEach(m => mapa.removeLayer(m));
+  marcadores = [];
+  linhaAtual.setLatLngs([]);
+  document.getElementById('status-pontos').textContent = '0 pontos marcados';
+}
+
+function carregarRua(i) {
+  const item = DADOS[i];
+  document.getElementById('nome-atual').textContent = item.nome;
+  document.getElementById('distrito-atual').textContent = 'Distrito ' + item.distrito;
+
+  const termoBusca = item.nome.replace(/\s*-\s*(ATÉ|TRAVESSÃO).*$/i, '').replace(/\/.*$/, '').trim();
+  document.getElementById('campo-busca').value = termoBusca + ', Campos dos Goytacazes, RJ';
+
+  const google = 'https://www.google.com/maps/search/' + encodeURIComponent(termoBusca + ' Campos dos Goytacazes RJ');
+  document.getElementById('link-google').href = google;
+
+  limparDesenho();
+
+  const salvo = geometrias[item.ruaId];
+  if (salvo) {
+    const coords = salvo.coordinates[0].map(c => [c[1], c[0]]); // volta lon,lat -> lat,lon
+    coords.forEach(latlon => adicionarPonto(latlon, false));
+    if (coords.length) mapa.fitBounds(linhaAtual.getBounds(), { maxZoom: 17 });
+  }
+
+  renderizarLista();
+}
+
+function irPara(i) {
+  if (i < 0 || i >= DADOS.length) return;
+  indiceAtual = i;
+  carregarRua(i);
+}
+
+function adicionarPonto(latlon, atualizarMapa = true) {
+  pontosAtuais.push(latlon);
+  const marcador = L.circleMarker(latlon, { radius: 5, color: '#003d73', fillColor: '#ffd400', fillOpacity: 1 }).addTo(mapa);
+  marcadores.push(marcador);
+  linhaAtual.setLatLngs(pontosAtuais);
+  document.getElementById('status-pontos').textContent = pontosAtuais.length + ' pontos marcados';
+}
+
+mapa.on('click', (e) => {
+  adicionarPonto([e.latlng.lat, e.latlng.lng]);
+});
+
+document.getElementById('btn-desfazer').onclick = () => {
+  if (!pontosAtuais.length) return;
+  pontosAtuais.pop();
+  const m = marcadores.pop();
+  if (m) mapa.removeLayer(m);
+  linhaAtual.setLatLngs(pontosAtuais);
+  document.getElementById('status-pontos').textContent = pontosAtuais.length + ' pontos marcados';
+};
+
+document.getElementById('btn-limpar').onclick = () => {
+  if (confirm('Limpar todos os pontos dessa rua?')) limparDesenho();
+};
+
+document.getElementById('btn-salvar').onclick = () => {
+  if (pontosAtuais.length < 2) {
+    alert('Marca pelo menos 2 pontos pra formar uma linha.');
+    return;
+  }
+  const item = DADOS[indiceAtual];
+  geometrias[item.ruaId] = {
+    type: "MultiLineString",
+    coordinates: [pontosAtuais.map(([lat, lon]) => [lon, lat])],
+  };
+  salvarProgresso();
+  atualizarProgresso();
+  renderizarLista();
+  if (indiceAtual < DADOS.length - 1) {
+    irPara(indiceAtual + 1);
+  } else {
+    alert('Essa era a última da lista! Pode baixar o JSON.');
+  }
+};
+
+document.getElementById('btn-anterior').onclick = () => irPara(indiceAtual - 1);
+document.getElementById('btn-proxima').onclick = () => irPara(indiceAtual + 1);
+
+document.getElementById('btn-buscar').onclick = async () => {
+  const termo = document.getElementById('campo-busca').value.trim();
+  if (!termo) return;
+  const btn = document.getElementById('btn-buscar');
+  btn.textContent = 'Buscando…';
+  btn.disabled = true;
+  try {
+    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(termo);
+    const resp = await fetch(url, { headers: { 'Accept-Language': 'pt-BR' } });
+    const resultados = await resp.json();
+    if (resultados.length) {
+      const { lat, lon } = resultados[0];
+      mapa.setView([parseFloat(lat), parseFloat(lon)], 17);
+    } else {
+      alert('Não achei nada com esse termo no OpenStreetMap. Tenta ajustar o texto da busca, ou procura visualmente pelo bairro.');
+    }
+  } catch (e) {
+    alert('Busca falhou (sem internet ou serviço fora do ar). Procura visualmente no mapa.');
+  } finally {
+    btn.textContent = '🔍 Buscar no mapa';
+    btn.disabled = false;
+  }
+};
+
+document.getElementById('baixar-json').onclick = () => {
+  const saida = Object.entries(geometrias).map(([ruaId, geometria]) => ({
+    rua_id: parseInt(ruaId, 10),
+    geometria,
+  }));
+  const blob = new Blob([JSON.stringify(saida, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'geometrias_manuais.json';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+atualizarProgresso();
+irPara(0);
+</script>
+
+</body>
+</html>

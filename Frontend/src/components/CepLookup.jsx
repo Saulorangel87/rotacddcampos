@@ -42,6 +42,16 @@ export default function CepLookup() {
     recognition.onstart = () => setOuvindo(true)
     recognition.onend = () => setOuvindo(false)
 
+    recognition.onerror = (event) => {
+      // Sem isso, qualquer falha (permissão bloqueada por política do
+      // servidor, sem microfone, sem internet, etc.) acontecia calada —
+      // não aparecia nem no console. Alertar aqui é temporário, só pra
+      // diagnosticar em produção; depois trocamos por algo mais discreto.
+      console.error('Erro no reconhecimento de voz:', event.error)
+      alert('Erro no microfone: ' + event.error)
+      setOuvindo(false)
+    }
+
     recognition.onresult = (event) => {
       const textoTranscrito = event.results[0][0].transcript
       setTermo(textoTranscrito)
