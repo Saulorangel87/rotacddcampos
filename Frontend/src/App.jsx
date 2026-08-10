@@ -16,6 +16,7 @@ import UsuariosModal from "./components/UsuariosModal.jsx";
 import LoginModal from "./components/LoginModal.jsx";
 import TrocarSenhaModal from "./components/TrocarSenhaModal.jsx";
 import Footer from "./components/Footer.jsx";
+import ZeRotaChat from "./components/ZeRotaChat.jsx";
 import { listarRuas } from "./api/ruas.js";
 import { useAuth } from "./context/AuthContext.jsx";
 import styles from "./App.module.css";
@@ -174,6 +175,7 @@ export default function App() {
       </div>
 
       <Footer />
+      <ZeRotaChat />
 
       <FolgasModal
         aberto={folgasAberto}

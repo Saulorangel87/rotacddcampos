@@ -111,6 +111,19 @@
   white-space: nowrap;
 }
 
+.btnNotas {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 4px 6px;
+  border-radius: var(--raio-sm);
+}
+
+.btnNotas:hover {
+  background: var(--azul-claro, #eaf2fb);
+}
+
 .btnExcluir {
   background: transparent;
   border: none;

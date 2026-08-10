@@ -5,6 +5,7 @@ import { corDoDistrito } from '../data/distritos.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import NovaRuaModal from './NovaRuaModal.jsx'
 import ConfirmModal from './ConfirmModal.jsx'
+import ObservacoesRuaModal from './ObservacoesRuaModal.jsx'
 import styles from './RuasTable.module.css'
 
 const ABAS = [
@@ -25,6 +26,7 @@ export default function RuasTable({ versao = 0 }) {
   const [novaRuaAberta, setNovaRuaAberta] = useState(false)
   const [excluindoId, setExcluindoId] = useState(null)
   const [ruaParaExcluir, setRuaParaExcluir] = useState(null)
+  const [ruaObservacoes, setRuaObservacoes] = useState(null)
 
   useEffect(() => {
     listarRuas().then(setRuas)
@@ -162,6 +164,15 @@ export default function RuasTable({ versao = 0 }) {
                 <td>{r.rota}</td>
                 <td className={styles.status}>Atualizado {r.atualizado_em}</td>
                 <td>
+                  <button
+                    type="button"
+                    className={styles.btnNotas}
+                    onClick={() => setRuaObservacoes(r)}
+                    aria-label={`Observações de ${r.nome_rua}`}
+                    title="Observações de campo"
+                  >
+                    📝
+                  </button>
                   {admin && (
                     <button
                       type="button"
@@ -244,6 +255,10 @@ export default function RuasTable({ versao = 0 }) {
         onFechar={() => setNovaRuaAberta(false)}
         onCriada={aoCriarRua}
       />
+
+      {ruaObservacoes && (
+        <ObservacoesRuaModal rua={ruaObservacoes} onFechar={() => setRuaObservacoes(null)} />
+      )}
 
       <ConfirmModal
         aberto={!!ruaParaExcluir}

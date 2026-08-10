@@ -14,5 +14,6 @@ func RunMigrations(db *gorm.DB) error {
 		&models.Usuario{},
 		&models.AcessoLogin{},
 		&models.FolgaLancamento{},
+		&models.RuaObservacao{},
 	)
 }

@@ -17,7 +17,7 @@ import (
 //   - Público (sem token): mapa/distritos, busca de ruas, CEP, aniversariantes, health, swagger
 //   - Autenticado (qualquer papel): listar/ver colaboradores, histórico, estatísticas
 //   - Admin: criar/editar/excluir ruas e colaboradores, gerenciar usuários
-func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int) {
+func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, zeRotaWorkerURL string) {
 	autenticado := middlewares.ExigirAutenticacao(jwtSecret)
 	somenteAdmin := middlewares.ExigirAdmin(jwtSecret)
 
@@ -95,6 +95,21 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int) {
 		folgas.Post("/", somenteAdmin, folgaHandler.LancarFolga)
 		folgas.Delete("/:id", somenteAdmin, folgaHandler.ExcluirLancamento)
 	}
+
+	// Injeção de dependências - Observações de rua (conhecimento de campo
+	// dos carteiros; leitura pública, escrita/exclusão só admin)
+	ruaObsRepo := repositories.NewRuaObservacaoRepository(db)
+	ruaObsService := services.NewRuaObservacaoService(ruaObsRepo, ruaRepo)
+	ruaObsHandler := handlers.NewRuaObservacaoHandler(ruaObsService)
+	app.Get("/ruas/:id/observacoes", ruaObsHandler.Listar)
+	app.Post("/ruas/:id/observacoes", somenteAdmin, ruaObsHandler.Adicionar)
+	app.Delete("/observacoes/:id", somenteAdmin, ruaObsHandler.Excluir)
+
+	// Injeção de dependências - Zé Rota (chat público; sem chave de API
+	// configurada, a rota responde erro amigável mas não derruba o resto)
+	zeRotaService := services.NewZeRotaService(zeRotaWorkerURL, ruaRepo, ruaObsRepo)
+	zeRotaHandler := handlers.NewZeRotaHandler(zeRotaService)
+	app.Post("/ze-rota/conversar", zeRotaHandler.Conversar)
 
 	// Injeção de dependências - Distritos (mapa é público)
 	distritoRepo := repositories.NewDistritoRepository(db)

@@ -68,7 +68,7 @@ func main() {
 		},
 	}))
 
-	routes.SetupRoutes(app, db, cfg.JWTSecret, cfg.JWTExpiracaoHoras)
+	routes.SetupRoutes(app, db, cfg.JWTSecret, cfg.JWTExpiracaoHoras, cfg.ZeRotaWorkerURL)
 
 	slog.Info("servidor iniciado", "port", cfg.ServerPort)
 	if err := app.Listen(":" + cfg.ServerPort); err != nil {

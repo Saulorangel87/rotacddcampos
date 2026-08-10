@@ -1,0 +1,230 @@
+.fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 24, 31, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: 20px;
+}
+
+.modal {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-flutuante);
+  width: 100%;
+  max-width: 460px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+@media (max-width: 720px) {
+  .fundo {
+    align-items: flex-start;
+    padding: 10px;
+  }
+  .modal {
+    max-height: min(calc(100vh - 20px), calc(100svh - 20px));
+    border-radius: 18px;
+  }
+}
+
+.cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cabecalho h2 {
+  font-size: 1.02rem;
+  margin: 0;
+}
+
+.nomeRua {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--cinza-600);
+  margin-top: 2px;
+}
+
+.fechar {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--cinza-600);
+  flex-shrink: 0;
+}
+
+.mensagem {
+  text-align: center;
+  color: var(--cinza-400);
+  font-size: 0.85rem;
+  padding: 16px 0;
+  margin: 0;
+}
+
+.mensagemErro {
+  background: #fdecea;
+  color: #b3261e;
+  border-radius: var(--raio-sm);
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--raio-sm);
+  background: var(--cinza-100);
+}
+
+.categoriaSelo {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: #eaf2fb;
+  color: var(--cor-azul);
+}
+
+.categoriaSelo[data-categoria='seguranca'] {
+  background: #fdecea;
+  color: #b3261e;
+}
+
+.categoriaSelo[data-categoria='numero_irregular'] {
+  background: #fff4d6;
+  color: #8a6100;
+}
+
+.categoriaSelo[data-categoria='varios_nomes'] {
+  background: #f1e6fb;
+  color: #6a2ba8;
+}
+
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemInfo p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--cinza-950);
+  line-height: 1.4;
+}
+
+.itemMeta {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--cinza-600);
+  margin-top: 3px;
+}
+
+.btnExcluir {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 4px;
+  flex-shrink: 0;
+}
+
+.btnExcluir:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnNovo {
+  align-self: flex-start;
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--cinza-100);
+  border-radius: var(--raio-sm);
+  padding: 12px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--cinza-800);
+}
+
+.campo select,
+.campo textarea {
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 8px 10px;
+  font-weight: 400;
+  font-size: 0.85rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.rodapeForm {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.botaoPrimario {
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.botaoPrimario:disabled {
+  background: var(--cinza-400);
+  cursor: not-allowed;
+}
+
+.botaoSecundario {
+  background: var(--branco);
+  color: var(--cinza-800);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+}

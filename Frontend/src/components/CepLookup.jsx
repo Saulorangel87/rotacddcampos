@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { listarRuas } from '../api/ruas.js'
 import { corDoDistrito } from '../data/distritos.js'
+import { useReconhecimentoDeVoz } from '../hooks/useReconhecimentoDeVoz.js'
 import styles from './CepLookup.module.css'
 
 export default function CepLookup() {
@@ -8,7 +9,7 @@ export default function CepLookup() {
   const [resultados, setResultados] = useState([])
   const [buscando, setBuscando] = useState(false)
   const [jaBuscou, setJaBuscou] = useState(false)
-  const [ouvindo, setOuvindo] = useState(false)
+  const { ouvindo, ouvirVoz } = useReconhecimentoDeVoz(setTermo)
 
   useEffect(() => {
     if (termo.trim().length < 3) {
@@ -26,39 +27,6 @@ export default function CepLookup() {
     }, 400)
     return () => clearTimeout(timer)
   }, [termo])
-
-  const ouvirVoz = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-
-    if (!SpeechRecognition) {
-      alert('Seu navegador não suporta reconhecimento de voz.')
-      return
-    }
-
-    const recognition = new SpeechRecognition()
-    recognition.lang = 'pt-BR'
-    recognition.continuous = false
-
-    recognition.onstart = () => setOuvindo(true)
-    recognition.onend = () => setOuvindo(false)
-
-    recognition.onerror = (event) => {
-      // Sem isso, qualquer falha (permissão bloqueada por política do
-      // servidor, sem microfone, sem internet, etc.) acontecia calada —
-      // não aparecia nem no console. Alertar aqui é temporário, só pra
-      // diagnosticar em produção; depois trocamos por algo mais discreto.
-      console.error('Erro no reconhecimento de voz:', event.error)
-      alert('Erro no microfone: ' + event.error)
-      setOuvindo(false)
-    }
-
-    recognition.onresult = (event) => {
-      const textoTranscrito = event.results[0][0].transcript
-      setTermo(textoTranscrito)
-    }
-
-    recognition.start()
-  }
 
   return (
     <section className={styles.caixa} aria-label="Consulta de CEP por rua">
