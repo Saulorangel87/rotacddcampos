@@ -4,7 +4,7 @@ Ferramenta interna da unidade CDD Campos dos Goytacazes (Correios): mapa
 interativo dos 24 distritos postais (601–624), consulta de ruas/CEP,
 cadastro de colaboradores e ajuste de rotas (mover rua entre distritos).
 
-Em produção: **https://cddcampos.devsaulo.com.br**
+Em produção: **https://cddcampos.devsaulo.com.br** — versão atual: **v1.2.0**
 
 ## Stack
 
@@ -75,7 +75,7 @@ Abre em `localhost:5173`.
 
 ## Deploy em produção
 
-Ver `NOTAS-DEPLOY.md` para o passo a passo completo, status atual e pendências.
+Ver `nota-de-status-site-correios.md` para o passo a passo completo, status atual e pendências.
 
 ## Funcionalidades
 
@@ -86,6 +86,17 @@ Ver `NOTAS-DEPLOY.md` para o passo a passo completo, status atual e pendências.
   persistido no banco (quem moveu, quando, de onde pra onde)
 - Colaboradores: cadastro, busca, exclusão (admin), aniversariante do dia
   em destaque (público, sem login)
+- Consulta de Folgas: saldo por matrícula (livro-razão de créditos/débitos),
+  consulta pública sem listar ninguém, lançar/excluir restrito a admin,
+  com auditoria de quem lançou
+- Observações de rua: conhecimento de campo dos carteiros (acesso difícil,
+  numeração fora de ordem, mais de um nome, segurança), cadastro restrito a
+  admin, leitura pública
+- Zé Rota: assistente em chat (texto e voz) — busca rua/distrito/CEP no
+  cadastro real (nunca inventa endereço), consulta o tempo em Campos dos
+  Goytacazes (Open-Meteo) e sugere um link do Google Maps só quando não
+  encontra nada no cadastro interno, deixando sempre claro que não é dado
+  oficial
 - Gerenciar usuários: criar conta, definir papel, resetar senha — tudo
   pela interface, sem precisar de terminal
 - PWA: instalável no celular, funciona offline pro casco estático

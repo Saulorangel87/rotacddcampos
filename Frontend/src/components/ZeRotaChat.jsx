@@ -77,7 +77,12 @@ export default function ZeRotaChat() {
           style={estiloPosicao}
         >
           {balaoVisivel && (
-            <div className={styles.balaoBoasVindas}>
+            <div
+              className={styles.balaoBoasVindas}
+              onClick={() => setAberto(true)}
+              role="button"
+              tabIndex={0}
+            >
               <button
                 type="button"
                 className={styles.fecharBalao}

@@ -94,6 +94,10 @@ export function useArrastar(chaveStorage, elementoRef) {
       top: alvo.top,
       largura: alvo.width,
       altura: alvo.height,
+      // Toque tem tremor natural bem maior que mouse — um limite pequeno
+      // (4px) fazia até um toque parado (tap) ser lido como arraste real
+      // no celular, e aí o clique de abrir o chat era bloqueado.
+      limite: e.pointerType === 'touch' ? 10 : 4,
     }
     arrastandoRef.current = true
     moveuRef.current = false
@@ -103,7 +107,14 @@ export function useArrastar(chaveStorage, elementoRef) {
     if (!arrastandoRef.current || !inicioRef.current) return
     const dx = e.clientX - inicioRef.current.clientX
     const dy = e.clientY - inicioRef.current.clientY
-    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moveuRef.current = true
+    const passouDoLimite = Math.abs(dx) > inicioRef.current.limite || Math.abs(dy) > inicioRef.current.limite
+
+    // Enquanto o movimento estiver dentro da margem de tremor, não mexe em
+    // nada ainda — evita o personagem "escorregando" visualmente num toque
+    // que na real é só um tap parado.
+    if (!passouDoLimite && !moveuRef.current) return
+
+    moveuRef.current = true
     const bruto = { x: inicioRef.current.left + dx, y: inicioRef.current.top + dy }
     setPosicao(limitarNaTela(bruto, inicioRef.current.largura, inicioRef.current.altura))
   }

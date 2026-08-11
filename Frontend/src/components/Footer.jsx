@@ -1,6 +1,6 @@
 import styles from './Footer.module.css'
 
-const VERSAO = 'v1.0.0'
+const VERSAO = 'v1.2.0'
 const ANO = new Date().getFullYear()
 
 // Ícones desenhados como SVG inline (mesma abordagem do resto do projeto) em vez
