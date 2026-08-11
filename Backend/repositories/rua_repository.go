@@ -28,7 +28,9 @@ func (r *ruaRepository) FindAll(ctx context.Context, filters map[string]string) 
 	query := r.db.WithContext(ctx).Model(&models.Rua{})
 
 	if nome, ok := filters["nome"]; ok && nome != "" {
-		query = query.Where("nome_rua ILIKE ?", "%"+nome+"%")
+		// unaccent nos dois lados: sem acento no que a pessoa digitou
+		// continua achando rua com acento no nome, e vice-versa.
+		query = query.Where("unaccent(nome_rua) ILIKE unaccent(?)", "%"+nome+"%")
 	}
 	if cep, ok := filters["cep"]; ok && cep != "" {
 		query = query.Where("cep LIKE ?", "%"+cep+"%")

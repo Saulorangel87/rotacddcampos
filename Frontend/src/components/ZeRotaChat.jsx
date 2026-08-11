@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { conversarComZeRota } from '../api/zeRota.js'
 import { useReconhecimentoDeVoz } from '../hooks/useReconhecimentoDeVoz.js'
+import { useArrastar } from '../hooks/useArrastar.js'
 import styles from './ZeRotaChat.module.css'
 
 const MENSAGEM_BOAS_VINDAS = 'Oi, eu sou o Zé Rota! Pergunta onde fica uma rua que eu confiro pra você — pode falar ou escrever.'
@@ -12,18 +13,37 @@ export default function ZeRotaChat() {
   const [texto, setTexto] = useState('')
   const [enviando, setEnviando] = useState(false)
   const fimDaListaRef = useRef(null)
+  const campoRef = useRef(null)
 
   const { ouvindo, ouvirVoz } = useReconhecimentoDeVoz((transcrito) => {
     setTexto(transcrito)
+    enviarPergunta(transcrito) // ao terminar de falar, envia direto, sem precisar apertar Enter
   })
+
+  const containerRef = useRef(null)
+  const { posicao, onPointerDown, onPointerMove, onPointerUp, foiArrasteReal } = useArrastar(
+    'ze_rota_posicao',
+    containerRef
+  )
 
   useEffect(() => {
     fimDaListaRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [mensagens, enviando])
 
-  async function enviar(e) {
-    e.preventDefault()
-    const pergunta = texto.trim()
+  // Garante que o cursor volte pro campo assim que ele deixar de estar
+  // ocupado (troca de estado já aplicada no DOM, diferente de chamar
+  // focus() no meio da função async de envio).
+  useEffect(() => {
+    if (!enviando) campoRef.current?.focus()
+  }, [enviando])
+
+  function aoClicarPersonagem() {
+    if (foiArrasteReal()) return // evita abrir o chat sem querer logo depois de soltar um arraste
+    setAberto(true)
+  }
+
+  async function enviarPergunta(perguntaBruta) {
+    const pergunta = perguntaBruta.trim()
     if (!pergunta || enviando) return
 
     const historico = [...mensagens, { role: 'user', content: pergunta }]
@@ -41,10 +61,21 @@ export default function ZeRotaChat() {
     }
   }
 
+  function enviar(e) {
+    e.preventDefault()
+    enviarPergunta(texto)
+  }
+
+  const estiloPosicao = posicao ? { left: posicao.x, top: posicao.y, right: 'auto', bottom: 'auto' } : undefined
+
   return (
     <>
       {!aberto && (
-        <div className={styles.personagemContainer}>
+        <div
+          ref={containerRef}
+          className={styles.personagemContainer}
+          style={estiloPosicao}
+        >
           {balaoVisivel && (
             <div className={styles.balaoBoasVindas}>
               <button
@@ -54,20 +85,25 @@ export default function ZeRotaChat() {
                   e.stopPropagation()
                   setBalaoVisivel(false)
                 }}
-                aria-label="Fechar"
+                aria-label="Fechar mensagem"
               >
                 ✕
               </button>
               {MENSAGEM_BOAS_VINDAS}
             </div>
           )}
+
           <button
             type="button"
             className={styles.personagemBotao}
-            onClick={() => setAberto(true)}
-            aria-label="Falar com o Zé Rota"
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerUp}
+            onClick={aoClicarPersonagem}
+            aria-label="Falar com o Zé Rota (segure e arraste pra mover)"
           >
-            <img src="/images/ze-rota-corpo.png" alt="Zé Rota, assistente de rotas" />
+            <img draggable="false" className={styles.imgCorpo} src="/images/ze-rota-corpo.png" alt="Zé Rota, assistente de rotas" />
           </button>
         </div>
       )}
@@ -110,12 +146,13 @@ export default function ZeRotaChat() {
 
           <form className={styles.rodape} onSubmit={enviar}>
             <input
+              ref={campoRef}
               type="text"
               className={styles.campo}
               placeholder="Pergunta pro Zé Rota…"
               value={texto}
               onChange={(e) => setTexto(e.target.value)}
-              disabled={enviando}
+              autoFocus
             />
             <button
               type="button"

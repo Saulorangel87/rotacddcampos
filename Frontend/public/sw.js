@@ -4,7 +4,7 @@
 // sempre vão direto pra rede, sem passar pelo cache. Isso evita tanto servir
 // dado desatualizado quanto guardar informação sensível no dispositivo.
 
-const CACHE_NAME = "cdd-campos-v2";
+const CACHE_NAME = "cdd-campos-v3";
 
 const CAMINHOS_API = [
   "/auth",

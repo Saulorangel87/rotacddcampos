@@ -4,6 +4,7 @@ import { listarRuas, excluirRua } from '../api/ruas.js'
 import { corDoDistrito } from '../data/distritos.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import NovaRuaModal from './NovaRuaModal.jsx'
+import EditarRuaModal from './EditarRuaModal.jsx'
 import ConfirmModal from './ConfirmModal.jsx'
 import ObservacoesRuaModal from './ObservacoesRuaModal.jsx'
 import styles from './RuasTable.module.css'
@@ -27,6 +28,7 @@ export default function RuasTable({ versao = 0 }) {
   const [excluindoId, setExcluindoId] = useState(null)
   const [ruaParaExcluir, setRuaParaExcluir] = useState(null)
   const [ruaObservacoes, setRuaObservacoes] = useState(null)
+  const [ruaParaEditar, setRuaParaEditar] = useState(null)
 
   useEffect(() => {
     listarRuas().then(setRuas)
@@ -38,6 +40,10 @@ export default function RuasTable({ versao = 0 }) {
 
   function aoCriarRua(novaRua) {
     setRuas((prev) => [novaRua, ...prev])
+  }
+
+  function aoAtualizarRuaNaLista(ruaAtualizada) {
+    setRuas((prev) => prev.map((r) => (r.id === ruaAtualizada.id ? ruaAtualizada : r)))
   }
 
   function aoExcluirRua(rua) {
@@ -176,6 +182,17 @@ export default function RuasTable({ versao = 0 }) {
                   {admin && (
                     <button
                       type="button"
+                      className={styles.btnNotas}
+                      onClick={() => setRuaParaEditar(r)}
+                      aria-label={`Editar ${r.nome_rua}`}
+                      title="Editar rua"
+                    >
+                      ✏️
+                    </button>
+                  )}
+                  {admin && (
+                    <button
+                      type="button"
                       className={styles.btnExcluir}
                       onClick={() => aoExcluirRua(r)}
                       disabled={excluindoId === r.id}
@@ -258,6 +275,14 @@ export default function RuasTable({ versao = 0 }) {
 
       {ruaObservacoes && (
         <ObservacoesRuaModal rua={ruaObservacoes} onFechar={() => setRuaObservacoes(null)} />
+      )}
+
+      {ruaParaEditar && (
+        <EditarRuaModal
+          rua={ruaParaEditar}
+          onFechar={() => setRuaParaEditar(null)}
+          onAtualizada={aoAtualizarRuaNaLista}
+        />
       )}
 
       <ConfirmModal

@@ -24,6 +24,17 @@ export async function listarRuas({ nome = '', cep = '', distrito = '' } = {}) {
 }
 
 /**
+ * Atualiza qualquer combinação de campos de uma rua (PUT /ruas/:id — exige
+ * admin). Usada tanto pra corrigir nome/CEP/bairro quanto pra mover distrito.
+ */
+export async function atualizarRua(id, dados) {
+  return apiFetchJson(`/ruas/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(dados),
+  })
+}
+
+/**
  * Atualiza o distrito de uma rua (PUT /ruas/:id — exige admin).
  * IMPORTANTE: antes essa função engolia qualquer erro (inclusive 401/403) e
  * devolvia null, então a tela achava que tinha salvo mesmo quando a API
