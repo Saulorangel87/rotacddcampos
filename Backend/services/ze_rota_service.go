@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -21,9 +22,21 @@ import (
 // Worker repassa o corpo da requisição sem mexer, então tools/function
 // calling funciona igual falaria direto com a Groq.
 const (
-	groqModel              = "llama-3.3-70b-versatile"
+	// A Groq aposentou o llama-3.3-70b-versatile (anúncio de 17/06/2026).
+	// openai/gpt-oss-120b é a substituição recomendada por eles pra esse
+	// caso de uso (suporta tool use, boa velocidade). Se a Groq aposentar
+	// esse também no futuro, o erro vai aparecer nos logs do servidor
+	// (log.Printf mais abaixo) exatamente igual dessa vez.
+	groqModel              = "openai/gpt-oss-120b"
 	maxRodadasDeFerramenta = 3
 )
+
+// ErrFalhaUpstreamZeRota identifica falha de infraestrutura (Worker/Groq
+// fora do ar, erro de rede, resposta malformada) — diferente de um erro de
+// requisição malformada vinda do front. O handler HTTP usa isso pra
+// devolver 502 em vez de 400, deixando a aba Network do navegador contar a
+// história certa.
+var ErrFalhaUpstreamZeRota = errors.New("o Zé Rota não conseguiu processar essa pergunta agora, tenta reformular ou pergunta de novo em instantes")
 
 const zeRotaSystemPrompt = `Você é o Zé Rota, o assistente de rotas do CDD Campos dos Goytacazes (Correios).
 Você é um carteiro experiente e camarada, não um sistema de busca — fala com quem te pergunta do jeito
@@ -175,9 +188,17 @@ var ferramentas = []groqTool{
 			Name:        "consultar_clima",
 			Description: "Consulta a previsão do tempo atual e de curto prazo pra Campos dos Goytacazes (Open-Meteo, sem custo). Use quando perguntarem sobre o tempo, ou quando for útil avisar sobre chuva que pode afetar uma entrega.",
 			Parameters: groqParametros{
-				Type:       "object",
-				Properties: map[string]groqCampo{},
-				Required:   []string{},
+				Type: "object",
+				Properties: map[string]groqCampo{
+					// Ferramenta não precisa de parâmetro nenhum (a cidade é
+					// fixa), mas deixamos um campo opcional aqui de
+					// propósito: "properties" totalmente vazio em ferramenta
+					// sem parâmetro é um padrão conhecido de gerar 400 em
+					// APIs no formato OpenAI/Groq — mais seguro sempre ter
+					// pelo menos um campo declarado, mesmo que opcional.
+					"observacao": {Type: "string", Description: "Opcional, pode deixar em branco — não precisa preencher"},
+				},
+				Required: []string{},
 			},
 		},
 	},
@@ -199,7 +220,7 @@ var ferramentas = []groqTool{
 
 func texto(s string) *string { return &s }
 
-// Às vezes o Llama "vaza" a sintaxe de chamada de ferramenta como texto
+// Às vezes o modelo "vaza" a sintaxe de chamada de ferramenta como texto
 // dentro da própria resposta, em vez de disparar a chamada de verdade —
 // falha conhecida e intermitente do modelo via Groq, não é algo que dá pra
 // eliminar 100% só no prompt. Essa expressão limpa qualquer resquício
@@ -261,7 +282,7 @@ func (s *zeRotaService) Conversar(ctx context.Context, historico []MensagemChat)
 	return "", errors.New("o Zé Rota tentou buscar informação demais numa pergunta só, tenta reformular")
 }
 
-// chamarWorkerComRetentativa existe porque o Llama via Groq às vezes erra a
+// chamarWorkerComRetentativa existe porque o modelo via Groq às vezes erra a
 // própria sintaxe da chamada de ferramenta ("Failed to call a function") de
 // forma intermitente — não é erro nosso nem do carteiro perguntando, é
 // instabilidade pontual do modelo. Uma segunda tentativa quase sempre
@@ -271,11 +292,17 @@ func (s *zeRotaService) chamarWorkerComRetentativa(ctx context.Context, mensagen
 	if err == nil {
 		return resposta, nil
 	}
+	log.Printf("[ze-rota] 1ª tentativa falhou, tentando de novo: %v", err)
 
 	time.Sleep(400 * time.Millisecond)
 	resposta, err = s.chamarWorker(ctx, mensagens)
 	if err != nil {
-		return nil, errors.New("o Zé Rota não conseguiu processar essa pergunta agora, tenta reformular ou pergunta de novo em instantes")
+		// Log com o erro real, pra dar pra investigar via `docker logs` — o
+		// que volta pro navegador continua sendo só a mensagem genérica em
+		// ErrFalhaUpstreamZeRota, não queremos vazar detalhe técnico pro
+		// carteiro.
+		log.Printf("[ze-rota] 2ª tentativa também falhou, desistindo: %v", err)
+		return nil, ErrFalhaUpstreamZeRota
 	}
 	return resposta, nil
 }

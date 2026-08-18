@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"errors"
+
 	"github.com/empresa/rotas-entrega/services"
 	"github.com/gofiber/fiber/v2"
 )
@@ -35,6 +37,13 @@ func (h *ZeRotaHandler) Conversar(c *fiber.Ctx) error {
 
 	resposta, err := h.service.Conversar(c.Context(), dto.Mensagens)
 	if err != nil {
+		// Falha de infraestrutura (Worker/Groq fora do ar, rede) é 502, não
+		// 400 — 400 fica reservado pra requisição realmente malformada. O
+		// erro real (com detalhe técnico) já foi logado no servidor pelo
+		// serviço; aqui só repassamos a mensagem amigável.
+		if errors.Is(err, services.ErrFalhaUpstreamZeRota) {
+			return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"error": err.Error()})
+		}
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
