@@ -17,6 +17,7 @@ import LoginModal from "./components/LoginModal.jsx";
 import TrocarSenhaModal from "./components/TrocarSenhaModal.jsx";
 import Footer from "./components/Footer.jsx";
 import ZeRotaChat from "./components/ZeRotaChat.jsx";
+import AcessoRestrito from "./components/AcessoRestrito.jsx";
 import { listarRuas } from "./api/ruas.js";
 import { useAuth } from "./context/AuthContext.jsx";
 import styles from "./App.module.css";
@@ -75,8 +76,8 @@ export default function App() {
       return;
     }
     if (id === "folgas") {
-      // Consulta é pública de propósito — qualquer carteiro pode ver o
-      // próprio saldo digitando a matrícula, sem precisar de login.
+      // A Sidebar só aparece pra quem já está logado (ver AcessoRestrito),
+      // então aqui já é sempre um usuário autenticado.
       setFolgasAberto(true);
       return;
     }
@@ -119,63 +120,71 @@ export default function App() {
   return (
     <div className={styles.app}>
       <Header onBuscar={executarBusca} />
-      <DistrictNav
-        distritoAtivo={distritoAtivo}
-        onSelecionar={setDistritoAtivo}
-      />
 
-      <div className={styles.corpo}>
-        <Sidebar
-          ativo={painelAjustesAberto ? "ajustes" : secaoAtiva}
-          onSelecionar={selecionarSidebar}
-          admin={admin}
-        />
+      {!autenticado ? (
+        <AcessoRestrito />
+      ) : (
+        <>
+          <DistrictNav
+            distritoAtivo={distritoAtivo}
+            onSelecionar={setDistritoAtivo}
+          />
 
-        <main className={styles.principal}>
-          {secaoAtiva === "mapa" && (
-            <>
-              <div className={styles.grade}>
-                <MapPanel
-                  distritoAtivo={distritoAtivo}
-                  onSelecionarDistrito={setDistritoAtivo}
-                  onAbrirAjustes={() => selecionarSidebar("ajustes")}
-                  versao={historicoVersao}
-                  resultadoBusca={resultadoBusca}
-                  onLimparBusca={() => setResultadoBusca(null)}
-                />
-              </div>
+          <div className={styles.corpo}>
+            <Sidebar
+              ativo={painelAjustesAberto ? "ajustes" : secaoAtiva}
+              onSelecionar={selecionarSidebar}
+              admin={admin}
+            />
 
-              {painelAjustesAberto && admin && (
-                <AjustesRotasPanel
-                  distritoOrigem={distritoAtivo}
-                  onFechar={() => setPainelAjustesAberto(false)}
-                  onConcluido={registrarAlteracao}
-                />
+            <main className={styles.principal}>
+              {secaoAtiva === "mapa" && (
+                <>
+                  <div className={styles.grade}>
+                    <MapPanel
+                      distritoAtivo={distritoAtivo}
+                      onSelecionarDistrito={setDistritoAtivo}
+                      onAbrirAjustes={() => selecionarSidebar("ajustes")}
+                      versao={historicoVersao}
+                      resultadoBusca={resultadoBusca}
+                      onLimparBusca={() => setResultadoBusca(null)}
+                    />
+                  </div>
+
+                  {painelAjustesAberto && admin && (
+                    <AjustesRotasPanel
+                      distritoOrigem={distritoAtivo}
+                      onFechar={() => setPainelAjustesAberto(false)}
+                      onConcluido={registrarAlteracao}
+                    />
+                  )}
+
+                  <OperacaoResumo versao={statsVersao} />
+
+                  <div className={styles.grade2}>
+                    <RecentChanges alteracoes={alteracoes} />
+                    <DicaBanner texto="As alterações são registradas no histórico e podem ser acompanhadas por relatórios." />
+                  </div>
+
+                  <div id="tabela-ruas">
+                    <RuasTable versao={historicoVersao} />
+                  </div>
+                </>
               )}
 
-              <OperacaoResumo versao={statsVersao} />
+              {secaoAtiva === "cep" && <CepLookup />}
 
-              <div className={styles.grade2}>
-                <RecentChanges alteracoes={alteracoes} />
-                <DicaBanner texto="As alterações são registradas no histórico e podem ser acompanhadas por relatórios." />
-              </div>
+              {secaoAtiva === "relatorios" && (
+                <RelatorioMovimentacoes versao={historicoVersao} />
+              )}
+            </main>
+          </div>
 
-              <div id="tabela-ruas">
-                <RuasTable versao={historicoVersao} />
-              </div>
-            </>
-          )}
-
-          {secaoAtiva === "cep" && <CepLookup />}
-
-          {secaoAtiva === "relatorios" && (
-            <RelatorioMovimentacoes versao={historicoVersao} />
-          )}
-        </main>
-      </div>
+          <ZeRotaChat />
+        </>
+      )}
 
       <Footer />
-      <ZeRotaChat />
 
       <FolgasModal
         aberto={folgasAberto}

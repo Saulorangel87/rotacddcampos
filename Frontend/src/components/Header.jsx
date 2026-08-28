@@ -34,43 +34,48 @@ export default function Header({ onBuscar }) {
       </h1>
 
       <div className={styles.acoes}>
-        <form className={styles.busca} onSubmit={aoSubmeterBusca}>
-          <input
-            type="search"
-            placeholder="Buscar rua no mapa"
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            aria-label="Buscar rua no mapa"
-          />
-          <button
-            type="submit"
-            className={styles.btnBuscar}
-            aria-label="Buscar"
-          >
-            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
-              <circle
-                cx="10"
-                cy="10"
-                r="6.5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-              <line
-                x1="15"
-                y1="15"
-                x2="21"
-                y2="21"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-        </form>
+        {/* Busca depende de /ruas, que agora exige login — sem sentido mostrar
+            pra quem ainda não entrou */}
+        {autenticado && (
+          <form className={styles.busca} onSubmit={aoSubmeterBusca}>
+            <input
+              type="search"
+              placeholder="Buscar rua no mapa"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              aria-label="Buscar rua no mapa"
+            />
+            <button
+              type="submit"
+              className={styles.btnBuscar}
+              aria-label="Buscar"
+            >
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="6.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <line
+                  x1="15"
+                  y1="15"
+                  x2="21"
+                  y2="21"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </form>
+        )}
 
         <div className={styles.aniversarioGroup}>
-          <AniversarioBadge />
+          {/* Aniversariante do dia também exige login agora */}
+          {autenticado && <AniversarioBadge />}
 
           {autenticado ? (
             <div className={styles.usuarioLogado}>

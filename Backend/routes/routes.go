@@ -14,8 +14,10 @@ import (
 // jwtSecret e jwtHoras vêm da config (config.JWTSecret / config.JWTExpiracaoHoras).
 //
 // Modelo de acesso:
-//   - Público (sem token): mapa/distritos, busca de ruas, CEP, aniversariantes, health, swagger
-//   - Autenticado (qualquer papel): listar/ver colaboradores, histórico, estatísticas
+//   - Público (sem token): apenas health e swagger (infraestrutura)
+//   - Autenticado (qualquer papel — colaborador ou admin): tudo o mais que é
+//     leitura — mapa/distritos, busca de ruas, CEP, aniversariantes, folgas,
+//     observações de rua, Zé Rota, colaboradores, histórico, estatísticas
 //   - Admin: criar/editar/excluir ruas e colaboradores, gerenciar usuários
 func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, zeRotaWorkerURL string) {
 	autenticado := middlewares.ExigirAutenticacao(jwtSecret)
@@ -57,10 +59,11 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, ze
 
 	api := app.Group("/ruas")
 	{
-		// Consulta de ruas/rotas continua livre pra qualquer pessoa (mapa, busca, impressão)
-		api.Get("/", ruaHandler.ListRuas)
-		api.Get("/:id", ruaHandler.GetRua)
-		// Escrita exige admin
+		// Consulta de ruas/rotas agora exige login (qualquer papel) — acesso
+		// restrito a funcionário da empresa, não é mais público
+		api.Get("/", autenticado, ruaHandler.ListRuas)
+		api.Get("/:id", autenticado, ruaHandler.GetRua)
+		// Escrita continua exigindo admin
 		api.Post("/", somenteAdmin, ruaHandler.CreateRua)
 		api.Put("/:id", somenteAdmin, ruaHandler.UpdateRua)
 		api.Delete("/:id", somenteAdmin, ruaHandler.DeleteRua)
@@ -73,9 +76,9 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, ze
 
 	colaboradores := app.Group("/colaboradores")
 	{
-		// Aniversariante do dia continua público — é a homenagem, sem dado sensível de lista completa
-		colaboradores.Get("/aniversariantes-hoje", colaboradorHandler.AniversariantesHoje)
-		// Resto da área de colaboradores exige login (qualquer papel pra ver, admin pra escrever)
+		// Acesso público removido — agora exige login como o resto da área de
+		// colaboradores (qualquer papel pra ver, admin pra escrever)
+		colaboradores.Get("/aniversariantes-hoje", autenticado, colaboradorHandler.AniversariantesHoje)
 		colaboradores.Get("/", autenticado, colaboradorHandler.ListColaboradores)
 		colaboradores.Get("/:id", autenticado, colaboradorHandler.GetColaborador)
 		colaboradores.Post("/", somenteAdmin, colaboradorHandler.CreateColaborador)
@@ -83,50 +86,45 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, ze
 	}
 
 	// Injeção de dependências - Folgas
-	// Consulta por matrícula é pública (não exige login), mas precisa da
-	// matrícula exata — não lista colaboradores. Lançar/excluir é admin-only.
+	// Consulta por matrícula agora exige login — antes era pública mesmo
+	// precisando de matrícula exata. Lançar/excluir continua admin-only.
 	folgaRepo := repositories.NewFolgaRepository(db)
 	folgaService := services.NewFolgaService(folgaRepo, colaboradorRepo, historicoRepo)
 	folgaHandler := handlers.NewFolgaHandler(folgaService)
 
 	folgas := app.Group("/folgas")
 	{
-		folgas.Get("/saldo", folgaHandler.ConsultarSaldo)
+		folgas.Get("/saldo", autenticado, folgaHandler.ConsultarSaldo)
 		folgas.Post("/", somenteAdmin, folgaHandler.LancarFolga)
 		folgas.Delete("/:id", somenteAdmin, folgaHandler.ExcluirLancamento)
 	}
 
 	// Injeção de dependências - Observações de rua (conhecimento de campo
-	// dos carteiros; leitura pública, escrita/exclusão só admin)
+	// dos carteiros; agora exige login pra leitura também, escrita/exclusão só admin)
 	ruaObsRepo := repositories.NewRuaObservacaoRepository(db)
 	ruaObsService := services.NewRuaObservacaoService(ruaObsRepo, ruaRepo)
 	ruaObsHandler := handlers.NewRuaObservacaoHandler(ruaObsService)
-	app.Get("/ruas/:id/observacoes", ruaObsHandler.Listar)
+	app.Get("/ruas/:id/observacoes", autenticado, ruaObsHandler.Listar)
 	app.Post("/ruas/:id/observacoes", somenteAdmin, ruaObsHandler.Adicionar)
 	app.Delete("/observacoes/:id", somenteAdmin, ruaObsHandler.Excluir)
 
-	// Injeção de dependências - Zé Rota (chat público; sem chave de API
-	// configurada, a rota responde erro amigável mas não derruba o resto)
+	// Injeção de dependências - Zé Rota (agora exige login — antes era chat público)
 	zeRotaService := services.NewZeRotaService(zeRotaWorkerURL, ruaRepo, ruaObsRepo)
 	zeRotaHandler := handlers.NewZeRotaHandler(zeRotaService)
-	app.Post("/ze-rota/conversar", zeRotaHandler.Conversar)
+	app.Post("/ze-rota/conversar", autenticado, zeRotaHandler.Conversar)
 
-	// Injeção de dependências - Distritos (mapa é público)
+	// Injeção de dependências - Distritos (agora exige login — mapa não é mais público)
 	distritoRepo := repositories.NewDistritoRepository(db)
 	distritoService := services.NewDistritoService(distritoRepo)
 	distritoHandler := handlers.NewDistritoHandler(distritoService)
 
 	distritos := app.Group("/distritos")
 	{
-		distritos.Get("/", distritoHandler.ListDistritos)
-		distritos.Get("/:codigo", distritoHandler.GetDistrito)
+		distritos.Get("/", autenticado, distritoHandler.ListDistritos)
+		distritos.Get("/:codigo", autenticado, distritoHandler.GetDistrito)
 	}
 
-	// Injeção de dependências - Estatísticas
-	// Fica público de propósito: é a faixa "Operação em números" que já aparece
-	// embaixo do mapa pra qualquer visitante, e só expõe totais agregados (não
-	// nome/matrícula/aniversário de ninguém). Se quiser restringir também, é só
-	// trocar pra `autenticado` aqui.
+	// Injeção de dependências - Estatísticas (agora exige login)
 	estatisticasHandler := handlers.NewEstatisticasHandler(ruaRepo, colaboradorRepo)
-	app.Get("/estatisticas/operacao", estatisticasHandler.OperacaoEmNumeros)
+	app.Get("/estatisticas/operacao", autenticado, estatisticasHandler.OperacaoEmNumeros)
 }

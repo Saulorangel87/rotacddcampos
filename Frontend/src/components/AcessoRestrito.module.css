@@ -1,0 +1,58 @@
+.bloqueado {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  min-height: 60vh;
+}
+
+.cartao {
+  max-width: 420px;
+  text-align: center;
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 36px 28px;
+}
+
+.icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #e8f1fb;
+  color: var(--cor-azul);
+  margin-bottom: 16px;
+}
+
+.cartao h2 {
+  margin: 0 0 10px;
+  color: var(--cor-azul-escuro);
+  font-size: 1.25rem;
+}
+
+.cartao p {
+  margin: 0 0 20px;
+  color: var(--cinza-600);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.btnEntrar {
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 10px 22px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnEntrar:hover {
+  background: var(--cor-azul-escuro);
+}
