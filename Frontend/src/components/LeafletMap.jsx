@@ -197,6 +197,18 @@ export default function LeafletMap({
             key={distritoAtivo}
             data={ruasDoDistrito}
             style={{ color: '#0b3d91', weight: 3, opacity: 0.9 }}
+            // Ruas que só têm um ponto (geocodificadas, sem linha real ainda)
+            // viram um círculo, não o ícone padrão do Leaflet — esse ícone
+            // depende de uma imagem cujo caminho quebra com o build do Vite.
+            pointToLayer={(feature, latlng) =>
+              L.circleMarker(latlng, {
+                radius: 7,
+                color: '#0b3d91',
+                weight: 2,
+                fillColor: '#0b3d91',
+                fillOpacity: 0.6,
+              })
+            }
             onEachFeature={(feature, layer) => {
               if (feature.properties?.nome) layer.bindTooltip(feature.properties.nome, { sticky: true })
             }}
@@ -207,6 +219,15 @@ export default function LeafletMap({
             key={`destaque-${ruaDestacada.properties.nome}`}
             data={ruaDestacada}
             style={{ color: '#ff5722', weight: 7, opacity: 0.95 }}
+            pointToLayer={(feature, latlng) =>
+              L.circleMarker(latlng, {
+                radius: 10,
+                color: '#ff5722',
+                weight: 3,
+                fillColor: '#ff5722',
+                fillOpacity: 0.5,
+              })
+            }
           />
         )}
         {centroAtivo && distritoAtivo && (
