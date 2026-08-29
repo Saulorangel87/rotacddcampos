@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+import { apiFetch } from './client.js'
 
 /**
  * Busca os distritos no banco (GET /distritos) e monta uma FeatureCollection
@@ -8,10 +8,14 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
  *
  * Se a API falhar ou a tabela ainda estiver vazia, cai pro arquivo estático
  * em public/geojson/distritos.json (o que já tínhamos antes de existir banco).
+ *
+ * Usa apiFetch (não fetch direto) porque /distritos exige login desde a
+ * restrição de acesso público — sem isso, essa chamada sempre voltava 401 e
+ * caía pro arquivo estático em silêncio, nunca refletindo o banco de verdade.
  */
 export async function buscarDistritosGeoJSON() {
   try {
-    const res = await fetch(`${API_URL}/distritos`)
+    const res = await apiFetch('/distritos')
     if (!res.ok) throw new Error(`API respondeu ${res.status}`)
     const linhas = await res.json()
 

@@ -1,6 +1,15 @@
 import styles from './ConfirmModal.module.css'
 
-export default function ConfirmModal({ aberto, titulo, mensagem, onConfirmar, onCancelar, confirmando }) {
+export default function ConfirmModal({
+  aberto,
+  titulo,
+  mensagem,
+  onConfirmar,
+  onCancelar,
+  confirmando,
+  textoConfirmar = 'Excluir',
+  textoConfirmando = 'Excluindo…',
+}) {
   if (!aberto) return null
 
   return (
@@ -21,7 +30,7 @@ export default function ConfirmModal({ aberto, titulo, mensagem, onConfirmar, on
             Cancelar
           </button>
           <button type="button" className={styles.botaoPerigo} onClick={onConfirmar} disabled={confirmando}>
-            {confirmando ? 'Excluindo…' : 'Excluir'}
+            {confirmando ? textoConfirmando : textoConfirmar}
           </button>
         </footer>
       </div>

@@ -1,0 +1,304 @@
+.caixa {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 20px;
+  max-width: 920px;
+}
+
+.titulo {
+  font-size: 1.1rem;
+  margin: 0 0 4px;
+  color: var(--cor-azul-escuro);
+}
+
+.dica {
+  font-size: 0.85rem;
+  color: var(--cinza-600);
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.erro {
+  background: #fdecea;
+  color: #b3261e;
+  border-radius: var(--raio-sm);
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin: 12px 0;
+}
+
+/* ── Formulário de novo plano ─────────────────────────────────────── */
+.formNovoPlano {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.campoNovoPlano {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.campoNovoPlano label {
+  font-size: 0.8rem;
+  color: var(--cinza-600);
+}
+
+.campoNovoPlano input {
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 9px 12px;
+  font-size: 0.9rem;
+  width: 180px;
+}
+
+.botaoPrimario {
+  background: var(--cor-azul);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 10px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.botaoPrimario:hover:not(:disabled) {
+  background: var(--cor-azul-escuro);
+}
+
+.botaoPrimario:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.botaoPerigo {
+  background: #b3261e;
+  color: var(--branco);
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 10px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.botaoPerigo:hover:not(:disabled) {
+  background: #8f1e18;
+}
+
+.botaoSecundario {
+  background: var(--branco);
+  color: var(--cor-azul);
+  border: 1px solid var(--cor-azul);
+  border-radius: var(--raio-sm);
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.botaoSecundario:hover:not(:disabled) {
+  background: #e8f1fb;
+}
+
+.botaoSecundario:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Cabeçalho do plano ativo ─────────────────────────────────────── */
+.botaoVoltar {
+  background: transparent;
+  border: none;
+  color: var(--cor-azul);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.botaoVoltar:hover {
+  text-decoration: underline;
+}
+
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.tagRascunho,
+.tagConcluido {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.tagRascunho {
+  background: #fff3cd;
+  color: #7a5c00;
+}
+
+.tagConcluido {
+  background: #d4edda;
+  color: #1e6b30;
+}
+
+/* ── Barra de progresso ───────────────────────────────────────────── */
+.progresso {
+  margin-bottom: 18px;
+}
+
+.barraFundo {
+  background: var(--cinza-200);
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.barraPreenchida {
+  background: var(--cor-azul);
+  height: 100%;
+  transition: width 0.25s ease;
+}
+
+.progressoTexto {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--cinza-600);
+}
+
+/* ── Grupos por distrito de origem ────────────────────────────────── */
+.grupos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 520px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.grupo {
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  /* flex-shrink: 0 é essencial aqui — sem isso, o overflow:hidden abaixo
+     muda o "tamanho mínimo automático" do item pra 0 (regra do próprio
+     flexbox), e o navegador comprime cada grupo pra caber no max-height do
+     .grupos em vez de deixar a lista rolar, cortando as ruas no meio. */
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.grupoCabecalho {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #f7f9fb;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--cinza-200);
+}
+
+.chipDistrito {
+  color: var(--branco);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+
+.grupoTitulo {
+  font-size: 0.82rem;
+  color: var(--cinza-600);
+  flex: 1;
+}
+
+.loteWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loteWrapper select {
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  padding: 6px 8px;
+  font-size: 0.78rem;
+}
+
+.listaRuas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.linhaRua {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--cinza-100, #f0f0f0);
+}
+
+.linhaRua:last-child {
+  border-bottom: none;
+}
+
+.infoRua {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nomeRua {
+  font-size: 0.86rem;
+  color: var(--cinza-800, #333);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bairroRua {
+  font-size: 0.74rem;
+  color: var(--cinza-500, #888);
+}
+
+.selectVazio,
+.selectPreenchido {
+  border-radius: var(--raio-sm);
+  padding: 6px 9px;
+  font-size: 0.8rem;
+  min-width: 180px;
+}
+
+.selectVazio {
+  border: 1px solid #e0a800;
+  background: #fffaf0;
+}
+
+.selectPreenchido {
+  border: 1px solid var(--cinza-200);
+  background: var(--branco);
+}
+
+/* ── Rodapé de ações ──────────────────────────────────────────────── */
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--cinza-200);
+}

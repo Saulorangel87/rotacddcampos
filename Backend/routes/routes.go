@@ -127,4 +127,21 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, ze
 	// Injeção de dependências - Estatísticas (agora exige login)
 	estatisticasHandler := handlers.NewEstatisticasHandler(ruaRepo, colaboradorRepo)
 	app.Get("/estatisticas/operacao", autenticado, estatisticasHandler.OperacaoEmNumeros)
+
+	// Injeção de dependências - Redistritamento
+	// Ferramenta sensível (muda distrito de centenas de ruas de uma vez) —
+	// admin-only em todas as rotas, sem exceção nem pra leitura.
+	redistritamentoRepo := repositories.NewRedistritamentoRepository(db)
+	redistritamentoService := services.NewRedistritamentoService(redistritamentoRepo, distritoRepo, ruaRepo)
+	redistritamentoHandler := handlers.NewRedistritamentoHandler(redistritamentoService)
+
+	redistritamento := app.Group("/redistritamento", somenteAdmin)
+	{
+		redistritamento.Get("/ativo", redistritamentoHandler.GetPlanoAtivo)
+		redistritamento.Post("/planos", redistritamentoHandler.CriarPlano)
+		redistritamento.Put("/planos/:planoId/ruas/:ruaId", redistritamentoHandler.ReatribuirRua)
+		redistritamento.Post("/planos/:planoId/concluir", redistritamentoHandler.Concluir)
+		redistritamento.Post("/planos/:planoId/aplicar", redistritamentoHandler.Aplicar)
+		redistritamento.Delete("/planos/:planoId", redistritamentoHandler.Cancelar)
+	}
 }

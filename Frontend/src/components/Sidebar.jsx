@@ -8,10 +8,12 @@ import {
   IconeRelatorios,
   IconeUsuarios,
   IconeFolgas,
+  IconeRedistritamento,
 } from "./icons/Icons.jsx";
 
 const ITENS = [
   { id: "mapa", label: "Mapa Geral", Icone: IconeMapa },
+  { id: "redistritamento", label: "Redistritamento", Icone: IconeRedistritamento, soAdmin: true },
   { id: "ajustes", label: "Ajustes de Rotas", Icone: IconeAjustes },
   { id: "ruas", label: "Ruas", Icone: IconeRuas },
   { id: "cep", label: "CEP", Icone: IconeCep },

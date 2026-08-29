@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DISTRITOS } from "../../data/distritos.js";
+import { useDistritosAtivos } from "../../hooks/useDistritosAtivos.js";
 import { listarRuas, moverRuasEmLote } from "../../api/ruas.js";
 import DistrictMap from "../DistrictMap.jsx";
 import styles from "./AjustesRotasPanel.module.css";
@@ -12,6 +12,7 @@ export default function AjustesRotasPanel({
   onFechar,
   onConcluido,
 }) {
+  const { distritosAtivos } = useDistritosAtivos();
   const [passo, setPasso] = useState(0);
   const [ruas, setRuas] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -218,7 +219,7 @@ export default function AjustesRotasPanel({
                 onChange={(e) => setDistritoDestino(e.target.value)}
               >
                 <option value="">Selecione…</option>
-                {DISTRITOS.map((d) => (
+                {distritosAtivos.map((d) => (
                   <option key={d.numero} value={d.numero}>
                     {d.numero}
                   </option>

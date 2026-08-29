@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { criarRua } from '../api/ruas.js'
-import { DISTRITOS } from '../data/distritos.js'
+import { useDistritosAtivos } from '../hooks/useDistritosAtivos.js'
 import styles from './NovaRuaModal.module.css'
 
 export default function NovaRuaModal({ aberto, onFechar, onCriada }) {
+  const { distritosAtivos } = useDistritosAtivos()
   const [nomeRua, setNomeRua] = useState('')
   const [cep, setCep] = useState('')
   const [distrito, setDistrito] = useState('')
@@ -70,7 +71,7 @@ export default function NovaRuaModal({ aberto, onFechar, onCriada }) {
             Distrito *
             <select value={distrito} onChange={(e) => setDistrito(e.target.value)}>
               <option value="">Selecione…</option>
-              {DISTRITOS.map((d) => (
+              {distritosAtivos.map((d) => (
                 <option key={d.numero} value={d.numero}>{d.numero}</option>
               ))}
             </select>

@@ -22,9 +22,13 @@ func NewDistritoRepository(db *gorm.DB) DistritoRepository {
 	return &distritoRepository{db: db}
 }
 
+// FindAll só traz distritos ativos — um distrito extinto por um
+// redistritamento aplicado não deve aparecer no mapa nem nos chips de
+// seleção pra ninguém. Pra fins internos (ex: reativar no futuro), use uma
+// consulta direta; não há hoje uma tela que precise ver os inativos.
 func (r *distritoRepository) FindAll(ctx context.Context) ([]models.Distrito, error) {
 	var distritos []models.Distrito
-	err := r.db.WithContext(ctx).Order("codigo asc").Find(&distritos).Error
+	err := r.db.WithContext(ctx).Where("ativo = true").Order("codigo asc").Find(&distritos).Error
 	return distritos, err
 }
 

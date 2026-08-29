@@ -22,5 +22,7 @@ func RunMigrations(db *gorm.DB) error {
 		&models.AcessoLogin{},
 		&models.FolgaLancamento{},
 		&models.RuaObservacao{},
+		&models.PlanoRedistritamento{},
+		&models.PlanoRedistritamentoRua{},
 	)
 }

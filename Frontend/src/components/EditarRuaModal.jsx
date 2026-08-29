@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { atualizarRua } from '../api/ruas.js'
-import { DISTRITOS } from '../data/distritos.js'
+import { useDistritosAtivos } from '../hooks/useDistritosAtivos.js'
 import styles from './NovaRuaModal.module.css'
 
 export default function EditarRuaModal({ rua, onFechar, onAtualizada }) {
+  const { distritosAtivos } = useDistritosAtivos()
   const [nomeRua, setNomeRua] = useState(rua.nome_rua || '')
   const [cep, setCep] = useState(rua.cep || '')
   const [distrito, setDistrito] = useState(rua.distrito || '')
@@ -64,9 +65,15 @@ export default function EditarRuaModal({ rua, onFechar, onAtualizada }) {
             Distrito *
             <select value={distrito} onChange={(e) => setDistrito(e.target.value)}>
               <option value="">Selecione…</option>
-              {DISTRITOS.map((d) => (
+              {distritosAtivos.map((d) => (
                 <option key={d.numero} value={d.numero}>{d.numero}</option>
               ))}
+              {/* Se a rua já estava num distrito que virou inativo (extinto
+                  por um redistritamento), mantém a opção visível — senão o
+                  select fica "quebrado", mostrando vazio pra um valor real */}
+              {distrito && !distritosAtivos.some((d) => d.numero === distrito) && (
+                <option value={distrito}>{distrito} (inativo)</option>
+              )}
             </select>
           </label>
 

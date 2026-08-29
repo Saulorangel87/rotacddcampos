@@ -4,6 +4,7 @@ import DistrictNav from "./components/DistrictNav.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import MapPanel from "./components/MapPanel.jsx";
 import AjustesRotasPanel from "./components/AjustesRotasPanel/AjustesRotasPanel.jsx";
+import RedistritamentoPanel from "./components/RedistritamentoPanel/RedistritamentoPanel.jsx";
 import RecentChanges from "./components/RecentChanges.jsx";
 import DicaBanner from "./components/DicaBanner.jsx";
 import RuasTable from "./components/RuasTable.jsx";
@@ -100,6 +101,18 @@ export default function App() {
       setUsuariosAberto(true);
       return;
     }
+    if (id === "redistritamento") {
+      // Mesma lógica do "usuarios" — item nem aparece pra quem não é admin,
+      // mas o backend também recusa (somenteAdmin em toda rota), então essa
+      // checagem aqui é só defesa em profundidade.
+      if (!admin) {
+        setLoginAberto(true);
+        return;
+      }
+      setSecaoAtiva("redistritamento");
+      setPainelAjustesAberto(false);
+      return;
+    }
     if (id === "ruas") {
       // Já existe a lista completa de ruas na tela principal — em vez de duplicar,
       // "Ruas" leva direto pra ela e foca a busca.
@@ -177,6 +190,8 @@ export default function App() {
               {secaoAtiva === "relatorios" && (
                 <RelatorioMovimentacoes versao={historicoVersao} />
               )}
+
+              {secaoAtiva === "redistritamento" && admin && <RedistritamentoPanel />}
             </main>
           </div>
 

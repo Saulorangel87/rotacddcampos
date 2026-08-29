@@ -13,6 +13,9 @@ type RuaRepository interface {
 	Update(ctx context.Context, rua *models.Rua) error
 	Delete(ctx context.Context, id uint) error
 	ContarDistritosDistintos(ctx context.Context) (int64, error)
+	// FindByDistritosExato busca por código exato (não ILIKE parcial) — usado
+	// pelo redistritamento, onde "617" não pode acidentalmente casar com "6170".
+	FindByDistritosExato(ctx context.Context, codigos []string) ([]models.Rua, error)
 }
 
 type ruaRepository struct {
@@ -40,6 +43,15 @@ func (r *ruaRepository) FindAll(ctx context.Context, filters map[string]string) 
 	}
 
 	err := query.Order("nome_rua asc").Find(&ruas).Error
+	return ruas, err
+}
+
+func (r *ruaRepository) FindByDistritosExato(ctx context.Context, codigos []string) ([]models.Rua, error) {
+	var ruas []models.Rua
+	err := r.db.WithContext(ctx).
+		Where("distrito IN ? AND ativo = true", codigos).
+		Order("nome_rua asc").
+		Find(&ruas).Error
 	return ruas, err
 }
 

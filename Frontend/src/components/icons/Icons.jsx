@@ -31,6 +31,18 @@ export function IconeMapa(props) {
   );
 }
 
+export function IconeRedistritamento(props) {
+  return (
+    <Svg {...props}>
+      <path d="M4 9V6a2 2 0 0 1 2-2h3" />
+      <path d="m6 4-2 2 2 2" />
+      <path d="M20 15v3a2 2 0 0 1-2 2h-3" />
+      <path d="m18 20 2-2-2-2" />
+      <rect x="9" y="9" width="6" height="6" rx="1" />
+    </Svg>
+  );
+}
+
 export function IconeAjustes(props) {
   return (
     <Svg {...props}>

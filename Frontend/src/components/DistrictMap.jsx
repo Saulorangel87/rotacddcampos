@@ -1,11 +1,15 @@
-import { DISTRITOS, LAYOUT_DISTRITOS, LARGURA_TOTAL, ALTURA_TOTAL } from '../data/distritos.js'
+import { LAYOUT_DISTRITOS, LARGURA_TOTAL, ALTURA_TOTAL } from '../data/distritos.js'
+import { useDistritosAtivos } from '../hooks/useDistritosAtivos.js'
 import styles from './DistrictMap.module.css'
 
 /**
- * Mini-mapa esquemático dos 9 distritos, desenhado em SVG.
+ * Mini-mapa esquemático dos distritos, desenhado em SVG.
  * Não é geograficamente exato — é um diagrama de blocos na mesma disposição
  * relativa do mapa do Google My Maps atual, o suficiente para orientar
  * qual distrito está selecionado/em destaque sem depender de uma chave de API de mapas.
+ * Distritos extintos por um redistritamento aplicado somem sozinhos (usa o
+ * mesmo hook useDistritosAtivos que filtra pela API) — as posições de layout
+ * continuam fixas, só deixa de desenhar quem não está mais ativo.
  *
  * props:
  *  - emFoco: array de números de distrito para destacar (outros ficam esmaecidos)
@@ -13,6 +17,7 @@ import styles from './DistrictMap.module.css'
  *  - tamanho: 'grande' | 'pequeno'
  */
 export default function DistrictMap({ emFoco = [], seta = null, tamanho = 'grande' }) {
+  const { distritosAtivos } = useDistritosAtivos()
   const destacar = (numero) => emFoco.length === 0 || emFoco.includes(numero)
 
   const centro = (numero) => {
@@ -26,9 +31,9 @@ export default function DistrictMap({ emFoco = [], seta = null, tamanho = 'grand
       data-tamanho={tamanho}
       viewBox={`0 0 ${LARGURA_TOTAL} ${ALTURA_TOTAL}`}
       role="img"
-      aria-label={`Mapa esquemático dos ${DISTRITOS.length} distritos`}
+      aria-label={`Mapa esquemático dos ${distritosAtivos.length} distritos`}
     >
-      {DISTRITOS.map((d) => {
+      {distritosAtivos.map((d) => {
         const box = LAYOUT_DISTRITOS[d.numero]
         const emDestaque = destacar(d.numero)
         return (

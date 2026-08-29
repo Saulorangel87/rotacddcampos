@@ -7,9 +7,13 @@ import "time"
 // como chave primária (o mesmo texto já usado em ruas.distrito), evitando
 // criar um id novo e ter que migrar as 2264 ruas existentes.
 type Distrito struct {
-	Codigo    string    `gorm:"primaryKey;type:varchar(10)" json:"codigo"`
-	Nome      string    `gorm:"type:varchar(100)" json:"nome"`
-	Cor       string    `gorm:"type:varchar(20)" json:"cor"`
+	Codigo string `gorm:"primaryKey;type:varchar(10)" json:"codigo"`
+	Nome   string `gorm:"type:varchar(100)" json:"nome"`
+	Cor    string `gorm:"type:varchar(20)" json:"cor"`
+	// Ativo é falso pra distritos extintos num redistritamento aplicado.
+	// Nunca apagamos a linha — só desativamos, pra poder reverter (reativar)
+	// se um dia a quantidade de distritos precisar aumentar de novo.
+	Ativo     bool      `gorm:"not null;default:true;index" json:"ativo"`
 	GeoJSON   string    `gorm:"type:text" json:"geojson"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

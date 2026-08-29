@@ -1,12 +1,14 @@
-import { DISTRITOS } from '../data/distritos.js'
+import { useDistritosAtivos } from '../hooks/useDistritosAtivos.js'
 import styles from './DistrictNav.module.css'
 
 export default function DistrictNav({ distritoAtivo, onSelecionar }) {
+  const { distritosAtivos } = useDistritosAtivos()
+
   return (
     <nav className={styles.nav} aria-label="Selecionar distrito">
       <span className={styles.rotulo}>Selecione o distrito</span>
       <ul className={styles.lista}>
-        {DISTRITOS.map((d) => (
+        {distritosAtivos.map((d) => (
           <li key={d.numero}>
             <button
               type="button"

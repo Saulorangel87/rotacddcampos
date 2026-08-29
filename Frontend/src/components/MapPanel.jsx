@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import LeafletMap from './LeafletMap.jsx'
-import { DISTRITOS } from '../data/distritos.js'
+import { useDistritosAtivos } from '../hooks/useDistritosAtivos.js'
 import styles from './MapPanel.module.css'
 
 export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirAjustes, versao = 0, resultadoBusca = null, onLimparBusca }) {
   const [mostrarRuasReais, setMostrarRuasReais] = useState(false)
+  const { distritosAtivos } = useDistritosAtivos()
 
   return (
     <section className={styles.painel} aria-label="Mapa de distritos">
@@ -40,7 +41,7 @@ export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirA
         />
 
         <ul className={styles.legenda} aria-label="Legenda de distritos">
-          {DISTRITOS.map((d) => (
+          {distritosAtivos.map((d) => (
             <li key={d.numero}>
               <span className={styles.corLegenda} style={{ background: d.cor }} aria-hidden="true" />
               {d.numero}
