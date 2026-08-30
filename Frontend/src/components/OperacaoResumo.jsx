@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../api/client.js'
 import styles from './OperacaoResumo.module.css'
 import {
   IconeMapa,
@@ -14,14 +15,14 @@ import {
   IconeEstrela,
 } from './icons/Icons.jsx'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
-
 export default function OperacaoResumo({ versao = 0 }) {
   const [dados, setDados] = useState(null)
   const [erro, setErro] = useState(false)
 
   useEffect(() => {
-    fetch(`${API_URL}/estatisticas/operacao`)
+    // /estatisticas/operacao exige login desde a restrição de acesso
+    // público — precisa do apiFetch (que já manda o token), não um fetch cru.
+    apiFetch('/estatisticas/operacao')
       .then((res) => {
         if (!res.ok) throw new Error(`API respondeu ${res.status}`)
         return res.json()
