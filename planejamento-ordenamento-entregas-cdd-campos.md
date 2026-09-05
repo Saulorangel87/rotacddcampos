@@ -1,0 +1,1328 @@
+# NOVA FEATURE — ORDENAMENTO DE ENTREGAS
+## Guia de Logística — CDD Campos dos Goytacazes
+
+Quero implementar uma nova funcionalidade chamada **Ordenamento** no projeto existente.
+
+Antes de alterar qualquer arquivo:
+
+1. Analise a arquitetura atual do projeto.
+2. Identifique os componentes existentes que podem ser reaproveitados.
+3. Identifique models, services, repositories, handlers, routes e componentes React relacionados.
+4. Preserve os padrões arquiteturais atuais.
+5. Não refatore partes não relacionadas.
+6. Não faça mudanças destrutivas no banco.
+7. Não altere funcionalidades que já estão funcionando.
+8. Trabalhe em etapas pequenas.
+9. Rode build/testes a cada etapa relevante.
+10. Se encontrar alguma decisão que possa alterar significativamente a arquitetura existente, pare e me explique antes de implementar.
+
+O sistema está em produção e é utilizado por colaboradores reais.
+
+O deploy de produção é manual via GitHub Actions. Portanto, trabalhar primeiro localmente e não assumir que qualquer alteração deve ser publicada automaticamente.
+
+---
+
+# 1. OBJETIVO DA FEATURE
+
+A principal dor operacional que quero resolver é o tempo gasto pelo carteiro para organizar as encomendas antes de sair para entrega.
+
+Um colaborador pode receber, por exemplo:
+
+- 20 encomendas;
+- 25 encomendas;
+- 40 encomendas;
+- 50 encomendas;
+- ou mais.
+
+Essas encomendas NÃO necessariamente pertencem ao mesmo distrito postal.
+
+Um único colaborador pode sair com objetos distribuídos por vários distritos.
+
+Portanto:
+
+**NÃO pedir distrito para iniciar um ordenamento.**
+
+O objetivo inicial NÃO é criar um GPS completo nem calcular a rota viária perfeita.
+
+O objetivo do MVP é mais simples e prático:
+
+> receber várias encomendas, identificar as ruas envolvidas e sugerir uma sequência lógica de ruas a partir do CDD Campos, utilizando proximidade geográfica.
+
+A saída principal será uma **lista ordenada de ruas**.
+
+Exemplo:
+
+CDD Campos
+
+1. Avenida Sete de Setembro
+2. Rua Tenente Coronel Cardoso
+3. Avenida Pelinca
+4. Rua Voluntários da Pátria
+5. Rua Barão de Miracema
+6. ...
+
+Neste primeiro momento, saber a ordem aproximada das ruas já resolve grande parte da dor operacional.
+
+---
+
+# 2. PONTO DE PARTIDA FIXO
+
+Todo ordenamento deve começar no:
+
+**CDD Campos dos Goytacazes**  
+**Av. Sete de Setembro, 342**  
+**Campos dos Goytacazes - RJ**
+
+Este deve ser o ponto inicial fixo do algoritmo.
+
+Não quero perguntar ao colaborador de onde ele está saindo nesta primeira versão.
+
+O sistema deve possuir as coordenadas do CDD cadastradas/configuradas uma única vez.
+
+Conceitualmente:
+
+CDD = nó 0
+
+Depois:
+
+CDD
+→ rua 1
+→ rua 2
+→ rua 3
+→ ...
+→ rua N
+
+Não precisamos calcular retorno ao CDD nesta primeira versão.
+
+---
+
+# 3. ÁREA DE ATUAÇÃO
+
+A feature deve trabalhar apenas com endereços da região de:
+
+**Campos dos Goytacazes - RJ - Brasil**
+
+Não limitar por distrito postal.
+
+A rota pode atravessar vários distritos.
+
+Ao realizar qualquer geocodificação externa, sempre contextualizar a busca com:
+
+- Campos dos Goytacazes
+- Rio de Janeiro
+- Brasil
+
+Evitar aceitar resultados claramente localizados em outra cidade.
+
+Não criar um bloqueio rígido baseado nos polígonos dos distritos, porque esta feature deve poder trabalhar com múltiplos distritos em um mesmo ordenamento.
+
+---
+
+# 4. ESCOPO DO MVP
+
+Neste primeiro momento, a unidade principal de ordenação será a:
+
+## RUA
+
+Não precisamos calcular ainda a posição exata de cada número do logradouro.
+
+Exemplo:
+
+Encomendas:
+
+- Avenida Pelinca, 120
+- Avenida Pelinca, 450
+- Avenida Pelinca, 700
+
+Para o algoritmo inicial podemos considerar:
+
+Avenida Pelinca  
+3 objetos
+
+Ou seja:
+
+50 encomendas
+↓
+30 ruas diferentes
+↓
+ordenar as 30 ruas
+
+O número do endereço deve ser preservado nos dados do objeto sempre que estiver disponível, porque será útil futuramente.
+
+Mas ele NÃO deve ser requisito para gerar o ordenamento nesta primeira versão.
+
+---
+
+# 5. TRÊS FORMAS DE ENTRADA
+
+Quero permitir que o colaborador adicione encomendas de três maneiras:
+
+1. Digitação
+2. Voz
+3. Scanner da etiqueta/código
+
+Todas as três formas de entrada devem convergir para o mesmo fluxo interno.
+
+Arquitetura conceitual:
+
+DIGITAÇÃO ─┐
+           │
+VOZ ───────┼──→ normalização → identificação da rua → objeto
+           │
+SCANNER ───┘
+
+Não criar três sistemas separados.
+
+Criar uma camada comum de normalização/resolução.
+
+---
+
+# 6. ENTRADA MANUAL
+
+O colaborador poderá escrever algo como:
+
+"Pelinca 520"
+
+ou:
+
+"Avenida Pelinca 520"
+
+ou:
+
+"Rua Tenente Coronel Cardoso 300"
+
+O sistema deve tentar identificar a rua utilizando primeiro o banco interno do CDD.
+
+Prioridade:
+
+1. buscar no cadastro interno;
+2. normalizar texto;
+3. tentar encontrar correspondência;
+4. usar geocodificação externa apenas quando necessário.
+
+O banco interno deve continuar sendo a principal referência para os nomes das ruas.
+
+Evitar cadastrar livremente uma rua diferente quando já existir uma correspondente no banco.
+
+---
+
+# 7. ENTRADA POR VOZ
+
+A entrada por voz deve ser apenas uma alternativa à digitação.
+
+Exemplo:
+
+Usuário fala:
+
+"Rua Tenente Coronel Cardoso número quatrocentos"
+
+Transformar em texto.
+
+Depois utilizar exatamente o mesmo pipeline da entrada manual.
+
+Fluxo:
+
+voz
+→ texto
+→ normalização
+→ busca da rua
+→ criação do objeto
+
+O projeto já possui recursos de voz no Zé Rota.
+
+Antes de criar uma implementação nova do zero:
+
+- inspecionar o que já existe;
+- reaproveitar a infraestrutura quando fizer sentido;
+- evitar duplicação de lógica.
+
+---
+
+# 8. SCANNER
+
+Quero um botão de:
+
+**Escanear encomenda**
+
+e não simplesmente "Ler código de rastreamento".
+
+Objetivo:
+
+usar a câmera do celular para tentar extrair dados úteis da etiqueta da encomenda.
+
+A implementação deve ser projetada de maneira flexível.
+
+Pode haver diferentes códigos na etiqueta.
+
+Não assumir que todo código lido obrigatoriamente contém endereço completo.
+
+O scanner deve:
+
+1. detectar o código;
+2. identificar o conteúdo retornado;
+3. extrair os campos úteis que estiverem disponíveis;
+4. tentar associar o objeto a uma rua cadastrada;
+5. se não houver informação suficiente para identificar a rua, deixar o objeto pendente para complementação manual ou por voz.
+
+Se for possível extrair:
+
+- código de rastreamento;
+- CEP;
+- número;
+- complemento;
+- coordenadas;
+- outros dados úteis;
+
+preservar apenas o que for necessário para a funcionalidade.
+
+Não armazenar dados pessoais desnecessários do destinatário.
+
+---
+
+# 9. PRIVACIDADE
+
+Este sistema trabalha com dados operacionais reais.
+
+Para a funcionalidade de ordenamento, armazenar apenas o necessário.
+
+Priorizar:
+
+- código do objeto, quando necessário;
+- rua;
+- número;
+- complemento, quando necessário;
+- CEP;
+- latitude;
+- longitude;
+- origem da informação.
+
+Evitar armazenar:
+
+- nome do destinatário;
+- CPF;
+- telefone;
+- outros dados pessoais sem necessidade operacional.
+
+Se o scanner retornar dados extras, descartá-los se não forem necessários para o ordenamento.
+
+---
+
+# 10. AGRUPAMENTO DAS ENCOMENDAS
+
+Várias encomendas podem pertencer à mesma rua.
+
+Exemplo:
+
+Objeto A → Avenida Pelinca  
+Objeto B → Avenida Pelinca  
+Objeto C → Rua Voluntários  
+Objeto D → Avenida Pelinca
+
+Resultado:
+
+Avenida Pelinca  
+3 objetos
+
+Rua Voluntários  
+1 objeto
+
+Portanto, diferenciar:
+
+OBJETO
+
+de
+
+RUA/PARADA DE ORDENAÇÃO
+
+Neste MVP, a lista é organizada principalmente por ruas.
+
+Não criar várias posições consecutivas para a mesma rua se puderem ser agrupadas.
+
+---
+
+# 11. MODELO CONCEITUAL
+
+Não implemente obrigatoriamente estes nomes sem antes analisar os models existentes.
+
+Use isso como referência conceitual.
+
+Podemos ter algo equivalente a:
+
+Ordenamento
+- id
+- usuario_id
+- status
+- criado_em
+- atualizado_em
+- ordem_gerada
+- ordem_final
+
+ObjetoOrdenamento
+- id
+- ordenamento_id
+- codigo_rastreamento
+- rua_id
+- numero
+- complemento
+- cep
+- latitude
+- longitude
+- origem_entrada
+- status_resolucao
+
+RuaOrdenamento / Parada
+- rua_id
+- nome_rua
+- latitude_referencia
+- longitude_referencia
+- quantidade_objetos
+- ordem_sugerida
+- ordem_final
+
+Não duplicar desnecessariamente informações que já existem na tabela `ruas`.
+
+Preferir relacionamento por `rua_id`.
+
+---
+
+# 12. COORDENADAS
+
+O banco já possui geometria para várias ruas, mas nem todas as ruas possuem geometria.
+
+Portanto:
+
+NÃO depender exclusivamente da geometria existente.
+
+Fluxo desejado:
+
+Rua encontrada
+↓
+tem coordenada/geometria utilizável no banco?
+↓
+SIM
+→ usar
+
+NÃO
+→ tentar resolver externamente
+→ validar que pertence a Campos dos Goytacazes
+→ utilizar uma posição aproximada da rua
+→ considerar armazenar/cachear o resultado para não consultar novamente no futuro
+
+O objetivo é obter uma coordenada representativa da rua.
+
+Não precisamos inicialmente localizar exatamente o número 520 dentro da rua.
+
+Uma coordenada aproximada da rua já é suficiente para a primeira versão.
+
+---
+
+# 13. GEOCODIFICAÇÃO EXTERNA
+
+Nesta primeira versão quero evitar APIs pagas.
+
+Portanto, não integrar Google Maps / Routes API / Route Optimization API agora.
+
+Podemos utilizar alternativas gratuitas/open source quando necessário, respeitando limites e políticas de uso.
+
+O sistema já utilizou OpenStreetMap/Nominatim anteriormente.
+
+Antes de criar algo novo:
+
+- verificar códigos existentes;
+- verificar scripts/serviços relacionados;
+- reaproveitar normalização já existente se aplicável.
+
+Toda consulta deve conter contexto territorial:
+
+nome da rua
++
+Campos dos Goytacazes
++
+Rio de Janeiro
++
+Brasil
+
+Exemplo:
+
+"Rua X, Campos dos Goytacazes, Rio de Janeiro, Brasil"
+
+Se o resultado vier de outra cidade, rejeitar.
+
+Evitar consultas externas repetidas para a mesma rua.
+
+Criar cache/persistência quando apropriado.
+
+---
+
+# 14. ALGORITMO DE ORDENAÇÃO
+
+Nesta primeira versão quero um algoritmo gratuito executado no nosso próprio backend.
+
+Não usar IA.
+
+Não usar Google Routes.
+
+Não usar serviço pago.
+
+Começar pelo ponto fixo do CDD.
+
+Usar as coordenadas das ruas para criar uma sequência aproximada.
+
+Primeira heurística sugerida:
+
+## Nearest Neighbor
+
+Fluxo:
+
+1. posição atual = CDD;
+2. procurar a rua restante geograficamente mais próxima;
+3. adicioná-la à sequência;
+4. posição atual = rua escolhida;
+5. repetir até terminar.
+
+Para distância entre coordenadas, utilizar cálculo geográfico apropriado, como Haversine.
+
+Depois da rota inicial, aplicar uma melhoria simples, como:
+
+## 2-opt
+
+para tentar eliminar cruzamentos e melhorar a sequência.
+
+Arquitetura conceitual:
+
+ruas
+↓
+Nearest Neighbor
+↓
+rota inicial
+↓
+2-opt
+↓
+ordem sugerida
+
+Importante:
+
+Esta solução NÃO conhece necessariamente o percurso real pelas vias.
+
+Portanto, não apresentar ao usuário como:
+
+"rota mais rápida"
+
+ou
+
+"melhor rota possível".
+
+Usar linguagem como:
+
+**Ordem sugerida**
+
+ou:
+
+**Ordenamento por proximidade**
+
+---
+
+# 15. RESULTADO
+
+Após o cadastro dos objetos:
+
+Exemplo:
+
+47 objetos  
+22 ruas
+
+Botão:
+
+**Gerar ordenamento**
+
+Resultado:
+
+ORDENAMENTO SUGERIDO
+
+Partida:  
+CDD Campos  
+Av. Sete de Setembro, 342
+
+1. Avenida Sete de Setembro  
+   2 objetos
+
+2. Rua Tenente Coronel Cardoso  
+   4 objetos
+
+3. Avenida Pelinca  
+   3 objetos
+
+4. Rua Voluntários da Pátria  
+   1 objeto
+
+5. Rua Barão de Miracema  
+   5 objetos
+
+...
+
+Não precisamos inicialmente criar navegação curva a curva.
+
+Não precisamos gerar instruções:
+
+- vire à esquerda;
+- vire à direita;
+- siga 500 metros.
+
+O produto inicial é a LISTA ORDENADA.
+
+---
+
+# 16. CORREÇÃO MANUAL DA ORDEM
+
+O carteiro conhece a área e deve poder corrigir a sugestão.
+
+Permitir reordenar as ruas manualmente.
+
+Preferencialmente usando drag-and-drop.
+
+Exemplo sugerido:
+
+1. Rua A
+2. Rua B
+3. Rua C
+4. Rua D
+
+Carteiro muda para:
+
+1. Rua A
+2. Rua C
+3. Rua B
+4. Rua D
+
+Salvar:
+
+- ordem sugerida pelo algoritmo;
+- ordem final escolhida pelo colaborador.
+
+Esses dados poderão ser úteis no futuro para melhorar o sistema.
+
+Não implementar machine learning agora.
+
+Apenas preservar o histórico quando fizer sentido.
+
+---
+
+# 17. SIDEBAR — ORGANIZAÇÃO
+
+A interface atual possui sidebar lateral.
+
+Adicionar nova opção:
+
+**Ordenamento**
+
+NÃO usar:
+
+"Novo Ordenamento"
+
+como nome da opção da sidebar.
+
+Motivo:
+
+a sidebar representa áreas do sistema.
+
+"Novo ordenamento" deve ser uma ação dentro da página.
+
+A nova opção deve ficar:
+
+**logo abaixo de "Mapa Geral".**
+
+Organização desejada para usuários colaboradores:
+
+Mapa Geral  
+Ordenamento  
+Ruas  
+CEP  
+Folgas  
+Colaboradores  
+Relatórios
+
+As opções administrativas continuam condicionadas ao papel `admin`.
+
+Hoje:
+
+- Redistritamento → admin
+- Ajustes de Rotas → admin
+
+Manter essa regra.
+
+Para administradores, organizar visualmente de forma coerente.
+
+Sugestão:
+
+Mapa Geral  
+Ordenamento
+
+[operações normais]  
+Ruas  
+CEP  
+Folgas  
+Colaboradores  
+Relatórios
+
+[administração]  
+Redistritamento  
+Ajustes de Rotas  
+Usuários
+
+Não necessariamente adicionar textos grandes de seção se isso prejudicar o layout atual.
+
+Primeiro analisar como a sidebar foi construída.
+
+O objetivo principal é:
+
+- Ordenamento logo abaixo de Mapa Geral;
+- funções operacionais fáceis de encontrar;
+- funções administrativas claramente separadas;
+- manter a identidade visual atual.
+
+Não redesenhar toda a sidebar.
+
+---
+
+# 18. PERMISSÕES
+
+A área de **Ordenamento** deve estar disponível para:
+
+- colaborador
+- admin
+
+Não é uma ferramenta exclusiva de administração.
+
+Redistritamento e Ajustes de Rotas continuam visíveis apenas para administradores conforme a regra atual do sistema.
+
+Garantir proteção também no backend quando houver endpoints relacionados ao ordenamento.
+
+Não confiar apenas em esconder menu no frontend.
+
+---
+
+# 19. TELA PRINCIPAL DE ORDENAMENTO
+
+Ao clicar em:
+
+Ordenamento
+
+abrir página:
+
+# Ordenamento de Entregas
+
+Estado inicial:
+
+Ponto de partida
+
+CDD Campos  
+Av. Sete de Setembro, 342
+
+Nenhum ordenamento em andamento.
+
+Botão:
+
++ Novo ordenamento
+
+Ao iniciar:
+
+Novo ordenamento
+
+0 objetos  
+0 ruas
+
+Adicionar encomenda:
+
+[ Escanear ]  
+[ Falar ]  
+[ Digitar ]
+
+Lista abaixo:
+
+Encomendas adicionadas
+
+Quando houver objetos:
+
+25 objetos  
+18 ruas
+
+Botão:
+
+Gerar ordenamento
+
+Não criar uma tela excessivamente carregada.
+
+Priorizar uso no celular.
+
+O carteiro provavelmente utilizará esta funcionalidade principalmente em dispositivo móvel.
+
+---
+
+# 20. FLUXO DE DIGITAÇÃO
+
+Ao tocar em:
+
+Digitar
+
+mostrar campo simples.
+
+Exemplo:
+
+[ Avenida Pelinca 520 ]
+
+Após confirmação:
+
+- normalizar;
+- identificar rua;
+- associar ao cadastro;
+- adicionar objeto;
+- fechar/limpar campo para permitir cadastro rápido do próximo.
+
+O fluxo precisa ser rápido porque o colaborador pode inserir dezenas de objetos.
+
+---
+
+# 21. FLUXO DE VOZ
+
+Ao tocar:
+
+Falar
+
+usar o recurso de voz.
+
+Mostrar claramente o texto reconhecido antes ou durante a confirmação.
+
+Exemplo:
+
+Reconhecido:  
+"Avenida Pelinca 520"
+
+[Adicionar]
+
+Se houver integração de voz já implementada no Zé Rota, avaliar reaproveitamento.
+
+---
+
+# 22. FLUXO DO SCANNER
+
+Ao tocar:
+
+Escanear
+
+abrir câmera.
+
+Após leitura bem-sucedida:
+
+feedback visual imediato.
+
+Exemplo:
+
+✓ Encomenda adicionada
+
+Avenida Pelinca
+
+O usuário deve conseguir continuar escaneando objetos rapidamente.
+
+Evitar fluxo com muitos modais/confirmações se a identificação for confiável.
+
+Quando não conseguir identificar a rua:
+
+⚠ Não foi possível identificar a rua.
+
+Opções:
+
+[Completar digitando]  
+[Falar endereço]  
+[Cancelar]
+
+---
+
+# 23. OBJETOS PENDENTES
+
+Criar conceito de objeto pendente/revisão.
+
+Exemplo:
+
+25 objetos
+
+23 identificados  
+2 precisam de revisão
+
+Não gerar ordenamento utilizando silenciosamente dados duvidosos.
+
+Apresentar claramente os objetos que precisam ser corrigidos.
+
+---
+
+# 24. ENDEREÇOS REPETIDOS
+
+Normalizar os nomes antes de agrupar.
+
+Exemplos como:
+
+Av Pelinca  
+Avenida Pelinca  
+AV. PELINCA
+
+devem ser associados à mesma rua cadastrada quando possível.
+
+Não fazer agrupamento apenas por string crua.
+
+Utilizar `rua_id` sempre que disponível.
+
+---
+
+# 25. INTERFACE MOBILE
+
+Esta funcionalidade deve ser pensada mobile-first.
+
+Os principais botões precisam ser grandes o suficiente para toque.
+
+Prioridade visual:
+
+1. Escanear
+2. Falar
+3. Digitar
+
+ou outro arranjo que faça sentido após analisar o design atual.
+
+O scanner provavelmente será o fluxo mais rápido no uso operacional.
+
+Não prejudicar desktop.
+
+---
+
+# 26. MAPA
+
+Não considerar mapa obrigatório para o MVP.
+
+Primeira entrega:
+
+entrada
+→ processamento
+→ ordenamento
+→ lista
+
+Se for simples aproveitar o mapa existente para mostrar pontos numerados, isso pode ser planejado para etapa posterior.
+
+Não deixar o mapa atrasar o MVP.
+
+---
+
+# 27. HISTÓRICO
+
+Não quero transformar o MVP em um sistema gigantesco.
+
+Mas preparar a arquitetura para futuramente permitir:
+
+- salvar ordenamentos;
+- reabrir;
+- consultar histórico;
+- comparar ordem sugerida x ordem final.
+
+Se implementar persistência agora for natural dentro da arquitetura existente, podemos armazenar.
+
+Caso complique demasiadamente o MVP, explique antes.
+
+---
+
+# 28. NÃO IMPLEMENTAR AGORA
+
+Não implementar nesta primeira fase:
+
+- Google Maps Routes API;
+- Google Route Optimization API;
+- API paga;
+- navegação curva a curva;
+- GPS em tempo real;
+- cálculo de trânsito;
+- otimização pelo número exato da residência;
+- lado par/ímpar da rua;
+- ordem real dos números;
+- machine learning;
+- IA para calcular rota;
+- previsão de tempo da entrega;
+- múltiplos veículos;
+- divisão automática de carga entre carteiros;
+- retorno otimizado ao CDD;
+- seleção obrigatória de distrito.
+
+Esses pontos podem ser evoluções futuras.
+
+---
+
+# 29. EVOLUÇÕES FUTURAS
+
+A arquitetura não deve impedir futuramente:
+
+V2
+- melhorar coordenadas;
+- usar número;
+- melhorar geocodificação;
+- mapa com sequência numerada.
+
+V3
+- ordenamento dentro da própria rua;
+- lado da rua;
+- par/ímpar;
+- sequência real dos números.
+
+V4
+- utilizar conhecimento operacional;
+- observações das ruas;
+- preferências;
+- histórico de correções.
+
+V5
+- integrar um motor real de roteamento;
+- Google;
+- OSRM;
+- GraphHopper;
+- Valhalla;
+- outro provider.
+
+Por isso, isolar o motor de ordenamento atrás de uma interface/service.
+
+Exemplo conceitual:
+
+RouteOptimizer  
+    Optimize(...)
+
+Implementação inicial:
+
+LocalProximityOptimizer
+
+No futuro:
+
+GoogleRouteOptimizer  
+OSRMRouteOptimizer  
+etc.
+
+Não acoplar o frontend diretamente a qualquer provider externo.
+
+---
+
+# 30. BACKEND
+
+Seguir a arquitetura já existente:
+
+routes
+→ handlers
+→ services
+→ repositories
+→ database/models
+
+Não colocar regra de negócio complexa nos handlers.
+
+Criar um service específico para ordenamento.
+
+Separar:
+
+- resolução de endereço;
+- coordenadas/geocodificação;
+- algoritmo;
+- persistência.
+
+Não misturar tudo em uma única função gigante.
+
+---
+
+# 31. FRONTEND
+
+Seguir os padrões existentes do projeto.
+
+Antes de criar novos componentes:
+
+- analisar Sidebar;
+- AuthContext;
+- client.js/apiFetch;
+- páginas existentes;
+- modais;
+- componentes de voz;
+- mapa;
+- padrões CSS.
+
+Não duplicar cliente HTTP.
+
+Usar a autenticação existente.
+
+Não criar um segundo sistema de autenticação.
+
+---
+
+# 32. PWA
+
+O projeto é PWA.
+
+Não alterar a política atual de cache das APIs.
+
+Dados de ordenamento não devem ficar presos em cache de Service Worker como se fossem conteúdo estático.
+
+Manter o comportamento atual de não cachear dados dinâmicos da API.
+
+---
+
+# 33. SEGURANÇA
+
+Todos os endpoints da feature Ordenamento devem exigir autenticação.
+
+Papéis permitidos:
+
+- colaborador
+- admin
+
+Manter os padrões de middleware existentes.
+
+Não expor dados de ordenamento em rotas públicas.
+
+---
+
+# 34. MIGRATIONS
+
+O projeto usa GORM AutoMigrate.
+
+Antes de adicionar tabelas/colunas:
+
+1. analisar models atuais;
+2. verificar padrões de migrations;
+3. propor o menor conjunto possível de novas estruturas;
+4. evitar alteração destrutiva;
+5. preservar compatibilidade com produção.
+
+---
+
+# 35. TESTES
+
+Criar testes principalmente para lógica pura.
+
+Prioridade:
+
+## Algoritmo
+
+Testar:
+
+- distância;
+- nearest neighbor;
+- 2-opt;
+- uma rua;
+- duas ruas;
+- dezenas de ruas;
+- coordenadas duplicadas;
+- entrada vazia;
+- coordenadas inválidas.
+
+## Agrupamento
+
+Testar:
+
+- várias encomendas da mesma rua;
+- variações de nome;
+- associação por `rua_id`.
+
+## Validação territorial
+
+Testar:
+
+- resultado em Campos;
+- resultado fora de Campos.
+
+## Permissões
+
+Testar:
+
+- colaborador acessa Ordenamento;
+- admin acessa Ordenamento;
+- usuário não autenticado recebe 401.
+
+---
+
+# 36. LOGS
+
+Adicionar logs úteis sem expor dados pessoais.
+
+Pode registrar:
+
+- ordenamento criado;
+- quantidade de objetos;
+- quantidade de ruas;
+- falha de resolução;
+- execução do algoritmo;
+- duração.
+
+Não logar dados pessoais desnecessários.
+
+---
+
+# 37. PERFORMANCE
+
+O algoritmo local deve suportar tranquilamente casos como:
+
+25 ruas  
+50 ruas  
+100 ruas
+
+Não precisa otimização prematura.
+
+Nearest Neighbor + 2-opt é suficiente inicialmente.
+
+Mas implementar de forma clara e testável.
+
+---
+
+# 38. UX — PRINCÍPIO CENTRAL
+
+O processo deve exigir o menor número possível de interações.
+
+O carteiro pode estar ordenando dezenas de encomendas.
+
+Cada clique desnecessário multiplicado por 50 vira um problema.
+
+Priorizar:
+
+leu
+→ identificou
+→ adicionou
+→ próximo
+
+em vez de:
+
+leu
+→ abriu modal
+→ confirmou
+→ fechou modal
+→ voltou
+→ próximo
+
+Confirmação manual deve aparecer principalmente quando houver dúvida.
+
+---
+
+# 39. NÃO QUEBRAR O SISTEMA ATUAL
+
+Partes críticas existentes:
+
+- autenticação;
+- mapa;
+- ruas;
+- CEP;
+- folgas;
+- colaboradores;
+- relatórios;
+- usuários;
+- Redistritamento;
+- Ajustes de Rotas;
+- Zé Rota.
+
+A nova feature não deve alterar comportamento dessas áreas sem necessidade.
+
+---
+
+# 40. PRIMEIRA ETAPA DO TRABALHO
+
+ANTES DE IMPLEMENTAR, quero que você faça uma análise do projeto e me entregue:
+
+1. arquivos que serão alterados;
+2. arquivos novos necessários;
+3. componentes existentes que podem ser reaproveitados;
+4. proposta de modelagem do banco;
+5. endpoints necessários;
+6. fluxo do frontend;
+7. como resolveremos coordenadas;
+8. como será implementado o algoritmo;
+9. bibliotecas adicionais eventualmente necessárias;
+10. riscos;
+11. divisão da implementação em fases.
+
+Não comece criando dezenas de arquivos sem primeiro entender o projeto.
+
+Depois da análise, implementar fase por fase.
+
+---
+
+# 41. DIVISÃO SUGERIDA
+
+## Fase 1 — Estrutura
+
+- item Ordenamento na sidebar;
+- rota frontend;
+- página inicial;
+- permissões;
+- estrutura backend;
+- models necessários.
+
+## Fase 2 — Entrada manual
+
+- novo ordenamento;
+- adicionar objeto digitando;
+- resolver rua no banco;
+- agrupar objetos;
+- listar objetos/ruas.
+
+## Fase 3 — Coordenadas
+
+- utilizar geometria/coordenada existente;
+- fallback de geocodificação;
+- cache/persistência;
+- validação em Campos dos Goytacazes.
+
+## Fase 4 — Algoritmo
+
+- ponto inicial do CDD;
+- Haversine;
+- nearest neighbor;
+- 2-opt;
+- gerar lista ordenada.
+
+## Fase 5 — Correção manual
+
+- drag-and-drop;
+- ordem sugerida;
+- ordem final.
+
+## Fase 6 — Voz
+
+- reaproveitar infraestrutura existente;
+- integrar ao mesmo pipeline da digitação.
+
+## Fase 7 — Scanner
+
+- câmera;
+- leitura da etiqueta;
+- resolução;
+- fallback para complemento manual/voz.
+
+## Fase 8 — Refinamento
+
+- mobile;
+- mensagens;
+- erros;
+- loading;
+- feedback rápido;
+- testes finais.
+
+Não é obrigatório seguir exatamente esta ordem se a arquitetura atual indicar uma sequência melhor, mas explique qualquer alteração significativa.
+
+---
+
+# 42. CRITÉRIO DE SUCESSO DO MVP
+
+Considerarei a primeira versão bem-sucedida se um carteiro conseguir:
+
+1. abrir Ordenamento;
+2. iniciar novo ordenamento;
+3. cadastrar várias encomendas;
+4. misturar ruas de diferentes distritos;
+5. utilizar digitação inicialmente;
+6. sistema identificar e agrupar as ruas;
+7. obter coordenadas suficientes;
+8. clicar em Gerar ordenamento;
+9. receber uma lista lógica partindo do CDD Campos;
+10. reorganizar manualmente a lista se quiser.
+
+O objetivo NÃO é substituir um sistema profissional de navegação.
+
+O objetivo é:
+
+**reduzir o tempo de preparação e ordenamento das encomendas.**
+
+Se essa hipótese funcionar bem no uso real, evoluiremos a precisão depois.

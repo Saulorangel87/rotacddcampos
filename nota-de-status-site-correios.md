@@ -1,6 +1,6 @@
 # Notas de Deploy — Guia de Logística CDD Campos
 
-_Atualizado em 10/08/2026_
+_Atualizado em 05/09/2026_
 
 ## Status atual
 
@@ -8,92 +8,151 @@ _Atualizado em 10/08/2026_
 Domínios: `cddcampos.devsaulo.com.br` (frontend) e
 `cddcampos-api.devsaulo.com.br` (backend).
 
-## O que foi feito desde a última nota (08/08)
+Deploy agora é via **GitHub Actions** (workflow_dispatch, disparo manual na
+aba Actions do repo) — ver seção própria abaixo. Deixou de ser só
+`git pull` + `docker compose up -d --build` manual na VPS.
 
-### Ruas / OpenStreetMap
-- **Segunda leva de casamento com OSM rodada**: das 557 ruas sem geometria,
-  30 ganharam geometria automática/revisada. Total hoje: **~1.671 de 2.115
-  ruas ativas com geometria real** no mapa
-- **414 ruas ficaram conscientemente sem geometria** (revisão manual
-  rejeitou o nome sugerido pelo OSM — decisão certa, não pendência)
-- **Ferramenta de desenho manual** (`desenhar-ruas-manual.html` +
-  `scripts/aplicar_geometria_manual.py`) criada pras ruas que nunca bateram
-  com nada no OSM (loteamentos internos, travessões). **83 de 112
-  desenhadas e aplicadas**; as 29 restantes viraram planilha
-  (`ruas_sem_localizacao.xlsx`) pra equipe de campo preencher ponto de
-  referência
-- **Bug de encoding corrigido**: os scripts Python (`casar_ruas_osm.py`,
-  `aplicar_revisao_osm.py`) tinham um `client_encoding` manual que dobrava
-  acentuação no CSV — removido
-- **Segredo removido do Git**: `scripts/` tinha senha do Postgres hardcoded,
-  corrigido pra ler de variável de ambiente; pasta tirada do `.gitignore`
-  (não tem mais segredo, pode ser versionada normal)
-- **Editar rua pelo site** (admin): botão ✏️ na tabela de Ruas, corrige
-  nome/CEP/distrito/bairro direto, sem precisar mexer no banco
-- **Busca tolerante a acento**: extensão `unaccent` do Postgres ativada;
-  corrige de uma vez a Consulta de CEP, a tabela de Ruas e o Zé Rota
+## O que foi feito desde a última nota (10/08)
 
-### Consulta de Folgas
-- **Importação do saldo real concluída**: 61 lançamentos individuais (motivo
-  + data reais, não um total resumido), 35 colaboradores, 121 folgas em
-  aberto — importados via `cmd/importar-folgas-iniciais` (compilado junto
-  do binário `main` no Dockerfile, roda com
-  `docker compose exec api ./importar-folgas-iniciais -confirmar`)
-- Conferido manualmente matrícula por matrícula — 100% confiável
+### Acesso restrito ao público
+- Todo o site agora exige login — antes várias rotas (mapa, ruas,
+  distritos, aniversariantes, folgas, observações, Zé Rota, estatísticas)
+  eram públicas sem querer
+- Só `/health` e `/swagger` continuam públicos (infraestrutura)
+- Sistema tem só **2 papéis de verdade**: `admin` e `colaborador` (não 3)
+- Frontend ganhou tela de bloqueio (`AcessoRestrito.jsx`) — header/logo
+  continuam visíveis pra quem não logou, conteúdo fica bloqueado com
+  prompt de login
+- **49 logins criados em lote** pros colaboradores: login = matrícula,
+  senha provisória = `*` + matrícula, `senha_provisoria = true` força troca
+  no primeiro acesso (mesmo fluxo que já existia). Feito via SQL puro
+  usando `pgcrypto` (`crypt()` + `gen_salt('bf', 10)`, mesmo custo do
+  bcrypt do Go) — sem precisar de script externo
+- `GET /distritos` agora só retorna distritos **ativos** (importante pro
+  Redistritamento, ver abaixo)
 
-### Observações de rua (conhecimento de campo)
-- Nova tabela `rua_observacoes`: categoria fixa (Acesso / Segurança /
-  Numeração irregular / Vários nomes / Outros) + texto livre
-- Só admin cadastra/exclui; leitura pública. Botão 📝 na tabela de Ruas
+### CI/CD
+- O `deploy.yml` antigo (GitHub Pages, nunca ativado) foi **substituído**
+  por um deploy de verdade via SSH
+- Disparo **manual** (`workflow_dispatch`, botão "Run workflow" na aba
+  Actions) — separa dar `push` de publicar em produção, importante agora
+  que colegas usam o site de verdade
+- Job `build-check` (compila o Backend em Go + builda o Frontend em React)
+  roda antes do deploy — não publica se o build quebrar
+- Pré-requisito de infra: usuário `ubuntu` adicionado ao grupo `docker` na
+  VPS (`sudo usermod -aG docker ubuntu`), pra não precisar de `sudo`
+  interativo num script rodando sozinho
+- Secrets no GitHub: `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`
+- Cache do Go (`go.sum`) ajustado — reduziu o build-check de ~2m40s pra
+  ~1m10s
 
-### Zé Rota (assistente em chat)
-- Chat com avatar/mascote (personagem "carteiro" gerado por IA, fundo
-  removido de verdade), botão flutuante recolhível (avatar redondo) e
-  **arrastável** (posição salva no navegador)
-- Entrada por texto ou voz (reaproveita o reconhecimento de fala do
-  CepLookup, extraído pro hook `useReconhecimentoDeVoz`)
-- Backend Go com **function calling** — a IA nunca inventa nome de rua,
-  sempre confirma via ferramenta `buscar_rua` batendo no banco real (que já
-  inclui as observações de campo acima)
-- **Roda de graça**: usa um Cloudflare Worker que o usuário já tinha
-  (`flat-rice-6724.sauloleonardo1987.workers.dev`), proxy pro **Groq**
-  (`llama-3.3-70b-versatile`, formato OpenAI-compatible) — não usa API paga
-  da Anthropic
-- Variável de ambiente: `ZE_ROTA_WORKER_URL` no `.env` de produção
-- Retry automático no backend pra instabilidade conhecida do Groq/Llama
-  ("Failed to call a function" intermitente)
+### Redistritamento (feature nova)
+Menu novo "Redistritamento" na sidebar (admin only), logo abaixo de
+"Mapa Geral".
 
-### Bug corrigido: fuso horário do aniversariante
-- `time.Now()` no container Docker roda em UTC; corrigido pra
-  `time.FixedZone("America/Sao_Paulo", -3*60*60)` — sem precisar instalar
-  `tzdata` na imagem (Brasil não tem mais horário de verão)
+- **Fluxo de REDUÇÃO** (implementado por completo): admin escolhe reduzir
+  a quantidade de distritos (ex: 24 → 17); o corte é sempre **global**, do
+  maior código de distrito pro menor (não separado por setor
+  Campos/Guarus); as ruas dos distritos extintos ficam "órfãs" e são
+  realocadas **manualmente**, uma por uma ou em lote por grupo, pra um
+  distrito sobrevivente
+- Dois botões: **Concluir** (salva progresso, ainda editável/revisável) e
+  **Aplicar** (definitivo, com modal de confirmação — muda `ruas.distrito`,
+  desativa (`ativo = false`, soft-delete) os distritos extintos, grava
+  histórico de auditoria)
+- Botão **"Voltar ao início"** pra descartar um rascunho e recomeçar (só
+  funciona antes de Aplicar — depois disso é definitivo mesmo)
+- Distritos extintos só somem do seletor de chips (`601, 602...`) **depois**
+  de Aplicar — até lá, carteiros continuam vendo os 24 normal, sem impacto
+  na operação real durante o planejamento
+- Novas tabelas: `planos_redistritamento`, `plano_redistritamento_ruas`;
+  `distritos` ganhou coluna `ativo` (nunca apaga distrito de verdade, só
+  desativa — permite reverter no futuro)
+- **Testado com sucesso em produção**: removido o distrito 624 (120 ruas
+  realocadas)
+- **Fluxo de AUMENTO**: só **desenhado no banco** (`Tipo` aceita
+  `"aumento"`, `Distrito.Ativo` já é soft-delete) — **ainda sem lógica de
+  negócio nem tela**. Pendente pra quando a unidade precisar ganhar
+  distrito de volta
 
-### Microfone em produção
-- Bloqueado pelo Cloudflare (`Permissions-Policy: microphone=()` aplicado
-  globalmente via Transform Rule pra todos os domínios da conta) — corrigido
-  pra `microphone=(self)` direto no painel do Cloudflare
+### Geometria das ruas (mapa mais preciso)
+No início da sessão: **442 ruas sem geometria** (de 2.115 ativas).
+
+- **Nominatim** (geocodificador gratuito do OpenStreetMap, sem chave):
+  125 ruas achadas de verdade pelo nome (as outras 317 caíram num
+  fallback ruim por CEP, descartadas por imprecisão — CEP no Brasil o
+  Nominatim resolve mal, 226 ruas diferentes caíam no mesmo ponto genérico)
+- **Upgrade de traçado**: reconsultando o Nominatim com
+  `polygon_geojson=1`, 114 das 125 (91%) conseguiram o traçado real da via
+  (não só um ponto) — as outras 11 continuam como ponto
+- **Overpass API** (todas as ruas nomeadas da cidade numa consulta só, via
+  bounding box): mais 59 casadas, mas só **14 com confiança alta**
+  (score de similaridade ≥ 0.88) foram aplicadas — as outras 45 eram falsos
+  positivos perigosos (nome parecido, rua errada — ex: "Alexandre Dumas"
+  casando com "Alexandre Vargas")
+- Descoberta de dado: muita rua no banco tem o tipo de logradouro
+  **invertido** ("Manoel P. Barbosa, Rua" em vez de "Rua Manoel P.
+  Barbosa") — o script do Overpass já trata isso (`desinverter_tipo()`)
+- **Hoje: 303 ruas ainda sem geometria** — prováveis loteamentos não
+  mapeados no OSM, seguem pra desenho manual (ferramenta que já existe),
+  sem mais atalho automático gratuito disponível
+- Considerado (e descartado) usar Google Maps API: exige pré-pagamento de
+  R$150 no Brasil pra ativar faturamento, mesmo pra uso dentro da cota
+  gratuita — não compensou pro volume necessário
+
+### Bugs achados e corrigidos no caminho
+- `buscarDistritosGeoJSON` usava `fetch` sem token — desde a restrição de
+  acesso público, sempre falhava silenciosamente e caía pro GeoJSON
+  estático antigo em vez do banco. Corrigido pra usar `apiFetch`
+- `OperacaoResumo` (a faixa "operação em números" embaixo do mapa) tinha o
+  mesmo bug — sumia sem erro nenhum depois de `/estatisticas/operacao`
+  virar rota autenticada. Corrigido
+- Ícone de marcador quebrado no Leaflet pra geometria tipo `Point` — o
+  ícone padrão do Leaflet depende de uma imagem que quebra com o build do
+  Vite. Corrigido usando o mesmo pino (`divIcon`, HTML/CSS puro, sem
+  imagem) já usado no marcador de distrito, só menor e sem texto
+- Bug de flexbox no painel do Redistritamento: `overflow: hidden` no card
+  de cada grupo zerava o tamanho mínimo automático, fazendo o navegador
+  espremer os grupos em vez de rolar — corrigido com `flex-shrink: 0`
+
+### Scripts novos (fora do Docker, rodam local no PC)
+- `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
+- `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real
+- `casar_ruas_overpass.py` — baixa todas as ruas da cidade via Overpass e
+  casa por similaridade de nome (com correção de tipo invertido)
+- `scripts/criar_logins_colaboradores.sql` — cria login em lote a partir
+  da tabela `colaboradores` (SQL puro, usa `pgcrypto`)
+
+### Ambiente local (PC do Saulo)
+- Backend local usa PostgreSQL 17 nativo do Windows (porta 5432, via
+  pgAdmin) — **não** o "Docker CDD" (outro servidor Postgres, sobra de um
+  teste antigo com o `docker-compose.yml` local, mesmo nome de banco por
+  dentro do container)
+- Fluxo de sincronizar local com produção: `pg_dump -F c` na VPS →
+  `scp` pro PC → Restore no pgAdmin com **"Clean before restore"**
+  ligado (essencial, senão dá erro de "já existe")
 
 ## Pendências conhecidas / combinadas pra próxima sessão
 
+- **303 ruas sem geometria** — desenho manual, ritmo próprio, sem mais
+  atalho automático gratuito disponível
+- **Fluxo de AUMENTO do Redistritamento** — banco já preparado, falta
+  lógica de negócio (service/handler) e tela
 - **Plano de ordenamento por rua**: planilha com a sequência real de
-  numeração de entrega (a caminhada do carteiro, não ordem numérica simples)
-  ainda não chegou — vai virar tabela própria (`rua_id`, `ordem`, `número`)
-- **Zé Rota — próxima fase**: sugestão de rota pra múltiplas encomendas
-  (algoritmo geométrico com a geometria real + ordenamento, IA só explica o
-  resultado em português — não decide a ordem sozinha) depende do
-  ordenamento acima
-- **AGC (Agência Comunitária)**: áreas sem entrega domiciliária — quer que
-  o Zé Rota saiba qual endereço vai pra qual AGC. Ainda não modelado no
-  banco, combinado planejar juntos
-- **Botão "Contribuir" no sidebar**: pra alimentar o Zé Rota com
-  características gerais de distrito (não só por rua) — combinado planejar
-  juntos
-- 29 ruas ainda sem geometria (planilha com a equipe de campo, aguardando
-  retorno)
-- Considerar apagar `.github/workflows/deploy.yml` (workflow antigo pro
-  GitHub Pages, nunca ativado)
-- Gap de segurança aceito por ora: resetar senha de um usuário não invalida
-  token JWT já emitido (fica válido até expirar sozinho, hoje 3h)
+  numeração de entrega ainda não chegou — vai virar tabela própria
+  (`rua_id`, `ordem`, `número`)
+- **Zé Rota — próxima fase**: sugestão de rota pra múltiplas encomendas,
+  depende do ordenamento acima
+- **AGC (Agência Comunitária)**: áreas sem entrega domiciliária, ainda não
+  modelado no banco
+- **Botão "Contribuir" no sidebar**: alimentar o Zé Rota com
+  características gerais de distrito
+- Gap de segurança aceito por ora: resetar/bloquear usuário não invalida
+  um token JWT já emitido (fica válido até expirar sozinho em 8h)
+- Ajuste visual pequeno: texto "Correios" levemente desalinhado do ícone
+  no selo do header (baixa prioridade)
+- Botão "Por Carteiro" na tabela de ruas não filtra de verdade, só
+  reordena (combinado deixar parado, sem prioridade)
 
 ## Atualizações de rotina
 
@@ -104,38 +163,32 @@ git commit -m "..."
 git push
 ```
 
-Na VPS:
+Publicar (agora via CI/CD, não é mais automático nem manual na VPS):
+1. Vai em `github.com/Saulorangel87/rotacddcampos` → aba **Actions**
+2. Clica em **"Deploy Produção (VPS)"** → **Run workflow**
+
+Se precisar rodar algo direto na VPS (scripts SQL avulsos, backup manual):
 ```bash
-cd ~/apps/site-correios
-git pull
-sudo docker compose up -d --build
+ssh -i "C:\Users\saulo\Documents\Chave VM 12RAM\ssh-key-2026-06-23.key" ubuntu@157.151.24.49
 ```
 
 ## Comandos únicos disponíveis (`Backend/cmd/`)
 
 Todos rodam dentro do container já buildado:
 ```bash
-docker compose exec api ./nome-do-binario
+docker exec -it rotas_api ./nome-do-binario
 ```
 - `seed-admin` — cria o primeiro usuário admin
 - `criar-usuario` — cria usuário adicional
 - `importar-folgas-iniciais [-confirmar]` — já rodado; idempotente
 
-## Scripts Python avulsos (`scripts/`, fora do Docker)
+## Scripts Python avulsos (fora do Docker)
 
-Rodam contra produção via container Python descartável ligado na rede do
-Compose:
-```bash
-sudo -E docker run --rm -it --network site-correios_rotas_network \
-  -v $(pwd)/scripts:/scripts -e DB_HOST=postgres -e DB_PASSWORD="$DB_PASSWORD" \
-  python:3.12-slim bash -c "pip install -q requests psycopg2-binary && python /scripts/NOME.py"
-```
-- `casar_ruas_osm.py` — casamento automático com OpenStreetMap
-- `aplicar_revisao_osm.py` — aplica decisões da revisão manual
-- `listar_ruas_sem_match.py` — lista ruas que nunca bateram com nada
-- `aplicar_geometria_manual.py` — aplica desenho manual
-  (`desenhar-ruas-manual.html`, standalone, fora do Docker)
+Os scripts de geometria (Nominatim/Overpass) rodam **local no PC**, contra
+um CSV exportado do banco de produção — não precisam de rede especial nem
+container Python, só `pip install requests`. Geram um CSV de revisão pra
+conferência humana antes de qualquer SQL ser aplicado em produção.
 
-Todos já corrigidos pra ler senha de variável de ambiente (nunca hardcoded)
-e escrever arquivos com caminho absoluto (não dependem da pasta em que
-foram chamados).
+Scripts mais antigos (`casar_ruas_osm.py`, `aplicar_revisao_osm.py`,
+`listar_ruas_sem_match.py`, `aplicar_geometria_manual.py`) continuam como
+estavam, descritos na nota anterior.

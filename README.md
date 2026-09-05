@@ -79,19 +79,24 @@ Ver `nota-de-status-site-correios.md` para o passo a passo completo, status atua
 
 ## Funcionalidades
 
-- Mapa real (Leaflet + OpenStreetMap) com os 24 distritos, camada opcional
-  de traçado real das ruas
+- **Acesso restrito**: todo o site exige login (só `/health` e `/swagger`
+  ficam públicos); 2 papéis (`admin`, `colaborador`)
+- Mapa real (Leaflet + OpenStreetMap) com os distritos ativos, camada
+  opcional de traçado real das ruas
 - Busca de rua por nome/CEP/distrito, exportar CSV, imprimir
+- **Redistritamento** (admin): reduz a quantidade de distritos de forma
+  controlada — corte automático do maior código pro menor, realocação
+  manual de rua por rua, rascunho/aplicação em duas etapas com
+  confirmação. Aumento ainda não implementado (só a estrutura no banco)
 - Ajustes de Rotas: mover rua entre distritos (admin), com histórico
   persistido no banco (quem moveu, quando, de onde pra onde)
 - Colaboradores: cadastro, busca, exclusão (admin), aniversariante do dia
-  em destaque (público, sem login)
+  em destaque
 - Consulta de Folgas: saldo por matrícula (livro-razão de créditos/débitos),
-  consulta pública sem listar ninguém, lançar/excluir restrito a admin,
-  com auditoria de quem lançou
+  lançar/excluir restrito a admin, com auditoria de quem lançou
 - Observações de rua: conhecimento de campo dos carteiros (acesso difícil,
   numeração fora de ordem, mais de um nome, segurança), cadastro restrito a
-  admin, leitura pública
+  admin
 - Zé Rota: assistente em chat (texto e voz) — busca rua/distrito/CEP no
   cadastro real (nunca inventa endereço), consulta o tempo em Campos dos
   Goytacazes (Open-Meteo) e sugere um link do Google Maps só quando não
@@ -100,9 +105,12 @@ Ver `nota-de-status-site-correios.md` para o passo a passo completo, status atua
 - Gerenciar usuários: criar conta, definir papel, resetar senha — tudo
   pela interface, sem precisar de terminal
 - PWA: instalável no celular, funciona offline pro casco estático
+- Deploy via GitHub Actions (disparo manual, com checagem de build antes)
 
 ## Pendências conhecidas
 
+- 303 ruas ainda sem geometria real no mapa (desenho manual em andamento)
+- Fluxo de AUMENTO do Redistritamento (banco pronto, falta lógica e tela)
 - Ajuste visual pequeno: texto "Correios" levemente desalinhado do ícone
   no selo do header (baixa prioridade)
 - Resetar/bloquear um usuário não invalida um token JWT já emitido (fica
