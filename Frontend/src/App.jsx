@@ -5,6 +5,7 @@ import Sidebar from "./components/Sidebar.jsx";
 import MapPanel from "./components/MapPanel.jsx";
 import AjustesRotasPanel from "./components/AjustesRotasPanel/AjustesRotasPanel.jsx";
 import RedistritamentoPanel from "./components/RedistritamentoPanel/RedistritamentoPanel.jsx";
+import OrdenamentoPanel from "./components/OrdenamentoPanel/OrdenamentoPanel.jsx";
 import RecentChanges from "./components/RecentChanges.jsx";
 import DicaBanner from "./components/DicaBanner.jsx";
 import RuasTable from "./components/RuasTable.jsx";
@@ -138,10 +139,12 @@ export default function App() {
         <AcessoRestrito />
       ) : (
         <>
-          <DistrictNav
-            distritoAtivo={distritoAtivo}
-            onSelecionar={setDistritoAtivo}
-          />
+          {secaoAtiva !== "ordenamento" && (
+            <DistrictNav
+              distritoAtivo={distritoAtivo}
+              onSelecionar={setDistritoAtivo}
+            />
+          )}
 
           <div className={styles.corpo}>
             <Sidebar
@@ -187,6 +190,8 @@ export default function App() {
               )}
 
               {secaoAtiva === "cep" && <CepLookup />}
+
+              {secaoAtiva === "ordenamento" && <OrdenamentoPanel />}
 
               {secaoAtiva === "relatorios" && (
                 <RelatorioMovimentacoes versao={historicoVersao} />

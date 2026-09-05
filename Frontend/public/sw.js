@@ -13,6 +13,7 @@ const CAMINHOS_API = [
   "/distritos",
   "/historico",
   "/estatisticas",
+  "/ordenamentos",
   "/health",
 ];
 

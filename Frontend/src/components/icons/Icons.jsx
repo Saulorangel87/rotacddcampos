@@ -43,6 +43,17 @@ export function IconeRedistritamento(props) {
   );
 }
 
+export function IconeOrdenamento(props) {
+  return (
+    <Svg {...props}>
+      <path d="M8 6h13M8 12h13M8 18h13" />
+      <circle cx="4" cy="6" r="1" />
+      <circle cx="4" cy="12" r="1" />
+      <circle cx="4" cy="18" r="1" />
+    </Svg>
+  );
+}
+
 export function IconeAjustes(props) {
   return (
     <Svg {...props}>

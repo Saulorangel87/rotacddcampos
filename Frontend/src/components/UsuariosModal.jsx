@@ -176,7 +176,7 @@ function FormularioNovoUsuario({ onCancelar, onCriado }) {
       <label className={styles.campo}>
         Papel
         <select value={papel} onChange={(e) => setPapel(e.target.value)}>
-          <option value="colaborador">Colaborador (só consulta colaboradores/relatórios)</option>
+          <option value="colaborador">Colaborador (consultas e Ordenamento)</option>
           <option value="admin">Admin (edita/cadastra/exclui)</option>
         </select>
       </label>

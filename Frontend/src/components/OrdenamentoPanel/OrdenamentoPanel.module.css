@@ -1,0 +1,201 @@
+.pagina {
+  display: grid;
+  gap: 16px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cabecalho h1 {
+  margin: 4px 0 6px;
+  color: #073b70;
+  font-size: clamp(1.45rem, 4vw, 2rem);
+  line-height: 1.15;
+}
+
+.cabecalho p {
+  margin: 0;
+  color: #5d6b7b;
+  line-height: 1.5;
+}
+
+.sobretitulo,
+.rotulo {
+  color: #52677d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.partida,
+.andamento,
+.estadoInicial,
+.estado {
+  border: 1px solid #dce4ec;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.partida {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+}
+
+.partida > div:last-child {
+  display: grid;
+  gap: 3px;
+}
+
+.partida strong {
+  color: #163b60;
+  font-size: 1.05rem;
+}
+
+.partida span:not(.rotulo) {
+  color: #5d6b7b;
+  font-size: 0.9rem;
+}
+
+.marcador {
+  display: grid;
+  place-items: center;
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ffd600;
+  color: #073b70;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.estadoInicial {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px;
+}
+
+.estadoInicial h2,
+.andamento h2 {
+  margin: 0 0 6px;
+  color: #163b60;
+  font-size: 1.12rem;
+}
+
+.estadoInicial p,
+.aviso {
+  margin: 0;
+  color: #657487;
+  line-height: 1.45;
+}
+
+.estadoInicial button {
+  min-height: 46px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 9px;
+  background: #0b4f8a;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.estadoInicial button:hover:not(:disabled) {
+  background: #073b70;
+}
+
+.estadoInicial button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.andamento {
+  padding: 20px;
+}
+
+.andamentoTopo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.data {
+  color: #6e7d8d;
+  font-size: 0.82rem;
+}
+
+.contadores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 140px));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.contadores div {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f2f6fa;
+}
+
+.contadores strong {
+  color: #073b70;
+  font-size: 1.4rem;
+}
+
+.contadores span {
+  color: #657487;
+  font-size: 0.88rem;
+}
+
+.estado {
+  padding: 28px;
+  color: #657487;
+  text-align: center;
+}
+
+.erro {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #e5a7a7;
+  border-radius: 9px;
+  background: #fff4f4;
+  color: #982929;
+}
+
+@media (max-width: 620px) {
+  .pagina {
+    gap: 12px;
+  }
+
+  .estadoInicial,
+  .andamentoTopo {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .estadoInicial button {
+    width: 100%;
+    min-height: 52px;
+  }
+
+  .contadores {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

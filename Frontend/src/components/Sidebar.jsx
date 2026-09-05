@@ -1,6 +1,7 @@
 import styles from "./Sidebar.module.css";
 import {
   IconeMapa,
+  IconeOrdenamento,
   IconeAjustes,
   IconeRuas,
   IconeCep,
@@ -13,13 +14,14 @@ import {
 
 const ITENS = [
   { id: "mapa", label: "Mapa Geral", Icone: IconeMapa },
-  { id: "redistritamento", label: "Redistritamento", Icone: IconeRedistritamento, soAdmin: true },
-  { id: "ajustes", label: "Ajustes de Rotas", Icone: IconeAjustes, soAdmin: true },
+  { id: "ordenamento", label: "Ordenamento", Icone: IconeOrdenamento },
   { id: "ruas", label: "Ruas", Icone: IconeRuas },
   { id: "cep", label: "CEP", Icone: IconeCep },
   { id: "folgas", label: "Folgas", Icone: IconeFolgas },
   { id: "colaboradores", label: "Colaboradores", Icone: IconeColaboradores },
   { id: "relatorios", label: "Relatórios", Icone: IconeRelatorios },
+  { id: "redistritamento", label: "Redistritamento", Icone: IconeRedistritamento, soAdmin: true },
+  { id: "ajustes", label: "Ajustes de Rotas", Icone: IconeAjustes, soAdmin: true },
   { id: "usuarios", label: "Usuários", Icone: IconeUsuarios, soAdmin: true },
 ];
 
