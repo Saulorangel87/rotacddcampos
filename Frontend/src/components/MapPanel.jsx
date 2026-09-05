@@ -3,7 +3,7 @@ import LeafletMap from './LeafletMap.jsx'
 import { useDistritosAtivos } from '../hooks/useDistritosAtivos.js'
 import styles from './MapPanel.module.css'
 
-export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirAjustes, versao = 0, resultadoBusca = null, onLimparBusca }) {
+export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirAjustes, admin = false, versao = 0, resultadoBusca = null, onLimparBusca }) {
   const [mostrarRuasReais, setMostrarRuasReais] = useState(false)
   const { distritosAtivos } = useDistritosAtivos()
 
@@ -24,9 +24,11 @@ export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirA
           >
             <span aria-hidden="true">🛣️</span> Ruas reais (OSM)
           </button>
-          <button type="button" className={styles.btnAjustes} onClick={onAbrirAjustes}>
-            <span aria-hidden="true">🛠️</span> Ajustes de Rotas
-          </button>
+          {admin && (
+            <button type="button" className={styles.btnAjustes} onClick={onAbrirAjustes}>
+              <span aria-hidden="true">🛠️</span> Ajustes de Rotas
+            </button>
+          )}
         </div>
       </header>
 

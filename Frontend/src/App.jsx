@@ -158,6 +158,7 @@ export default function App() {
                       distritoAtivo={distritoAtivo}
                       onSelecionarDistrito={setDistritoAtivo}
                       onAbrirAjustes={() => selecionarSidebar("ajustes")}
+                      admin={admin}
                       versao={historicoVersao}
                       resultadoBusca={resultadoBusca}
                       onLimparBusca={() => setResultadoBusca(null)}

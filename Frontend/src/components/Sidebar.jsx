@@ -14,7 +14,7 @@ import {
 const ITENS = [
   { id: "mapa", label: "Mapa Geral", Icone: IconeMapa },
   { id: "redistritamento", label: "Redistritamento", Icone: IconeRedistritamento, soAdmin: true },
-  { id: "ajustes", label: "Ajustes de Rotas", Icone: IconeAjustes },
+  { id: "ajustes", label: "Ajustes de Rotas", Icone: IconeAjustes, soAdmin: true },
   { id: "ruas", label: "Ruas", Icone: IconeRuas },
   { id: "cep", label: "CEP", Icone: IconeCep },
   { id: "folgas", label: "Folgas", Icone: IconeFolgas },
