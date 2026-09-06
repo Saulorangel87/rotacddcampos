@@ -174,6 +174,8 @@ Também possui:
 - busca tolerante a acentos, pontuação, abreviações e prefixos de digitação;
 - agrupamento por rua e indicação clara de pendências ou coordenadas ausentes;
 - sequência sugerida por proximidade, começando no CDD;
+- primeira parada fixada na rua mais próxima do CDD; melhoria 2-opt aplicada
+  somente às paradas seguintes;
 - ajuste manual da sequência pelo carteiro;
 - histórico de correções e sequência habitual opcional, isolada por usuário;
 - botão para limpar a carga atual sem apagar o histórico, reiniciando a data e
@@ -337,9 +339,10 @@ Resultados automáticos de baixa confiança foram descartados para evitar associ
 - **Fluxo de aumento do Redistritamento** — estrutura do banco pronta; faltam lógica de negócio e interface.
 - **Ordenamento por rua** — futura tabela com sequência real de entrega (`rua_id`, `ordem`, `numero`).
 - **Precisão do ordenamento** — as geometrias existentes foram auditadas e estão
-  válidas; falta uma lista operacional real para medir a sequência sugerida e
-  orientar qualquer ajuste antes da publicação. A planilha está pendente e deve
-  ser obtida nos próximos dois dias.
+  válidas; a primeira parada é fixada pela proximidade do CDD, mas falta uma
+  lista operacional real para medir a sequência completa e orientar ajustes
+  adicionais antes da publicação. A planilha está pendente e deve ser obtida
+  nos próximos dois dias.
 - **Zé Rota — próxima fase** — sugestão de rota para múltiplas encomendas, dependente do ordenamento das ruas.
 - **AGC (Agência Comunitária)** — áreas sem entrega domiciliária ainda não modeladas.
 - **Botão "Contribuir"** — planejado para alimentar o Zé Rota com características dos distritos.

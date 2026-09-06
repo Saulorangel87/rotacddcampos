@@ -703,13 +703,32 @@ ordem por rua). Essa referência será usada para medir o erro e ajustar o motor
 sem transformar uma preferência arbitrária em regra geral.
 
 Pendência registrada: a referência operacional deverá ser obtida em até dois
-dias. Até que ela esteja disponível, não alterar a heurística de proximidade;
-seguir com as verificações independentes de acesso, interface e preparação para
-produção.
+dias. Até que ela esteja disponível, não fazer novos ajustes baseados em
+preferência de rota; seguir com as verificações independentes de acesso,
+interface e preparação para produção.
 
 Validação desta auditoria: consulta PostgreSQL local somente leitura, `go test
 ./...`, 10 testes Node e `npm run build`. Nenhuma tabela ou geometria foi
 alterada.
+
+### Evolução local — 06/09/2026: auditoria do algoritmo de proximidade
+
+O motor foi revisado contra o contrato do MVP e recebeu uma proteção de ordem:
+
+- a primeira parada agora é sempre a rua mais próxima do ponto fixo do CDD;
+- o `2-opt` continua reduzindo ou mantendo a distância total, mas só reorganiza
+  as paradas seguintes;
+- a entrada não é modificada e cada parada permanece uma única vez na saída;
+- um teste reproduz um caso em que o `2-opt` anterior colocava uma rua mais
+  distante antes da mais próxima; esse caso agora mantém o início esperado.
+- uma simulação com 1.000 conjuntos de ruas da base local não encontrou
+  nenhuma primeira parada diferente da mais próxima ao CDD;
+
+Com isso, a garantia do MVP fica explícita: o resultado parte do CDD, começa
+pela proximidade imediata e melhora o restante por distância geográfica em
+linha reta. Isso ainda não representa o sentido real das vias nem a ordem dos
+números de entrega; essa etapa continua dependente da referência operacional
+pendente.
 
 ### Evolução local — 06/09/2026: identidade visual, ciclo de carga e instalação
 

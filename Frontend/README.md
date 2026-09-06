@@ -50,6 +50,8 @@ src/
   prefixos e CEPs formatados também são aceitos. Quando uma palavra completa
   já existe entre as candidatas, resultados que só repetem esse trecho dentro
   de uma palavra maior são descartados.
+- O ordenamento começa sempre pela rua mais próxima do CDD; a melhoria 2-opt
+  reorganiza apenas as paradas seguintes.
 - O cabeçalho usa escudo para administradores e identificação para
   colaboradores.
 - A área de instalação do PWA só aparece em layout móvel enquanto o app não

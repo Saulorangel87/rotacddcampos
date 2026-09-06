@@ -156,11 +156,21 @@ encontradas geometrias inválidas. Existem 305 ruas sem geometria, e o campo
 `rota` está vazio em todas as ruas; por isso, não há como inferir uma ordem
 operacional a partir do cadastro. A próxima alteração do motor deve ser medida
 contra uma sequência real de paradas ou uma planilha de ordem por rua. Até lá,
-o algoritmo de proximidade permanece inalterado para evitar uma precisão falsa.
+o algoritmo mantém apenas a proteção objetiva de começar pela parada mais
+próxima do CDD, sem incorporar preferências de rota não medidas.
 
 A planilha ou sequência operacional real está pendente, com previsão de obtenção
 em até dois dias. Enquanto ela não chega, a próxima frente é revisar permissões
 e preparar a validação final para produção.
+
+### Auditoria do motor de proximidade — 06/09/2026
+
+O motor foi testado com casos determinísticos e uma simulação de 1.000 conjuntos
+de ruas da base local. A primeira parada mais próxima do CDD foi preservada em
+todos os casos. A melhoria continua aplicada nas paradas seguintes, aceitando
+somente trocas que reduzem ou mantêm a distância geográfica da sequência. O
+resultado continua sendo uma sugestão em linha reta; vias, trânsito e ordem dos
+números ainda dependem de dados operacionais reais.
 
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim

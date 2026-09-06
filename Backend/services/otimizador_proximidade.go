@@ -28,6 +28,11 @@ func (otimizadorProximidade) Otimizar(origem PontoGeografico, paradas []ParadaPa
 		return append([]ParadaParaOtimizar(nil), paradas...)
 	}
 
+	resultado := rotaVizinhoMaisProximo(origem, paradas)
+	return melhorarComDoisOpt(origem, resultado)
+}
+
+func rotaVizinhoMaisProximo(origem PontoGeografico, paradas []ParadaParaOtimizar) []ParadaParaOtimizar {
 	pendentes := append([]ParadaParaOtimizar(nil), paradas...)
 	resultado := make([]ParadaParaOtimizar, 0, len(paradas))
 	atual := origem
@@ -36,7 +41,7 @@ func (otimizadorProximidade) Otimizar(origem PontoGeografico, paradas []ParadaPa
 		menorDistancia := distanciaHaversine(atual, pontoDaParada(pendentes[0]))
 		for indice := 1; indice < len(pendentes); indice++ {
 			distancia := distanciaHaversine(atual, pontoDaParada(pendentes[indice]))
-			if distancia < menorDistancia || (distancia == menorDistancia && pendentes[indice].NomeRua < pendentes[indiceProxima].NomeRua) {
+			if distancia < menorDistancia || (distancia == menorDistancia && paradaVemAntes(pendentes[indice], pendentes[indiceProxima])) {
 				indiceProxima = indice
 				menorDistancia = distancia
 			}
@@ -46,7 +51,14 @@ func (otimizadorProximidade) Otimizar(origem PontoGeografico, paradas []ParadaPa
 		atual = pontoDaParada(proxima)
 		pendentes = append(pendentes[:indiceProxima], pendentes[indiceProxima+1:]...)
 	}
-	return melhorarComDoisOpt(origem, resultado)
+	return resultado
+}
+
+func paradaVemAntes(a, b ParadaParaOtimizar) bool {
+	if a.NomeRua != b.NomeRua {
+		return a.NomeRua < b.NomeRua
+	}
+	return a.Chave < b.Chave
 }
 
 func pontoDaParada(parada ParadaParaOtimizar) PontoGeografico {
@@ -66,18 +78,18 @@ func distanciaHaversine(a, b PontoGeografico) float64 {
 	return 2 * raioTerraKM * math.Atan2(math.Sqrt(h), math.Sqrt(1-h))
 }
 
-func melhorarComDoisOpt(origem PontoGeografico, rota []ParadaParaOtimizar) []ParadaParaOtimizar {
+func melhorarComDoisOpt(_ PontoGeografico, rota []ParadaParaOtimizar) []ParadaParaOtimizar {
 	if len(rota) < 4 {
 		return rota
 	}
+	// A primeira parada é a mais próxima do CDD, escolhida pelo vizinho mais
+	// próximo. O 2-opt melhora somente o restante para não trocar esse ponto
+	// inicial por uma rua mais distante em busca de um ganho global pequeno.
 	melhorou := true
 	for melhorou {
 		melhorou = false
-		for inicio := 0; inicio < len(rota)-2; inicio++ {
-			antes := origem
-			if inicio > 0 {
-				antes = pontoDaParada(rota[inicio-1])
-			}
+		for inicio := 1; inicio < len(rota)-2; inicio++ {
+			antes := pontoDaParada(rota[inicio-1])
 			for fim := inicio + 1; fim < len(rota)-1; fim++ {
 				atual := pontoDaParada(rota[inicio])
 				depois := pontoDaParada(rota[fim+1])

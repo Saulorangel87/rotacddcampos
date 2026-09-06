@@ -492,7 +492,12 @@ func (s *ordenamentoService) montarDetalhe(ctx context.Context, ordenamento *mod
 		}
 		ruas = append(ruas, *rua)
 	}
-	sort.Slice(ruas, func(i, j int) bool { return ruas[i].NomeRua < ruas[j].NomeRua })
+	sort.Slice(ruas, func(i, j int) bool {
+		if ruas[i].NomeRua != ruas[j].NomeRua {
+			return ruas[i].NomeRua < ruas[j].NomeRua
+		}
+		return ruas[i].Chave < ruas[j].Chave
+	})
 
 	detalhe := &OrdenamentoDetalhe{
 		ID:                  ordenamento.ID,
