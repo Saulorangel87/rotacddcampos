@@ -654,6 +654,35 @@ A próxima parte da Fase 8 é validar a busca com a lista operacional completa e
 depois, atacar a precisão das coordenadas e do ordenamento com exemplos reais,
 antes da publicação conjunta em produção.
 
+### Evolução local — 06/09/2026: identidade visual, ciclo de carga e instalação
+
+Refinamento concluído dentro da Fase 8, sem alterar o modelo de permissões ou
+as regras do motor de ordenamento:
+
+- os emojis funcionais foram substituídos por ícones SVG de linha, mantendo
+  proporção, contraste e rótulos acessíveis;
+- o cabeçalho diferencia os papéis com escudo para `admin` e identificação de
+  usuário para `colaborador`, além dos rótulos `ADMIN` e `COLAB.`;
+- o ponto de partida passou a exibir um símbolo de unidade postal junto da
+  sigla `CDD`, enquanto o título mostra `Campos dos Goytacazes`;
+- a marca institucional da lateral foi reorganizada com o logotipo dos
+  Correios, identificação da unidade operacional e descrição da função do
+  painel;
+- ao usar “Limpar lista”, a carga anterior é removida em transação e o horário
+  do ordenamento é reiniciado para a nova carga; histórico e referências
+  pessoais permanecem preservados;
+- o instalador PWA aparece somente em layout móvel enquanto o app não está
+  instalado; quando o prompt nativo não está disponível, o botão orienta o
+  caminho manual do navegador; após a instalação, mostra “App instalado” e
+  permanece oculto nas próximas aberturas;
+- a detecção móvel acompanha redimensionamentos e o modo responsivo para não
+  perder a opção durante testes em celular.
+
+Validação desta etapa: `go test ./... -count=1`, `npm run build`,
+`git diff --check` e conferência visual local no navegador. A publicação em
+produção continua pendente até concluir a validação operacional da busca,
+coordenadas e precisão do ordenamento.
+
 ---
 
 # 17. SIDEBAR — ORGANIZAÇÃO

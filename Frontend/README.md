@@ -1,7 +1,8 @@
-# CDD Campos — Ajustes de Rotas (Frontend React)
+# Guia de Logística — Frontend React
 
-Refatoração do site estático (`Frontend/index.html` etc.) para React + Vite,
-seguindo o mockup da interface "Ajustes de Rotas".
+Frontend do Guia de Logística do CDD Campos dos Goytacazes, construído com
+React e Vite. A aplicação é autenticada e consome a API Go do diretório
+`Backend/`.
 
 ## Rodando
 
@@ -21,37 +22,42 @@ src/
   data/distritos.js      # cores e layout dos 9 distritos (mesmas cores da legenda atual)
   data/mockRuas.js        # dados de exemplo, no formato do model Rua do backend
   components/
-    Header.jsx            # topo azul com busca
+    Header.jsx            # topo azul com busca e papel do usuário
     DistrictNav.jsx        # faixa amarela com os botões 601-609
-    Sidebar.jsx            # menu lateral (Mapa Geral, Ajustes de Rotas, Ruas, CEP, Carteiros, Relatórios)
-    DistrictMap.jsx        # mini-mapa esquemático em SVG (não é geográfico, é um diagrama de blocos)
-    MapPanel.jsx           # painel principal com o mapa + legenda
+    Sidebar.jsx            # navegação e identificação da unidade operacional
+    Footer.jsx             # versão, contatos e instalação PWA no celular
+    icons/Icons.jsx        # ícones SVG reutilizáveis, sem emojis
+    MapPanel.jsx           # mapa principal com legenda e camada OSM
+    LeafletMap.jsx         # mapa geográfico real
     AjustesRotasPanel/     # assistente de 3 passos: selecionar ruas → escolher distrito → confirmar
-    RecentChanges.jsx      # log de alterações (hoje só em memória, na sessão)
-    RuasTable.jsx          # tabela com abas (todas/distrito/carteiro/cep), busca e exportar CSV
+    OrdenamentoPanel/      # entrada manual, voz, câmera e sequência de entregas
+    RuasTable.jsx          # tabela com busca por nome, CEP e distrito
+    utils/buscaRua.js      # normalização e ranqueamento de ruas/CEPs
   App.jsx                  # junta tudo
 ```
 
-## O que já conversa com o backend Go
+## Integrações principais com o backend Go
 
-- `GET /ruas` (com filtro por `distrito`) — usado para listar as ruas no painel de ajustes e na tabela.
-- `PUT /ruas/:id` — usado (uma vez por rua) para gravar o novo distrito quando você confirma uma mudança.
+- Autenticação JWT para os papéis `admin` e `colaborador`.
+- Consulta de ruas, distritos, estatísticas, colaboradores, folgas e histórico.
+- Ordenamento com entrada por texto, voz e scanner, resolução por nome/CEP,
+  coordenadas e salvamento da sequência manual.
+- APIs de redistritamento e ajustes de rotas protegidas para administradores.
 
-## O que ainda é só front (precisa de trabalho no backend depois)
+## Comportamentos de interface
 
-- **Mover em lote com histórico**: hoje `moverRuasEmLote` faz um `PUT` por rua, um de cada vez. O ideal
-  é criar `POST /ruas/mover-lote` no Go que já grave um registro de histórico (rua, distrito de origem,
-  distrito de destino, carteiro, motivo, usuário, data) — daí o "Alterações recentes" deixa de ser só
-  da sessão e passa a vir do banco.
-- **Carteiro responsável**: o model `Rua` no backend não tem esse campo ainda; o mock usa `rota` para
-  simular. Quando adicionar a coluna, é só ajustar `api/ruas.js`.
-- **Login/usuário**: o nome "Saulo" no cabeçalho e no histórico está fixo — sem autenticação ainda.
-- **Mapa geográfico real**: o `DistrictMap` é um diagrama esquemático (SVG), não usa Google Maps/PostGIS.
-  Serve para orientar visualmente qual distrito está em foco; se quiser o mapa real depois, dá pra trocar
-  esse componente por um mapa com Leaflet ou Google Maps JS API usando as coordenadas do PostGIS.
+- A busca ignora acentos, pontuação, tipos de logradouro e artigos opcionais;
+  prefixos e CEPs formatados também são aceitos.
+- O cabeçalho usa escudo para administradores e identificação para
+  colaboradores.
+- A área de instalação do PWA só aparece em layout móvel enquanto o app não
+  estiver instalado. Sem prompt nativo, ela orienta a instalação pelo menu do
+  navegador.
+- O rodapé e a lateral usam a identidade visual do CDD sem emojis.
 
 ## Próximos passos sugeridos
 
-1. Terminar a importação das ~2 mil ruas no PostgreSQL.
-2. Adicionar `POST /ruas/mover-lote` + tabela `historico_alteracoes` no backend Go.
-3. Trocar o `DistrictMap` esquemático pelo mapa real quando o PostGIS estiver populado.
+1. Validar a busca com a lista operacional completa da unidade.
+2. Revisar as 303 ruas sem geometria e melhorar a precisão das coordenadas.
+3. Comparar a sequência sugerida com rotas reais antes da publicação em
+   produção.

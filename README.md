@@ -2,7 +2,8 @@
 
 Ferramenta interna da unidade CDD Campos dos Goytacazes (Correios): mapa interativo dos distritos postais, consulta de ruas/CEP, cadastro de colaboradores, ajuste de rotas e redistritamento.
 
-Em produção: **https://cddcampos.devsaulo.com.br** — versão atual: **v1.2.0**
+Em produção: **https://cddcampos.devsaulo.com.br** — as alterações locais da
+versão **v1.3.0** ainda aguardam publicação manual pelo workflow de deploy.
 
 ## Stack
 
@@ -135,46 +136,6 @@ nota-de-status-site-correios.md
 
 ## Funcionalidades
 
-<<<<<<< HEAD
-- **Acesso restrito**: todo o site exige login (só `/health` e `/swagger`
-  ficam públicos); 2 papéis (`admin`, `colaborador`)
-- Mapa real (Leaflet + OpenStreetMap) com os distritos ativos, camada
-  opcional de traçado real das ruas
-- Busca de rua por nome/CEP/distrito, exportar CSV, imprimir
-- **Redistritamento** (admin): reduz a quantidade de distritos de forma
-  controlada — corte automático do maior código pro menor, realocação
-  manual de rua por rua, rascunho/aplicação em duas etapas com
-  confirmação. Aumento ainda não implementado (só a estrutura no banco)
-- Ajustes de Rotas: mover rua entre distritos (admin), com histórico
-  persistido no banco (quem moveu, quando, de onde pra onde)
-- Colaboradores: cadastro, busca, exclusão (admin), aniversariante do dia
-  em destaque
-- Consulta de Folgas: saldo por matrícula (livro-razão de créditos/débitos),
-  lançar/excluir restrito a admin, com auditoria de quem lançou
-- Observações de rua: conhecimento de campo dos carteiros (acesso difícil,
-  numeração fora de ordem, mais de um nome, segurança), cadastro restrito a
-  admin
-- Zé Rota: assistente em chat (texto e voz) — busca rua/distrito/CEP no
-  cadastro real (nunca inventa endereço), consulta o tempo em Campos dos
-  Goytacazes (Open-Meteo) e sugere um link do Google Maps só quando não
-  encontra nada no cadastro interno, deixando sempre claro que não é dado
-  oficial
-- Gerenciar usuários: criar conta, definir papel, resetar senha — tudo
-  pela interface, sem precisar de terminal
-- PWA: instalável no celular, funciona offline pro casco estático
-- Deploy via GitHub Actions (disparo manual, com checagem de build antes)
-
-## Pendências conhecidas
-
-- 303 ruas ainda sem geometria real no mapa (desenho manual em andamento)
-- Fluxo de AUMENTO do Redistritamento (banco pronto, falta lógica e tela)
-- Ajuste visual pequeno: texto "Correios" levemente desalinhado do ícone
-  no selo do header (baixa prioridade)
-- Resetar/bloquear um usuário não invalida um token JWT já emitido (fica
-  válido até expirar sozinho em 8h) — aceitável pro tamanho da equipe hoje
-- Botão "Por Carteiro" na tabela de ruas não filtra de verdade, só reordena
-  (combinado deixar parado, sem prioridade)
-=======
 ### Acesso restrito
 
 Todo o conteúdo operacional exige autenticação.
@@ -202,6 +163,27 @@ Também possui:
 - exportação CSV
 - impressão
 - consulta por distrito
+
+### Ordenamento de entregas
+
+Área autenticada para preparar a carga do CDD Campos dos Goytacazes.
+
+- ponto de partida fixo na unidade, com referência visual de unidade postal;
+- entrada manual, por voz e leitura de etiqueta pela câmera;
+- conversão de CEP para a rua correspondente no cadastro da unidade;
+- busca tolerante a acentos, pontuação, abreviações e prefixos de digitação;
+- agrupamento por rua e indicação clara de pendências ou coordenadas ausentes;
+- sequência sugerida por proximidade, começando no CDD;
+- ajuste manual da sequência pelo carteiro;
+- histórico de correções e sequência habitual opcional, isolada por usuário;
+- botão para limpar a carga atual sem apagar o histórico, reiniciando a data e
+  hora da nova carga;
+- disponível para `admin` e `colaborador`, respeitando as permissões de cada
+  papel.
+
+O sistema não usa aprendizado de máquina nesta etapa. As sequências habituais
+continuam pessoais e só são reutilizadas quando a composição da carga coincide
+com segurança.
 
 ### Redistritamento
 
@@ -313,9 +295,22 @@ Não é necessário acessar o banco ou terminal para operações comuns.
 
 O sistema pode ser instalado no celular.
 
+O rodapé exibe **Instalar app** somente em layout móvel enquanto o aplicativo
+não estiver instalado. Se o navegador não oferecer o prompt nativo, o botão
+orienta o usuário a usar o menu de instalação do próprio navegador. Depois da
+instalação, o botão é substituído por **App instalado** e permanece oculto nas
+aberturas seguintes.
+
 O Service Worker mantém apenas o casco estático da aplicação em cache.
 
 Dados das APIs não são cacheados.
+
+### Identidade visual
+
+Os ícones da interface usam SVG de linha, sem emojis. O cabeçalho diferencia
+os papéis com escudo para administradores e identificação de usuário para
+colaboradores. O ponto de partida exibe um símbolo de unidade postal e a
+lateral apresenta a marca Correios com a identificação operacional do CDD.
 
 ## Geometria das ruas
 
@@ -338,11 +333,11 @@ Resultados automáticos de baixa confiança foram descartados para evitar associ
 - **303 ruas sem geometria real** — desenho manual em andamento.
 - **Fluxo de aumento do Redistritamento** — estrutura do banco pronta; faltam lógica de negócio e interface.
 - **Ordenamento por rua** — futura tabela com sequência real de entrega (`rua_id`, `ordem`, `numero`).
+- **Precisão do ordenamento** — validar coordenadas ausentes e a sequência sugerida com listas operacionais reais antes da publicação.
 - **Zé Rota — próxima fase** — sugestão de rota para múltiplas encomendas, dependente do ordenamento das ruas.
 - **AGC (Agência Comunitária)** — áreas sem entrega domiciliária ainda não modeladas.
 - **Botão "Contribuir"** — planejado para alimentar o Zé Rota com características dos distritos.
 - Resetar ou bloquear usuário ainda não invalida imediatamente um JWT já emitido; ele permanece válido até expirar em 8 horas.
-- Pequeno desalinhamento visual do texto "Correios" no header.
 - Botão **Por Carteiro** da tabela de ruas atualmente reordena os registros, mas não realiza um filtro real.
 
 ## Scripts auxiliares
@@ -378,4 +373,3 @@ git push
 Depois do `push`, a publicação em produção é disparada manualmente pelo GitHub Actions.
 
 Isso permite manter o código versionado sem publicar automaticamente alterações para os colaboradores que utilizam o sistema em produção.
->>>>>>> 716381661851e312a717b2e650da3bfd151fb2b8

@@ -1,6 +1,6 @@
 # Notas de Deploy — Guia de Logística CDD Campos
 
-_Atualizado em 05/09/2026_
+_Atualizado em 06/09/2026_
 
 ## Status atual
 
@@ -11,6 +11,10 @@ Domínios: `cddcampos.devsaulo.com.br` (frontend) e
 Deploy agora é via **GitHub Actions** (workflow_dispatch, disparo manual na
 aba Actions do repo) — ver seção própria abaixo. Deixou de ser só
 `git pull` + `docker compose up -d --build` manual na VPS.
+
+As melhorias de interface e ordenamento descritas na atualização de 06/09
+foram validadas localmente e ainda aguardam publicação em produção pelo
+workflow manual.
 
 ## O que foi feito desde a última nota (10/08)
 
@@ -115,6 +119,23 @@ No início da sessão: **442 ruas sem geometria** (de 2.115 ativas).
   de cada grupo zerava o tamanho mínimo automático, fazendo o navegador
   espremer os grupos em vez de rolar — corrigido com `flex-shrink: 0`
 
+### Atualização local de 06/09/2026 — interface e ciclo de carga
+- Ícones funcionais foram padronizados em SVG de linha, sem emojis.
+- O cabeçalho passou a diferenciar `admin` (escudo) e `colaborador`
+  (identificação de usuário), com rótulos próprios.
+- O marcador do ponto de partida agora representa uma unidade postal e
+  mantém a sigla `CDD`; o título ao lado mostra `Campos dos Goytacazes`.
+- A marca da lateral foi reorganizada com o logotipo dos Correios, a
+  identificação da unidade operacional e a descrição do painel.
+- Ao limpar uma carga, objetos e paradas são removidos em transação e o
+  horário do ordenamento é reiniciado para a nova carga; histórico e memória
+  pessoal permanecem intactos.
+- O rodapé oferece instalação do PWA somente em layout móvel. O botão também
+  orienta a instalação pelo menu do navegador quando não há prompt nativo e
+  fica oculto depois que o app é instalado.
+- A busca e a entrada por CEP continuam cobertas pelos testes anteriores;
+  nenhuma permissão foi ampliada nesta atualização.
+
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
 - `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real
@@ -143,14 +164,14 @@ No início da sessão: **442 ruas sem geometria** (de 2.115 ativas).
   (`rua_id`, `ordem`, `número`)
 - **Zé Rota — próxima fase**: sugestão de rota pra múltiplas encomendas,
   depende do ordenamento acima
+- **Precisão do ordenamento**: validar coordenadas ausentes e sequência
+  sugerida com listas operacionais reais antes da publicação
 - **AGC (Agência Comunitária)**: áreas sem entrega domiciliária, ainda não
   modelado no banco
 - **Botão "Contribuir" no sidebar**: alimentar o Zé Rota com
   características gerais de distrito
 - Gap de segurança aceito por ora: resetar/bloquear usuário não invalida
   um token JWT já emitido (fica válido até expirar sozinho em 8h)
-- Ajuste visual pequeno: texto "Correios" levemente desalinhado do ícone
-  no selo do header (baixa prioridade)
 - Botão "Por Carteiro" na tabela de ruas não filtra de verdade, só
   reordena (combinado deixar parado, sem prioridade)
 
