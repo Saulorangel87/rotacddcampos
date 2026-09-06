@@ -21,7 +21,7 @@ jobs:
 
       - name: Compilar Backend (Go)
         working-directory: Backend
-        run: go build -o /dev/null ./...
+        run: go build ./...
 
       - name: Instalar Node.js
         uses: actions/setup-node@v4
@@ -43,14 +43,26 @@ jobs:
     needs: build-check
     runs-on: ubuntu-latest
     steps:
+      - name: Conectar à rede privada Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          ping: ${{ secrets.VPS_HOST }}
+
       - name: Conectar na VPS e publicar
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          timeout: 60s
+          command_timeout: 10m
+          script_stop: true
           script: |
             set -e
             cd ~/apps/site-correios
-            git pull origin main
+            git pull --ff-only origin main
             docker compose up -d --build
