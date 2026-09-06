@@ -181,3 +181,28 @@ func TestEnderecoResolverExpõeOpcoesParaRuaAmbigua(t *testing.T) {
 		t.Fatalf("seleção inesperada: %+v", confirmada)
 	}
 }
+
+func TestEnderecoResolverConfirmaOpcaoDeCorrespondenciaParcial(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 1, NomeRua: "RODOVIA SÉRGIO BARROSO", Distrito: "604"},
+		{ID: 2, NomeRua: "RUA SÉRGIO BUARQUE DE HOLANDA", Distrito: "608"},
+		{ID: 3, NomeRua: "RUA SÉRGIO CARDOSO", Distrito: "608"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "sergio")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoPendente || len(resultado.Opcoes) != 3 {
+		t.Fatalf("opções parciais inesperadas: %+v", resultado)
+	}
+
+	selecionavel := resolver.(EnderecoResolverSelecionavel)
+	confirmada, err := selecionavel.Selecionar(context.Background(), "sergio", 3)
+	if err != nil {
+		t.Fatalf("Selecionar() erro inesperado: %v", err)
+	}
+	if confirmada.Status != models.StatusResolucaoIdentificado || confirmada.RuaID == nil || *confirmada.RuaID != 3 {
+		t.Fatalf("seleção parcial inesperada: %+v", confirmada)
+	}
+}

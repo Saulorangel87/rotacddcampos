@@ -20,7 +20,7 @@ var (
 	ErrOrdenamentoSemObjetos     = errors.New("adicione ao menos uma rua identificada antes de gerar o ordenamento")
 	ErrOrdenamentoComPendencias  = errors.New("revise as encomendas pendentes antes de gerar o ordenamento")
 	ErrOrdenamentoSemCoordenadas = errors.New("há ruas sem coordenada disponível para gerar o ordenamento")
-	ErrOpcaoRuaInvalida          = errors.New("a rua escolhida não corresponde à encomenda")
+	ErrOpcaoRuaInvalida          = errors.New("a rua escolhida não corresponde ao texto informado")
 )
 
 type AdicionarObjetoDTO struct {

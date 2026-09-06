@@ -225,7 +225,8 @@ func (r *enderecoResolver) Selecionar(ctx context.Context, entrada string, ruaID
 		}
 		tipo := tipoLogradouroInformado(tentativa.nome)
 		for _, rua := range candidatas {
-			if rua.ID != ruaID || normalizarNomeBase(rua.NomeRua) != normalizado {
+			baseCandidata := normalizarNomeBase(rua.NomeRua)
+			if rua.ID != ruaID || !nomeCandidatoCorresponde(baseCandidata, normalizado) {
 				continue
 			}
 			if tipo != "" && tipoLogradouroNormalizado(rua.NomeRua) != tipo {
@@ -246,6 +247,13 @@ func (r *enderecoResolver) Selecionar(ctx context.Context, entrada string, ruaID
 		}
 	}
 	return pendencia(MotivoRuaNaoEncontrada, ""), nil
+}
+
+func nomeCandidatoCorresponde(candidato, termo string) bool {
+	if candidato == termo {
+		return true
+	}
+	return len(termo) >= 4 && strings.Contains(candidato, termo)
 }
 
 func pendencia(motivo, numero string) ResolucaoEndereco {
