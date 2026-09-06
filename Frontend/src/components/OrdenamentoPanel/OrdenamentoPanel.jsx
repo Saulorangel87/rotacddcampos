@@ -16,6 +16,27 @@ import { ordenarParadas } from './ordemManual.js'
 import { IconeMicrofone, IconeScanner, IconeTeclado, IconeUnidadeCorreios } from '../icons/Icons.jsx'
 import styles from './OrdenamentoPanel.module.css'
 
+function instrucaoPermissaoCamera() {
+  const agente = navigator.userAgent || ''
+  if (/Android/i.test(agente)) {
+    return 'No Android, abra Informações do app > Permissões > Câmera e permita durante o uso. Se abriu pelo Chrome, toque no cadeado ao lado do endereço > Permissões > Câmera > Permitir.'
+  }
+  if (/iPhone|iPad|iPod/i.test(agente)) {
+    return 'No iPhone ou iPad, abra Ajustes > Apps > Safari > Câmera e selecione Perguntar ou Permitir. Depois feche e abra o app novamente.'
+  }
+  return 'Abra as permissões do site no cadeado ao lado do endereço e permita o uso da câmera. Depois tente novamente.'
+}
+
+function mensagemErroScanner(erro) {
+  if (erro?.name === 'NotAllowedError' || erro?.name === 'SecurityError') {
+    return `A câmera está bloqueada. ${instrucaoPermissaoCamera()}`
+  }
+  if (erro?.name === 'NotReadableError') {
+    return 'A câmera está sendo usada por outro aplicativo. Feche a câmera e outros leitores, depois tente novamente.'
+  }
+  return 'Não foi possível abrir a câmera. Use Digitar ou Falar.'
+}
+
 export default function OrdenamentoPanel() {
   const [ordenamento, setOrdenamento] = useState(null)
   const [carregando, setCarregando] = useState(true)
@@ -71,6 +92,16 @@ export default function OrdenamentoPanel() {
     }
 
     try {
+      try {
+        const permissao = await navigator.permissions?.query?.({ name: 'camera' })
+        if (permissao?.state === 'denied') {
+          setErro(mensagemErroScanner({ name: 'NotAllowedError' }))
+          return
+        }
+      } catch {
+        // Alguns navegadores não expõem camera em Permissions API; o leitor
+        // fará a solicitação normalmente ao abrir o dispositivo.
+      }
       const { BrowserMultiFormatReader } = await import('@zxing/browser')
       leitorScannerRef.current = new BrowserMultiFormatReader()
       scannerAtivoRef.current = true
@@ -78,9 +109,7 @@ export default function OrdenamentoPanel() {
       requestAnimationFrame(iniciarLeituraScanner)
     } catch (e) {
       encerrarScanner()
-      setErro(e.name === 'NotAllowedError'
-        ? 'Permita o acesso à câmera para escanear a etiqueta.'
-        : 'Não foi possível abrir a câmera. Use Digitar ou Falar.')
+      setErro(mensagemErroScanner(e))
     }
   }
 
@@ -110,9 +139,7 @@ export default function OrdenamentoPanel() {
     } catch (e) {
       if (!scannerAtivoRef.current) return
       encerrarScanner()
-      setErro(e.name === 'NotAllowedError'
-        ? 'Permita o acesso à câmera para escanear a etiqueta.'
-        : 'Não foi possível abrir a câmera. Use Digitar ou Falar.')
+      setErro(mensagemErroScanner(e))
     }
   }
 
