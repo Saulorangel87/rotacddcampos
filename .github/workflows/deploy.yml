@@ -46,9 +46,7 @@ jobs:
       - name: Conectar à rede privada Tailscale
         uses: tailscale/github-action@v4
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
           ping: ${{ secrets.VPS_HOST }}
 
       - name: Conectar na VPS e publicar
