@@ -17,4 +17,8 @@ export const UPDATE_NOTES = [
     title: 'Ordenamento por proximidade',
     description: 'Depois de conferir as encomendas, gere uma sequência sugerida para organizar a saída do CDD.',
   },
+  {
+    title: 'Instalação no celular',
+    description: 'Adicione o site à tela inicial do celular para abrir o guia rapidamente durante a rotina da unidade.',
+  },
 ]

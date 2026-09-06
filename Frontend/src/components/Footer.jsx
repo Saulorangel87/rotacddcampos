@@ -1,7 +1,18 @@
-import styles from './Footer.module.css'
+import { useEffect, useState } from 'react'
 import { APP_VERSION } from '../release.js'
+import styles from './Footer.module.css'
 
 const ANO = new Date().getFullYear()
+const CHAVE_PWA_INSTALADO = 'rotas_pwa_instalado'
+
+function ehCelular() {
+  const mobileData = navigator.userAgentData?.mobile
+  if (typeof mobileData === 'boolean') return mobileData
+
+  return /Android.*Mobile|iPhone|iPod|Windows Phone|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  )
+}
 
 // Ícones desenhados como SVG inline (mesma abordagem do resto do projeto) em vez
 // de importar uma biblioteca de ícones inteira só para 3 símbolos — mantém o
@@ -30,13 +41,109 @@ function IconeEmail(props) {
   )
 }
 
+function IconeDownload(props) {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M12 3v12" />
+      <path d="m7 10 5 5 5-5" />
+      <path d="M5 21h14" />
+    </svg>
+  )
+}
+
 export default function Footer() {
+  const [installPrompt, setInstallPrompt] = useState(null)
+  const [instalado, setInstalado] = useState(false)
+  const [celular, setCelular] = useState(false)
+
+  useEffect(() => {
+    const dispositivoMovel = ehCelular()
+    setCelular(dispositivoMovel)
+    if (!dispositivoMovel) return undefined
+
+    const standalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      Boolean(navigator.standalone)
+    let instaladoSalvo = false
+    try {
+      instaladoSalvo = localStorage.getItem(CHAVE_PWA_INSTALADO) === 'true'
+    } catch {
+      // O botão continua funcionando mesmo se o navegador bloquear o storage.
+    }
+    queueMicrotask(() => setInstalado(standalone || instaladoSalvo))
+
+    function capturarPrompt(evento) {
+      // O evento só é retido no celular; em desktop o navegador mantém seu
+      // comportamento nativo de instalação, sem criar um botão no rodapé.
+      evento.preventDefault()
+      try {
+        localStorage.removeItem(CHAVE_PWA_INSTALADO)
+      } catch {
+        // O storage é apenas uma lembrança visual, não é requisito da instalação.
+      }
+      setInstalado(false)
+      setInstallPrompt(evento)
+    }
+
+    function marcarInstalado() {
+      try {
+        localStorage.setItem(CHAVE_PWA_INSTALADO, 'true')
+      } catch {
+        // O estado em memória ainda informa a instalação nesta sessão.
+      }
+      setInstalado(true)
+      setInstallPrompt(null)
+    }
+
+    window.addEventListener('beforeinstallprompt', capturarPrompt)
+    window.addEventListener('appinstalled', marcarInstalado)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', capturarPrompt)
+      window.removeEventListener('appinstalled', marcarInstalado)
+    }
+  }, [])
+
+  async function instalarApp() {
+    if (!installPrompt) return
+
+    try {
+      await installPrompt.prompt()
+      const escolha = await installPrompt.userChoice
+      if (escolha.outcome === 'accepted') {
+        try {
+          localStorage.setItem(CHAVE_PWA_INSTALADO, 'true')
+        } catch {
+          // O evento appinstalled atualiza o estado quando o storage falhar.
+        }
+        setInstalado(true)
+      }
+    } catch {
+      // O navegador pode encerrar o prompt sem concluir a instalação.
+    } finally {
+      // Um prompt nativo só pode ser usado uma vez; aguardamos um novo evento
+      // do navegador para oferecer o botão novamente.
+      setInstallPrompt(null)
+    }
+  }
+
   return (
     <footer className={styles.rodape}>
       <span>
         &copy; {ANO} Desenvolvido por Saulo Rangel - v{APP_VERSION}
       </span>
       <div className={styles.icones}>
+        {celular && installPrompt && !instalado && (
+          <button type="button" className={styles.instalar} onClick={instalarApp}>
+            <IconeDownload />
+            Instalar app
+          </button>
+        )}
+        {celular && instalado && (
+          <span className={styles.instalado}>
+            <span className={styles.pontoInstalado} aria-hidden="true" />
+            App instalado
+          </span>
+        )}
         <a
           href="https://www.linkedin.com/in/saulorangel87"
           target="_blank"
