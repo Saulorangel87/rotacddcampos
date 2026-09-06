@@ -1,24 +1,60 @@
-export const APP_VERSION = '1.3.0'
+export const APP_VERSION = '1.4.0'
 
 export const UPDATE_NOTES = [
   {
-    title: 'Leitura de etiquetas pela câmera',
-    description: 'Leia o código de barras da etiqueta e lance a encomenda no ordenamento sem precisar digitar.',
+    title: 'Acesso por perfil e login',
+    description: 'Administradores e colaboradores veem apenas as funções permitidas para o seu perfil, e todo novo login começa no Mapa Geral.',
   },
   {
-    title: 'CEP convertido automaticamente em rua',
-    description: 'Quando o código traz um CEP, o sistema procura a rua correspondente no cadastro da unidade.',
+    title: 'Novidades após o login',
+    description: 'Esta tela aparece uma vez por usuário em cada versão, logo depois da entrada no sistema, para apresentar as melhorias da entrega.',
   },
   {
-    title: 'Busca de ruas mais flexível',
-    description: 'Termos incompletos, acentos e variações comuns agora encontram opções para conferência.',
+    title: 'Identidade visual do CDD',
+    description: 'O cabeçalho, a navegação e o ponto de partida foram refinados para identificar a unidade Campos dos Goytacazes, com ícones próprios para cada perfil.',
   },
   {
-    title: 'Ordenamento por proximidade',
-    description: 'Depois de conferir as encomendas, gere uma sequência sugerida para organizar a saída do CDD.',
+    title: 'Ações com melhor contraste',
+    description: 'Botões de geração, recálculo e ajuste mantêm texto legível também durante o foco e o movimento do mouse.',
+  },
+  {
+    title: 'Busca de ruas refinada',
+    description: 'A pesquisa entende acentos, tipos de logradouro, abreviações, prefixos, variações de digitação e CEP com ou sem hífen, priorizando o cadastro mais exato e tratando ambiguidades para conferência.',
+  },
+  {
+    title: 'Leitura por voz, câmera e CEP',
+    description: 'Lance encomendas por voz ou pelo código de barras da etiqueta; quando a leitura traz um CEP, ele é convertido na rua correspondente do cadastro da unidade.',
+  },
+  {
+    title: 'Scanner mais seguro',
+    description: 'O painel de câmera inicia e encerra corretamente, com cancelamento limpo e mensagens de feedback para cada leitura.',
+  },
+  {
+    title: 'Confirmação mais clara',
+    description: 'Resultados parciais ou ambíguos mostram as opções do cadastro para que a rua correta seja confirmada antes de entrar na rota.',
+  },
+  {
+    title: 'Salvamento mais confiável',
+    description: 'A comunicação com a API foi ajustada para confirmar ruas e guardar correções do ordenamento sem falhas de comunicação.',
+  },
+  {
+    title: 'Ordenamento passo a passo',
+    description: 'A sequência parte sempre do CDD e escolhe, a cada etapa, a rua restante mais próxima usando coordenadas disponíveis no cadastro e no cache.',
+  },
+  {
+    title: 'Resultado determinístico',
+    description: 'Empates de distância recebem um critério fixo do cadastro, e a sequência não é reordenada por uma otimização global que possa afastar ruas vizinhas.',
+  },
+  {
+    title: 'Correções que permanecem',
+    description: 'Ajustes manuais podem ser salvos como sequência habitual do próprio usuário e são preservados ao gerar novamente a ordem.',
+  },
+  {
+    title: 'Nova carga com horário correto',
+    description: 'Limpar a lista inicia uma nova carga e atualiza a data e a hora exibidas no ordenamento.',
   },
   {
     title: 'Instalação no celular',
-    description: 'Adicione o site à tela inicial do celular para abrir o guia rapidamente durante a rotina da unidade.',
+    description: 'A opção de instalar aparece somente em dispositivos móveis e fica oculta quando o site já está instalado.',
   },
 ]

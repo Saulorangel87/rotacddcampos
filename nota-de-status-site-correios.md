@@ -14,7 +14,8 @@ aba Actions do repo) — ver seção própria abaixo. Deixou de ser só
 
 As melhorias de interface e ordenamento descritas na atualização de 06/09
 foram validadas localmente e ainda aguardam publicação em produção pelo
-workflow manual.
+workflow manual. A próxima entrega está identificada como versão `1.4.0` e
+inclui o ordenamento estrito por proximidade passo a passo.
 
 ## O que foi feito desde a última nota (10/08)
 

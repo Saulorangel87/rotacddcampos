@@ -3,7 +3,7 @@
 Ferramenta interna da unidade CDD Campos dos Goytacazes (Correios): mapa interativo dos distritos postais, consulta de ruas/CEP, cadastro de colaboradores, ajuste de rotas e redistritamento.
 
 Em produção: **https://cddcampos.devsaulo.com.br** — as alterações locais da
-versão **v1.3.0** ainda aguardam publicação manual pelo workflow de deploy.
+versão **v1.4.0** ainda aguardam publicação manual pelo workflow de deploy.
 
 ## Stack
 

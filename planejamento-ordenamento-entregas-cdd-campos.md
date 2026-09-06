@@ -760,6 +760,9 @@ as regras do motor de ordenamento:
   permanece oculto nas próximas aberturas;
 - a detecção móvel acompanha redimensionamentos e o modo responsivo para não
   perder a opção durante testes em celular.
+- a tela de novidades é exibida depois do login uma vez por usuário e por
+  versão; a entrega atual foi identificada como `1.4.0` e inclui o ordenamento
+  estrito por proximidade passo a passo.
 
 Validação desta etapa: `go test ./... -count=1`, `npm run build`,
 `git diff --check` e conferência visual local no navegador. A publicação em
