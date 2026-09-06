@@ -97,12 +97,25 @@ func (r *enderecoResolver) resolverTermo(ctx context.Context, termo, numero stri
 		return ResolucaoEndereco{}, false, err
 	}
 
-	grupos := make(map[string][]models.Rua)
+	gruposExatos := make(map[string][]models.Rua)
+	gruposParciais := make(map[string][]models.Rua)
 	for _, rua := range candidatas {
 		base := normalizarNomeBase(rua.NomeRua)
-		if base == normalizado || (len(normalizado) >= 4 && strings.Contains(base, normalizado)) {
-			grupos[base] = append(grupos[base], rua)
+		if base == normalizado {
+			gruposExatos[base] = append(gruposExatos[base], rua)
+			continue
 		}
+		if len(normalizado) >= 4 && strings.Contains(base, normalizado) {
+			gruposParciais[base] = append(gruposParciais[base], rua)
+		}
+	}
+	// Uma rua cujo nome normalizado coincide por completo é mais confiável do
+	// que um nome maior que apenas contém o termo. Por exemplo, "SILVA
+	// TAVARES" não deve ficar ambígua por também existir "PEDREVAL DA SILVA
+	// TAVARES" no cadastro.
+	grupos := gruposParciais
+	if len(gruposExatos) > 0 {
+		grupos = gruposExatos
 	}
 	if len(grupos) == 0 {
 		return ResolucaoEndereco{}, false, nil

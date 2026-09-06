@@ -93,3 +93,21 @@ func TestEnderecoResolverDeixaRuaDesconhecidaPendente(t *testing.T) {
 		t.Fatalf("resolução inesperada: %+v", resultado)
 	}
 }
+
+func TestEnderecoResolverPriorizaCorrespondenciaExataSobreParcial(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 306, NomeRua: "RUA PEDREVAL DA SILVA TAVARES", Distrito: "605"},
+		{ID: 468, NomeRua: "RUA SILVA TAVARES", Distrito: "607", CEP: "28027080"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "Rua Silva Tavares")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoIdentificado || resultado.RuaID == nil || *resultado.RuaID != 468 {
+		t.Fatalf("resolução inesperada: %+v", resultado)
+	}
+	if resultado.NomeRua != "RUA SILVA TAVARES" || resultado.CEP != "28027080" {
+		t.Fatalf("rua escolhida inesperada: %+v", resultado)
+	}
+}
