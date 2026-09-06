@@ -1,12 +1,22 @@
-import { useEffect, useState } from 'react'
-import { buscarOrdenamentoAtivo, criarOrdenamento } from '../../api/ordenamentos.js'
+import { useEffect, useRef, useState } from 'react'
+import {
+  adicionarObjeto,
+  buscarOrdenamentoAtivo,
+  criarOrdenamento,
+  excluirObjeto,
+} from '../../api/ordenamentos.js'
 import styles from './OrdenamentoPanel.module.css'
 
 export default function OrdenamentoPanel() {
   const [ordenamento, setOrdenamento] = useState(null)
   const [carregando, setCarregando] = useState(true)
   const [criando, setCriando] = useState(false)
+  const [digitando, setDigitando] = useState(false)
+  const [entrada, setEntrada] = useState('')
+  const [salvando, setSalvando] = useState(false)
+  const [excluindoId, setExcluindoId] = useState(null)
   const [erro, setErro] = useState('')
+  const campoEntradaRef = useRef(null)
 
   useEffect(() => {
     buscarOrdenamentoAtivo()
@@ -14,6 +24,10 @@ export default function OrdenamentoPanel() {
       .catch((e) => setErro(e.message))
       .finally(() => setCarregando(false))
   }, [])
+
+  useEffect(() => {
+    if (digitando) campoEntradaRef.current?.focus()
+  }, [digitando])
 
   async function iniciarOrdenamento() {
     setCriando(true)
@@ -33,6 +47,37 @@ export default function OrdenamentoPanel() {
       setErro(e.message)
     } finally {
       setCriando(false)
+    }
+  }
+
+  async function cadastrarObjeto(evento) {
+    evento.preventDefault()
+    const texto = entrada.trim()
+    if (!texto || !ordenamento) return
+
+    setSalvando(true)
+    setErro('')
+    try {
+      setOrdenamento(await adicionarObjeto(ordenamento.id, texto))
+      setEntrada('')
+      requestAnimationFrame(() => campoEntradaRef.current?.focus())
+    } catch (e) {
+      setErro(e.message)
+    } finally {
+      setSalvando(false)
+    }
+  }
+
+  async function removerObjeto(objetoId) {
+    if (!ordenamento || excluindoId) return
+    setExcluindoId(objetoId)
+    setErro('')
+    try {
+      setOrdenamento(await excluirObjeto(ordenamento.id, objetoId))
+    } catch (e) {
+      setErro(e.message)
+    } finally {
+      setExcluindoId(null)
     }
   }
 
@@ -69,11 +114,117 @@ export default function OrdenamentoPanel() {
           </div>
 
           <div className={styles.contadores} aria-label="Resumo do ordenamento">
-            <div><strong>0</strong><span>objetos</span></div>
-            <div><strong>0</strong><span>ruas</span></div>
+            <div><strong>{ordenamento.total_objetos ?? 0}</strong><span>objetos</span></div>
+            <div><strong>{ordenamento.total_ruas ?? 0}</strong><span>ruas</span></div>
+            {(ordenamento.total_pendentes ?? 0) > 0 && (
+              <div className={styles.contadorPendente}>
+                <strong>{ordenamento.total_pendentes}</strong><span>para revisar</span>
+              </div>
+            )}
           </div>
 
-          <p className={styles.aviso}>O ordenamento está pronto para receber as encomendas.</p>
+          <div className={styles.adicionarCabecalho}>
+            <div>
+              <span className={styles.rotulo}>Adicionar encomenda</span>
+              <p>Informe a rua e, se souber, o número.</p>
+            </div>
+          </div>
+
+          <div className={styles.modosEntrada} aria-label="Formas de adicionar encomenda">
+            <button type="button" disabled title="Disponível em breve">
+              <span aria-hidden="true">▣</span> Escanear <small>Em breve</small>
+            </button>
+            <button type="button" disabled title="Disponível em breve">
+              <span aria-hidden="true">●</span> Falar <small>Em breve</small>
+            </button>
+            <button
+              type="button"
+              className={digitando ? styles.modoAtivo : ''}
+              onClick={() => setDigitando(true)}
+            >
+              <span aria-hidden="true">⌨</span> Digitar
+            </button>
+          </div>
+
+          {digitando && (
+            <form className={styles.formulario} onSubmit={cadastrarObjeto}>
+              <label htmlFor="endereco-encomenda">Rua e número</label>
+              <div>
+                <input
+                  ref={campoEntradaRef}
+                  id="endereco-encomenda"
+                  value={entrada}
+                  onChange={(evento) => setEntrada(evento.target.value)}
+                  placeholder="Ex.: Av. Sete de Setembro 342"
+                  autoComplete="off"
+                  disabled={salvando}
+                />
+                <button type="submit" disabled={salvando || !entrada.trim()}>
+                  {salvando ? 'Adicionando…' : 'Adicionar'}
+                </button>
+              </div>
+              <span>Após adicionar, o campo fica pronto para a próxima encomenda.</span>
+            </form>
+          )}
+
+          {(ordenamento.objetos?.length ?? 0) > 0 ? (
+            <section className={styles.lista} aria-labelledby="titulo-encomendas">
+              <div className={styles.listaTopo}>
+                <h3 id="titulo-encomendas">Encomendas adicionadas</h3>
+                <span>{ordenamento.total_objetos} no total</span>
+              </div>
+              <ul>
+                {ordenamento.objetos.map((objeto) => (
+                  <li key={objeto.id}>
+                    <div className={styles.objetoTexto}>
+                      {objeto.status_resolucao === 'identificado' ? (
+                        <>
+                          <strong>
+                            {objeto.nome_rua}{objeto.numero ? `, ${objeto.numero}` : ''}
+                          </strong>
+                          <span>
+                            Rua identificada{objeto.cep ? ` · CEP ${objeto.cep}` : ''}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <strong>{objeto.texto_entrada}</strong>
+                          <span className={styles.pendente}>
+                            {mensagemPendencia(objeto.motivo_pendencia)}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.remover}
+                      onClick={() => removerObjeto(objeto.id)}
+                      disabled={excluindoId !== null}
+                      aria-label={`Remover encomenda ${objeto.texto_entrada}`}
+                    >
+                      {excluindoId === objeto.id ? 'Removendo…' : 'Remover'}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : (
+            <p className={styles.aviso}>O ordenamento está pronto para receber as encomendas.</p>
+          )}
+
+          {(ordenamento.ruas?.length ?? 0) > 0 && (
+            <section className={styles.ruas} aria-labelledby="titulo-ruas">
+              <h3 id="titulo-ruas">Ruas identificadas</h3>
+              <ul>
+                {ordenamento.ruas.map((rua) => (
+                  <li key={rua.chave}>
+                    <span>{rua.nome_rua}</span>
+                    <strong>{rua.quantidade} {rua.quantidade === 1 ? 'objeto' : 'objetos'}</strong>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </article>
       ) : (
         <article className={styles.estadoInicial}>
@@ -90,6 +241,11 @@ export default function OrdenamentoPanel() {
       {erro && <p className={styles.erro} role="alert">{erro}</p>}
     </section>
   )
+}
+
+function mensagemPendencia(motivo) {
+  if (motivo === 'rua_ambigua') return 'Precisa de revisão · Há mais de uma rua possível'
+  return 'Precisa de revisão · Rua não encontrada no cadastro'
 }
 
 function formatarData(valor) {

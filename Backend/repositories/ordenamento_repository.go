@@ -10,6 +10,9 @@ import (
 type OrdenamentoRepository interface {
 	FindAtivoByUsuario(ctx context.Context, usuarioID uint) (*models.Ordenamento, error)
 	Create(ctx context.Context, ordenamento *models.Ordenamento) error
+	ListObjetos(ctx context.Context, ordenamentoID uint) ([]models.ObjetoOrdenamento, error)
+	CreateObjeto(ctx context.Context, objeto *models.ObjetoOrdenamento) error
+	DeleteObjeto(ctx context.Context, ordenamentoID, objetoID uint) (bool, error)
 }
 
 type ordenamentoRepository struct {
@@ -37,4 +40,24 @@ func (r *ordenamentoRepository) FindAtivoByUsuario(ctx context.Context, usuarioI
 
 func (r *ordenamentoRepository) Create(ctx context.Context, ordenamento *models.Ordenamento) error {
 	return r.db.WithContext(ctx).Create(ordenamento).Error
+}
+
+func (r *ordenamentoRepository) ListObjetos(ctx context.Context, ordenamentoID uint) ([]models.ObjetoOrdenamento, error) {
+	var objetos []models.ObjetoOrdenamento
+	err := r.db.WithContext(ctx).
+		Where("ordenamento_id = ?", ordenamentoID).
+		Order("created_at ASC, id ASC").
+		Find(&objetos).Error
+	return objetos, err
+}
+
+func (r *ordenamentoRepository) CreateObjeto(ctx context.Context, objeto *models.ObjetoOrdenamento) error {
+	return r.db.WithContext(ctx).Create(objeto).Error
+}
+
+func (r *ordenamentoRepository) DeleteObjeto(ctx context.Context, ordenamentoID, objetoID uint) (bool, error) {
+	resultado := r.db.WithContext(ctx).
+		Where("id = ? AND ordenamento_id = ?", objetoID, ordenamentoID).
+		Delete(&models.ObjetoOrdenamento{})
+	return resultado.RowsAffected > 0, resultado.Error
 }

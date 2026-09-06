@@ -7,3 +7,16 @@ export function buscarOrdenamentoAtivo() {
 export function criarOrdenamento() {
   return apiFetchJson('/ordenamentos', { method: 'POST' })
 }
+
+export function adicionarObjeto(ordenamentoId, entrada, origem = 'manual') {
+  return apiFetchJson(`/ordenamentos/${ordenamentoId}/objetos`, {
+    method: 'POST',
+    body: JSON.stringify({ entrada, origem }),
+  })
+}
+
+export function excluirObjeto(ordenamentoId, objetoId) {
+  return apiFetchJson(`/ordenamentos/${ordenamentoId}/objetos/${objetoId}`, {
+    method: 'DELETE',
+  })
+}

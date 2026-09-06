@@ -140,9 +140,224 @@
 
 .contadores {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 140px));
+  grid-template-columns: repeat(3, minmax(0, 140px));
   gap: 10px;
   margin: 18px 0;
+}
+
+.contadores .contadorPendente {
+  background: #fff4dd;
+}
+
+.contadorPendente strong,
+.contadorPendente span {
+  color: #8a5200;
+}
+
+.adicionarCabecalho {
+  margin-top: 22px;
+}
+
+.adicionarCabecalho p {
+  margin: 3px 0 0;
+  color: #657487;
+  font-size: 0.9rem;
+}
+
+.modosEntrada {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.modosEntrada button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 50px;
+  padding: 8px 10px;
+  border: 1px solid #b9c9d8;
+  border-radius: 10px;
+  background: #fff;
+  color: #174b78;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modosEntrada button:hover:not(:disabled),
+.modosEntrada .modoAtivo {
+  border-color: #0b5fa5;
+  background: #eaf4fc;
+}
+
+.modosEntrada button:disabled {
+  cursor: default;
+  opacity: 0.58;
+}
+
+.modosEntrada small {
+  color: #7c8997;
+  font-size: 0.64rem;
+  font-weight: 600;
+}
+
+.formulario {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 11px;
+  background: #f4f7fa;
+}
+
+.formulario label {
+  display: block;
+  margin-bottom: 7px;
+  color: #294a69;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.formulario > div {
+  display: flex;
+  gap: 8px;
+}
+
+.formulario input {
+  min-width: 0;
+  min-height: 46px;
+  flex: 1;
+  padding: 0 13px;
+  border: 1px solid #b8c7d5;
+  border-radius: 8px;
+  background: #fff;
+  color: #173b5d;
+  font: inherit;
+}
+
+.formulario input:focus {
+  border-color: #0b5fa5;
+  outline: 3px solid rgba(11, 95, 165, 0.14);
+}
+
+.formulario button {
+  min-height: 46px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 8px;
+  background: #0b5fa5;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.formulario button:disabled {
+  cursor: default;
+  opacity: 0.58;
+}
+
+.formulario > span {
+  display: block;
+  margin-top: 7px;
+  color: #6c7987;
+  font-size: 0.76rem;
+}
+
+.lista,
+.ruas {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #e1e7ed;
+}
+
+.listaTopo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lista h3,
+.ruas h3 {
+  margin: 0;
+  color: #163b60;
+  font-size: 1rem;
+}
+
+.listaTopo > span {
+  color: #718090;
+  font-size: 0.8rem;
+}
+
+.lista ul,
+.ruas ul {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lista li,
+.ruas li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 13px;
+  border: 1px solid #e0e7ed;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.objetoTexto {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.objetoTexto strong {
+  overflow-wrap: anywhere;
+  color: #193d60;
+  font-size: 0.92rem;
+}
+
+.objetoTexto span {
+  color: #697887;
+  font-size: 0.78rem;
+}
+
+.objetoTexto .pendente {
+  color: #9a5b00;
+}
+
+.remover {
+  padding: 7px 4px;
+  border: 0;
+  background: transparent;
+  color: #a33333;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.remover:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.ruas li span {
+  color: #294b6b;
+  font-size: 0.88rem;
+}
+
+.ruas li strong {
+  color: #5c6f82;
+  font-size: 0.78rem;
+  white-space: nowrap;
 }
 
 .contadores div {
@@ -182,6 +397,7 @@
 @media (max-width: 620px) {
   .pagina {
     gap: 12px;
+    padding-bottom: 90px;
   }
 
   .estadoInicial,
@@ -197,5 +413,27 @@
 
   .contadores {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .modosEntrada {
+    grid-template-columns: 1fr;
+  }
+
+  .modosEntrada button {
+    min-height: 54px;
+  }
+
+  .formulario > div {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .formulario input,
+  .formulario button {
+    min-height: 52px;
+  }
+
+  .lista li {
+    align-items: flex-start;
   }
 }

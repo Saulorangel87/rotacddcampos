@@ -131,13 +131,16 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, ze
 	// Injeção de dependências - Ordenamento de entregas
 	// Disponível para colaborador e admin, sempre isolado pelo usuario_id do JWT.
 	ordenamentoRepo := repositories.NewOrdenamentoRepository(db)
-	ordenamentoService := services.NewOrdenamentoService(ordenamentoRepo)
+	enderecoResolver := services.NewEnderecoResolver(ruaRepo)
+	ordenamentoService := services.NewOrdenamentoService(ordenamentoRepo, enderecoResolver)
 	ordenamentoHandler := handlers.NewOrdenamentoHandler(ordenamentoService)
 
 	ordenamentos := app.Group("/ordenamentos", autenticado)
 	{
 		ordenamentos.Get("/ativo", ordenamentoHandler.GetAtivo)
 		ordenamentos.Post("/", ordenamentoHandler.Criar)
+		ordenamentos.Post("/:id/objetos", ordenamentoHandler.AdicionarObjeto)
+		ordenamentos.Delete("/:id/objetos/:objetoId", ordenamentoHandler.ExcluirObjeto)
 	}
 
 	// Injeção de dependências - Redistritamento
