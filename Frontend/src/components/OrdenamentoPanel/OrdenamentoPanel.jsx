@@ -19,7 +19,7 @@ import styles from './OrdenamentoPanel.module.css'
 function instrucaoPermissaoCamera() {
   const agente = navigator.userAgent || ''
   if (/Android/i.test(agente)) {
-    return 'No Android, abra Informações do app > Permissões > Câmera e permita durante o uso. Se abriu pelo Chrome, toque no cadeado ao lado do endereço > Permissões > Câmera > Permitir.'
+    return 'No Android, a permissão é gerenciada pelo Chrome: abra o site no Chrome, toque no ícone de controles ao lado do endereço > Permissões > Câmera > Permitir. Se Câmera não aparecer, abra Chrome > Configurações > Configurações do site > Câmera, remova o bloqueio e tente novamente.'
   }
   if (/iPhone|iPad|iPod/i.test(agente)) {
     return 'No iPhone ou iPad, abra Ajustes > Apps > Safari > Câmera e selecione Perguntar ou Permitir. Depois feche e abra o app novamente.'
