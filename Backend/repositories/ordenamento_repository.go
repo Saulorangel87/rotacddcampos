@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"time"
 
 	"github.com/empresa/rotas-entrega/models"
 	"gorm.io/gorm"
@@ -68,13 +69,19 @@ func (r *ordenamentoRepository) DeleteObjeto(ctx context.Context, ordenamentoID,
 	return resultado.RowsAffected > 0, resultado.Error
 }
 
-// LimparConteudo apaga somente os dados operacionais de uma lista: objetos e
-// paradas sugeridas. O ordenamento continua ativo para receber uma nova carga.
+// LimparConteudo apaga os dados operacionais da carga atual e reinicia o
+// horário do ordenamento. O registro continua ativo para receber a nova carga.
 func (r *ordenamentoRepository) LimparConteudo(ctx context.Context, ordenamentoID uint) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Where("ordenamento_id = ?", ordenamentoID).Delete(&models.ParadaOrdenamento{}).Error; err != nil {
 			return err
 		}
-		return tx.Where("ordenamento_id = ?", ordenamentoID).Delete(&models.ObjetoOrdenamento{}).Error
+		if err := tx.Where("ordenamento_id = ?", ordenamentoID).Delete(&models.ObjetoOrdenamento{}).Error; err != nil {
+			return err
+		}
+		agora := time.Now()
+		return tx.Model(&models.Ordenamento{}).
+			Where("id = ?", ordenamentoID).
+			Updates(map[string]any{"created_at": agora, "updated_at": agora}).Error
 	})
 }

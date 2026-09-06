@@ -368,3 +368,13 @@ export function IconeEnviar(props) {
     </Svg>
   );
 }
+
+export function IconeUnidadeCorreios(props) {
+  return (
+    <Svg {...props}>
+      <path d="M4 10h16M5 10v10h14V10M3 10l9-6 9 6" />
+      <path d="M8 14h2M14 14h2M10 20v-4h4v4" />
+      <path d="M17 6V3h2v4" />
+    </Svg>
+  );
+}

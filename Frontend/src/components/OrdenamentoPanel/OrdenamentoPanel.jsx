@@ -13,7 +13,7 @@ import {
 import { useReconhecimentoDeVoz } from '../../hooks/useReconhecimentoDeVoz.js'
 import HistoricoOrdens from './HistoricoOrdens.jsx'
 import { ordenarParadas } from './ordemManual.js'
-import { IconeMicrofone, IconeScanner, IconeTeclado } from '../icons/Icons.jsx'
+import { IconeMicrofone, IconeScanner, IconeTeclado, IconeUnidadeCorreios } from '../icons/Icons.jsx'
 import styles from './OrdenamentoPanel.module.css'
 
 export default function OrdenamentoPanel() {
@@ -338,10 +338,13 @@ export default function OrdenamentoPanel() {
       </header>
 
       <article className={styles.partida} aria-label="Ponto de partida">
-        <div className={styles.marcador} aria-hidden="true">CDD</div>
+        <div className={styles.marcador} role="img" aria-label="Unidade CDD Campos dos Goytacazes">
+          <IconeUnidadeCorreios size={22} aria-hidden="true" />
+          <span className={styles.marcadorSigla}>CDD</span>
+        </div>
         <div>
           <span className={styles.rotulo}>Ponto de partida fixo</span>
-          <strong>CDD Campos dos Goytacazes</strong>
+          <strong>Campos dos Goytacazes</strong>
           <span>Av. Sete de Setembro, 342</span>
           <span>Campos dos Goytacazes — RJ</span>
         </div>
