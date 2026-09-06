@@ -62,5 +62,6 @@ src/
 1. Validar a busca com a lista operacional completa da unidade.
 2. Revisar as 305 ruas sem geometria do snapshot local e melhorar a precisão
    das coordenadas.
-3. Comparar a sequência sugerida com rotas reais antes da publicação em
-   produção.
+3. Comparar a sequência sugerida com uma sequência operacional real; o cadastro
+   atual não possui `rota` preenchida, então o ajuste do algoritmo depende dessa
+   referência antes da publicação em produção.

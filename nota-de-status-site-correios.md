@@ -148,6 +148,16 @@ prefixo `Sete` dentro de `Setembro`, sem perder a digitação progressiva.
 Esse número é um retrato da base local nesta data e não substitui a conferência
 da produção no momento da publicação.
 
+### Auditoria de coordenadas e ordenamento — 06/09/2026
+
+As 1.810 geometrias preenchidas na base local passaram por validação de JSON,
+tipo, pontos válidos, limites municipais amplos e degeneração: não foram
+encontradas geometrias inválidas. Existem 305 ruas sem geometria, e o campo
+`rota` está vazio em todas as ruas; por isso, não há como inferir uma ordem
+operacional a partir do cadastro. A próxima alteração do motor deve ser medida
+contra uma sequência real de paradas ou uma planilha de ordem por rua. Até lá,
+o algoritmo de proximidade permanece inalterado para evitar uma precisão falsa.
+
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
 - `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real
@@ -177,8 +187,9 @@ da produção no momento da publicação.
   (`rua_id`, `ordem`, `número`)
 - **Zé Rota — próxima fase**: sugestão de rota pra múltiplas encomendas,
   depende do ordenamento acima
-- **Precisão do ordenamento**: validar coordenadas ausentes e sequência
-  sugerida com listas operacionais reais antes da publicação
+- **Precisão do ordenamento**: as geometrias existentes foram auditadas e estão
+  válidas; ainda falta uma sequência operacional real para medir e ajustar o
+  resultado antes da publicação
 - **AGC (Agência Comunitária)**: áreas sem entrega domiciliária, ainda não
   modelado no banco
 - **Botão "Contribuir" no sidebar**: alimentar o Zé Rota com

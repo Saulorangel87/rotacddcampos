@@ -650,9 +650,10 @@ de entrada das Fases 2 e 7, sem alterar as permissões ou o escopo do MVP:
 - respostas antigas não são sobrescritas por consultas mais recentes na tela de CEP;
 - testes cobrem Silva Tavares, abreviações, acentos, artigos omitidos, prefixos e CEP.
 
-A próxima parte da Fase 8 é validar a busca com a lista operacional completa e,
-depois, atacar a precisão das coordenadas e do ordenamento com exemplos reais,
-antes da publicação conjunta em produção.
+A validação inicial da busca foi concluída com o cadastro local. A próxima
+parte da Fase 8 é obter uma referência operacional real e, com ela, medir a
+precisão das coordenadas e do ordenamento antes da publicação conjunta em
+produção.
 
 ### Evolução local — 06/09/2026: validação no cadastro sincronizado
 
@@ -676,8 +677,34 @@ local passou de 8 para 10 testes de frontend, além do build Vite. A contagem
 de geometrias é um retrato da base local nesta data; deve ser conferida de novo
 quando a produção for sincronizada.
 
-Próxima etapa da Fase 8: confrontar a busca com a lista operacional real de
-etiquetas e, em seguida, revisar coordenadas ausentes e a sequência sugerida.
+Próxima etapa da Fase 8: obter uma sequência operacional real de paradas ou
+uma planilha de ordem por rua para comparar com a sugestão do motor.
+
+### Evolução local — 06/09/2026: auditoria de qualidade para o ordenamento
+
+Antes de alterar o motor, foi feita uma leitura somente do cadastro local para
+separar problemas de dados de problemas de algoritmo:
+
+- as 1.810 geometrias existentes são válidas, estão dentro dos limites amplos
+  de Campos dos Goytacazes e não há traçados degenerados;
+- a distribuição é de 1.685 `MultiLineString`, 114 `LineString` e 11 `Point`;
+- há 305 ruas sem geometria, concentradas principalmente nos distritos 608
+  (35), 611 (30), 606 (27), 623 (23), 615 (19) e 621 (16);
+- o campo `rota` está vazio em todo o cadastro local, então ele não pode ser
+  usado para ordenar ou priorizar trechos;
+- o cache externo possui somente 2 resultados encontrados e 4 negativos, sem
+  evidência de que uma coordenada inválida esteja sendo usada no motor.
+
+Conclusão: não há evidência de defeito estrutural nas geometrias atuais. A
+ordem gerada continua sendo uma sugestão por distância em linha reta, como
+previsto no MVP. Para aprimorar a precisão com segurança, falta uma referência
+operacional (por exemplo, a sequência real de paradas ou uma planilha de
+ordem por rua). Essa referência será usada para medir o erro e ajustar o motor
+sem transformar uma preferência arbitrária em regra geral.
+
+Validação desta auditoria: consulta PostgreSQL local somente leitura, `go test
+./...`, 10 testes Node e `npm run build`. Nenhuma tabela ou geometria foi
+alterada.
 
 ### Evolução local — 06/09/2026: identidade visual, ciclo de carga e instalação
 
