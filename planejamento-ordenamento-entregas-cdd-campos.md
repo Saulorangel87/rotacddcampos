@@ -482,23 +482,19 @@ Fluxo:
 
 Para distância entre coordenadas, utilizar cálculo geográfico apropriado, como Haversine.
 
-Depois da rota inicial, aplicar uma melhoria simples, como:
-
-## 2-opt
-
-para tentar eliminar cruzamentos e melhorar a sequência.
-
-Arquitetura conceitual:
+Nesta primeira versão, não aplicar 2-opt nem outra melhoria global. Essas
+técnicas podem trocar uma rua que é a mais próxima da posição atual por uma
+sequência globalmente menor, contrariando o critério operacional definido para
+o MVP. A sequência deve permanecer exatamente na ordem das escolhas locais:
 
 ruas
 ↓
-Nearest Neighbor
-↓
-rota inicial
-↓
-2-opt
+Nearest Neighbor a partir do CDD
 ↓
 ordem sugerida
+
+Qualquer melhoria global fica postergada até existir uma referência operacional
+real que permita medir o resultado e aprovar o novo critério.
 
 Importante:
 
@@ -713,22 +709,33 @@ alterada.
 
 ### Evolução local — 06/09/2026: auditoria do algoritmo de proximidade
 
-O motor foi revisado contra o contrato do MVP e recebeu uma proteção de ordem:
+O motor foi revisado contra o contrato do MVP e agora aplica somente o vizinho
+mais próximo:
 
-- a primeira parada agora é sempre a rua mais próxima do ponto fixo do CDD;
-- o `2-opt` continua reduzindo ou mantendo a distância total, mas só reorganiza
-  as paradas seguintes;
+- a posição inicial é o ponto fixo do CDD;
+- em cada passo, escolhe a rua restante com menor distância Haversine à posição
+  anterior;
 - a entrada não é modificada e cada parada permanece uma única vez na saída;
-- um teste reproduz um caso em que o `2-opt` anterior colocava uma rua mais
-  distante antes da mais próxima; esse caso agora mantém o início esperado.
-- uma simulação com 1.000 conjuntos de ruas da base local não encontrou
-  nenhuma primeira parada diferente da mais próxima ao CDD;
+- não há `2-opt` ou outra reordenação global que possa trocar uma escolha local
+  mais próxima por uma sequência globalmente menor;
+- um teste reproduz o caso do cadastro local em que a melhoria anterior trocava
+  `RUA CORONEL WALTER KRAMER` e `RUA HUMBERTO DE CAMPOS`; a ordem estrita agora
+  mantém a rua mais próxima em cada passo.
 
-Com isso, a garantia do MVP fica explícita: o resultado parte do CDD, começa
-pela proximidade imediata e melhora o restante por distância geográfica em
-linha reta. Isso ainda não representa o sentido real das vias nem a ordem dos
-números de entrega; essa etapa continua dependente da referência operacional
-pendente.
+Com isso, a garantia do MVP fica explícita: cada transição parte da coordenada
+da parada anterior e escolhe a menor distância geográfica disponível. Isso
+ainda não representa o sentido real das vias nem a ordem dos números de
+entrega; essa etapa continua dependente da referência operacional pendente.
+
+### Verificação do caso Araújo/Advaldo — 06/09/2026
+
+No teste com a carga real do ordenamento, a coordenada cadastrada para `RUA
+ADVALDO MACIEL` ficou cerca de 244 m do centro de `RUA ARAÚJO SILVA` e cerca
+de 113 m pelo ponto mais próximo das geometrias. A sequência estrita agora
+coloca Advaldo logo após Araújo quando as duas ruas estão na mesma carga. O
+caso anterior usava por engano `RUA ALCIDES VIEIRA MACIEL`, que pertence a outra
+posição do cadastro e fica aproximadamente 3,03 km de Araújo. Nenhuma
+coordenada foi alterada nesta etapa.
 
 ### Evolução local — 06/09/2026: identidade visual, ciclo de carga e instalação
 
@@ -1257,7 +1264,7 @@ Testar:
 
 - distância;
 - nearest neighbor;
-- 2-opt;
+- escolha da rua mais próxima em cada passo;
 - uma rua;
 - duas ruas;
 - dezenas de ruas;
@@ -1317,9 +1324,8 @@ O algoritmo local deve suportar tranquilamente casos como:
 
 Não precisa otimização prematura.
 
-Nearest Neighbor + 2-opt é suficiente inicialmente.
-
-Mas implementar de forma clara e testável.
+Nearest Neighbor é suficiente inicialmente. O motor deve ser claro e testável,
+sem trocar escolhas locais por uma melhoria global sem validação operacional.
 
 ---
 
@@ -1424,7 +1430,7 @@ Depois da análise, implementar fase por fase.
 - ponto inicial do CDD;
 - Haversine;
 - nearest neighbor;
-- 2-opt;
+- ordem estritamente por vizinho mais próximo;
 - gerar lista ordenada.
 
 ## Fase 5 — Correção manual

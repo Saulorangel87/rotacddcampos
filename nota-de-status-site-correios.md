@@ -166,11 +166,17 @@ e preparar a validação final para produção.
 ### Auditoria do motor de proximidade — 06/09/2026
 
 O motor foi testado com casos determinísticos e uma simulação de 1.000 conjuntos
-de ruas da base local. A primeira parada mais próxima do CDD foi preservada em
-todos os casos. A melhoria continua aplicada nas paradas seguintes, aceitando
-somente trocas que reduzem ou mantêm a distância geográfica da sequência. O
-resultado continua sendo uma sugestão em linha reta; vias, trânsito e ordem dos
-números ainda dependem de dados operacionais reais.
+de ruas da base local. Em cada passo, a saída escolhe a menor distância entre a
+posição atual e as paradas restantes, começando no CDD. Não há mais uma
+reordenação global posterior. O resultado continua sendo uma sugestão em linha
+reta; vias, trânsito e ordem dos números ainda dependem de dados operacionais
+reais.
+
+No caso corrigido com Araújo Silva e Advaldo Maciel, o cadastro local indica
+aproximadamente 244 m entre os centros usados pelo motor e 113 m entre os
+pontos mais próximos das geometrias. A sequência estrita atende essa
+proximidade. Alcides Vieira Maciel era a rua citada por engano e fica em outra
+posição do cadastro. Nenhuma coordenada foi modificada.
 
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim

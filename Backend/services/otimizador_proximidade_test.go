@@ -49,62 +49,26 @@ func TestOtimizadorProximidadeDesempataParadasIguaisPelaChave(t *testing.T) {
 	}
 }
 
-func TestOtimizadorProximidadeMantemPrimeiraParadaMaisProximaAposDoisOpt(t *testing.T) {
-	origem := PontoGeografico{}
+func TestOtimizadorProximidadeEscolheMaisProximaAposCadaParada(t *testing.T) {
+	origem := PontoGeografico{Latitude: -21.7545, Longitude: -41.3244}
 	paradas := []ParadaParaOtimizar{
-		{Chave: "a", NomeRua: "RUA A", Latitude: 2.28265, Longitude: -1.53681},
-		{Chave: "b", NomeRua: "RUA B", Latitude: 2.85567, Longitude: -4.72631},
-		{Chave: "c", NomeRua: "RUA C", Latitude: 2.55204, Longitude: 6.09974},
-		{Chave: "d", NomeRua: "RUA D", Latitude: 1.25306, Longitude: 8.64923},
-		{Chave: "e", NomeRua: "RUA E", Latitude: -5.24234, Longitude: 9.96405},
-		{Chave: "f", NomeRua: "RUA F", Latitude: -7.98961, Longitude: 8.91075},
+		{Chave: "he", NomeRua: "RUA HEMETERIO MARTINS", Latitude: -21.74741348, Longitude: -41.31991077},
+		{Chave: "vi", NomeRua: "RUA VICTOR SENCE", Latitude: -21.74585041, Longitude: -41.31913047},
+		{Chave: "ar", NomeRua: "RUA ARAÚJO SILVA", Latitude: -21.74483195, Longitude: -41.32411008},
+		{Chave: "ad", NomeRua: "RUA ADVALDO MACIEL", Latitude: -21.74268008, Longitude: -41.32365472},
+		{Chave: "hu", NomeRua: "RUA HUMBERTO DE CAMPOS", Latitude: -21.73931632, Longitude: -41.32429478},
+		{Chave: "co", NomeRua: "RUA CORONEL WALTER KRAMER", Latitude: -21.73942655, Longitude: -41.32516038},
+		{Chave: "li", NomeRua: "RUA LINDOLFO FRAGA", Latitude: -21.73648282, Longitude: -41.33158173},
+		{Chave: "na", NomeRua: "RUA NAZÁRIO PEREIRA GOMES", Latitude: -21.73136348, Longitude: -41.32864929},
+		{Chave: "al", NomeRua: "RUA ALCIDES VIEIRA MACIEL", Latitude: -21.72217914, Longitude: -41.30780713},
+		{Chave: "sa", NomeRua: "RUA SANTO ANTÔNIO", Latitude: -21.76680614, Longitude: -41.30097881},
 	}
 
 	resultado := NewOtimizadorProximidade().Otimizar(origem, paradas)
-	if resultado[0].Chave != "a" {
-		t.Fatalf("primeira parada = %q, esperado a (mais próxima do CDD)", resultado[0].Chave)
+	esperado := []string{"he", "vi", "ar", "ad", "hu", "co", "li", "na", "al", "sa"}
+	for indice, chave := range esperado {
+		if resultado[indice].Chave != chave {
+			t.Fatalf("parada %d = %q, esperado %q (vizinho mais próximo)", indice+1, resultado[indice].Chave, chave)
+		}
 	}
-}
-
-func TestOtimizadorProximidadeNaoAumentaRotaInicial(t *testing.T) {
-	origem := PontoGeografico{}
-	paradas := []ParadaParaOtimizar{
-		{Chave: "a", Latitude: 0.02, Longitude: 0.01},
-		{Chave: "b", Latitude: 0.04, Longitude: 0.04},
-		{Chave: "c", Latitude: 0.01, Longitude: 0.04},
-		{Chave: "d", Latitude: 0.05, Longitude: 0.01},
-		{Chave: "e", Latitude: 0.03, Longitude: 0.06},
-	}
-
-	inicial := rotaVizinhoMaisProximo(origem, paradas)
-	final := NewOtimizadorProximidade().Otimizar(origem, paradas)
-	if depois, antes := distanciaDaSequencia(origem, final), distanciaDaSequencia(origem, inicial); depois > antes+0.000001 {
-		t.Fatalf("2-opt restrito aumentou a distância: antes=%f depois=%f", antes, depois)
-	}
-}
-
-func TestMelhorarComDoisOptNaoAumentaDistancia(t *testing.T) {
-	origem := PontoGeografico{}
-	rota := []ParadaParaOtimizar{
-		{NomeRua: "A", Latitude: 0.02, Longitude: 0.01},
-		{NomeRua: "B", Latitude: 0.04, Longitude: 0.04},
-		{NomeRua: "C", Latitude: 0.01, Longitude: 0.04},
-		{NomeRua: "D", Latitude: 0.05, Longitude: 0.01},
-	}
-	antes := distanciaDaSequencia(origem, rota)
-	depois := distanciaDaSequencia(origem, melhorarComDoisOpt(origem, rota))
-	if depois > antes+0.000001 {
-		t.Fatalf("2-opt aumentou distância: antes=%f depois=%f", antes, depois)
-	}
-}
-
-func distanciaDaSequencia(origem PontoGeografico, rota []ParadaParaOtimizar) float64 {
-	if len(rota) == 0 {
-		return 0
-	}
-	total := distanciaHaversine(origem, pontoDaParada(rota[0]))
-	for indice := 1; indice < len(rota); indice++ {
-		total += distanciaHaversine(pontoDaParada(rota[indice-1]), pontoDaParada(rota[indice]))
-	}
-	return total
 }

@@ -28,8 +28,7 @@ func (otimizadorProximidade) Otimizar(origem PontoGeografico, paradas []ParadaPa
 		return append([]ParadaParaOtimizar(nil), paradas...)
 	}
 
-	resultado := rotaVizinhoMaisProximo(origem, paradas)
-	return melhorarComDoisOpt(origem, resultado)
+	return rotaVizinhoMaisProximo(origem, paradas)
 }
 
 func rotaVizinhoMaisProximo(origem PontoGeografico, paradas []ParadaParaOtimizar) []ParadaParaOtimizar {
@@ -76,39 +75,4 @@ func distanciaHaversine(a, b PontoGeografico) float64 {
 	h := math.Sin(deltaLatitude/2)*math.Sin(deltaLatitude/2) +
 		math.Cos(latitudeA)*math.Cos(latitudeB)*math.Sin(deltaLongitude/2)*math.Sin(deltaLongitude/2)
 	return 2 * raioTerraKM * math.Atan2(math.Sqrt(h), math.Sqrt(1-h))
-}
-
-func melhorarComDoisOpt(_ PontoGeografico, rota []ParadaParaOtimizar) []ParadaParaOtimizar {
-	if len(rota) < 4 {
-		return rota
-	}
-	// A primeira parada é a mais próxima do CDD, escolhida pelo vizinho mais
-	// próximo. O 2-opt melhora somente o restante para não trocar esse ponto
-	// inicial por uma rua mais distante em busca de um ganho global pequeno.
-	melhorou := true
-	for melhorou {
-		melhorou = false
-		for inicio := 1; inicio < len(rota)-2; inicio++ {
-			antes := pontoDaParada(rota[inicio-1])
-			for fim := inicio + 1; fim < len(rota)-1; fim++ {
-				atual := pontoDaParada(rota[inicio])
-				depois := pontoDaParada(rota[fim+1])
-				custoAtual := distanciaHaversine(antes, atual) + distanciaHaversine(pontoDaParada(rota[fim]), depois)
-				custoInvertido := distanciaHaversine(antes, pontoDaParada(rota[fim])) + distanciaHaversine(atual, depois)
-				if custoInvertido+0.000001 < custoAtual {
-					inverterTrecho(rota, inicio, fim)
-					melhorou = true
-				}
-			}
-		}
-	}
-	return rota
-}
-
-func inverterTrecho(valores []ParadaParaOtimizar, inicio, fim int) {
-	for inicio < fim {
-		valores[inicio], valores[fim] = valores[fim], valores[inicio]
-		inicio++
-		fim--
-	}
 }

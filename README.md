@@ -174,8 +174,8 @@ Também possui:
 - busca tolerante a acentos, pontuação, abreviações e prefixos de digitação;
 - agrupamento por rua e indicação clara de pendências ou coordenadas ausentes;
 - sequência sugerida por proximidade, começando no CDD;
-- primeira parada fixada na rua mais próxima do CDD; melhoria 2-opt aplicada
-  somente às paradas seguintes;
+- cada parada escolhida pela menor distância à posição anterior, sem
+  reordenação global posterior;
 - ajuste manual da sequência pelo carteiro;
 - histórico de correções e sequência habitual opcional, isolada por usuário;
 - botão para limpar a carga atual sem apagar o histórico, reiniciando a data e
