@@ -38,6 +38,16 @@ func (r *ordenamentoRepoFake) CreateObjeto(_ context.Context, objeto *models.Obj
 	return nil
 }
 
+func (r *ordenamentoRepoFake) UpdateObjeto(_ context.Context, objeto *models.ObjetoOrdenamento) error {
+	for indice := range r.objetos {
+		if r.objetos[indice].ID == objeto.ID && r.objetos[indice].OrdenamentoID == objeto.OrdenamentoID {
+			r.objetos[indice] = *objeto
+			return nil
+		}
+	}
+	return ErrObjetoNaoEncontrado
+}
+
 func (r *ordenamentoRepoFake) DeleteObjeto(_ context.Context, ordenamentoID, objetoID uint) (bool, error) {
 	for i, objeto := range r.objetos {
 		if objeto.ID == objetoID && objeto.OrdenamentoID == ordenamentoID {
@@ -55,6 +65,11 @@ func (r *ordenamentoRepoFake) LimparConteudo(_ context.Context, _ uint) error {
 
 type enderecoResolverFake struct {
 	resolucao ResolucaoEndereco
+}
+
+type enderecoResolverSelecionavelFake struct {
+	enderecoResolverFake
+	selecionada ResolucaoEndereco
 }
 
 type coordenadaResolverFake struct {
@@ -95,6 +110,10 @@ func (r coordenadaResolverFake) Resolver(_ context.Context, _ SolicitacaoCoorden
 
 func (r enderecoResolverFake) Resolver(_ context.Context, _ string) (ResolucaoEndereco, error) {
 	return r.resolucao, nil
+}
+
+func (r enderecoResolverSelecionavelFake) Selecionar(_ context.Context, _ string, _ uint) (ResolucaoEndereco, error) {
+	return r.selecionada, nil
 }
 
 func TestOrdenamentoServiceCriar(t *testing.T) {
@@ -246,5 +265,25 @@ func TestOrdenamentoServiceNaoGeraOrdemSemCoordenada(t *testing.T) {
 	_, err := service.GerarOrdem(context.Background(), 42, 7)
 	if !errors.Is(err, ErrOrdenamentoSemCoordenadas) {
 		t.Fatalf("GerarOrdem() erro = %v, esperado %v", err, ErrOrdenamentoSemCoordenadas)
+	}
+}
+
+func TestOrdenamentoServiceConfirmaRuaAmbigua(t *testing.T) {
+	ruaID := uint(10)
+	repo := &ordenamentoRepoFake{
+		ativo:   &models.Ordenamento{ID: 7, UsuarioID: 42, Status: models.StatusOrdenamentoEmAndamento},
+		objetos: []models.ObjetoOrdenamento{{ID: 1, OrdenamentoID: 7, TextoEntrada: "São Gonçalo", StatusResolucao: models.StatusResolucaoPendente, MotivoPendencia: MotivoRuaAmbigua}},
+	}
+	resolver := enderecoResolverSelecionavelFake{
+		selecionada: ResolucaoEndereco{RuaID: &ruaID, NomeRua: "RUA SÃO GONÇALO", ChaveAgrupamento: "rua:10", CEP: "28023592", Status: models.StatusResolucaoIdentificado},
+	}
+	service := NewOrdenamentoService(repo, resolver, nil, nil, nil)
+
+	detalhe, err := service.SelecionarRua(context.Background(), 42, 7, 1, 10)
+	if err != nil {
+		t.Fatalf("SelecionarRua() erro inesperado: %v", err)
+	}
+	if detalhe.TotalPendentes != 0 || detalhe.Objetos[0].StatusResolucao != models.StatusResolucaoIdentificado || detalhe.Objetos[0].CEP != "28023592" {
+		t.Fatalf("objeto não confirmado: %+v", detalhe.Objetos[0])
 	}
 }

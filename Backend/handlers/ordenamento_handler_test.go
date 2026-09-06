@@ -34,6 +34,11 @@ func (s *ordenamentoServiceFake) AdicionarObjeto(_ context.Context, usuarioID, _
 	return &services.OrdenamentoDetalhe{ID: 1}, nil
 }
 
+func (s *ordenamentoServiceFake) SelecionarRua(_ context.Context, usuarioID, _, _, _ uint) (*services.OrdenamentoDetalhe, error) {
+	s.usuarioIDRecebido = usuarioID
+	return &services.OrdenamentoDetalhe{ID: 1}, nil
+}
+
 func (s *ordenamentoServiceFake) ExcluirObjeto(_ context.Context, usuarioID, _, _ uint) (*services.OrdenamentoDetalhe, error) {
 	s.usuarioIDRecebido = usuarioID
 	return &services.OrdenamentoDetalhe{ID: 1}, nil
@@ -58,6 +63,7 @@ func TestOrdenamentoExigeAutenticacao(t *testing.T) {
 		{metodo: "GET", caminho: "/ordenamentos/ativo"},
 		{metodo: "POST", caminho: "/ordenamentos"},
 		{metodo: "POST", caminho: "/ordenamentos/1/objetos", corpo: `{"entrada":"Pelinca 520"}`},
+		{metodo: "PATCH", caminho: "/ordenamentos/1/objetos/2/rua", corpo: `{"rua_id":10}`},
 		{metodo: "DELETE", caminho: "/ordenamentos/1/objetos/2"},
 		{metodo: "DELETE", caminho: "/ordenamentos/1/objetos"},
 		{metodo: "POST", caminho: "/ordenamentos/1/gerar-ordem"},
@@ -87,6 +93,7 @@ func TestOrdenamentoPermiteColaboradorEAdmin(t *testing.T) {
 			{metodo: "GET", caminho: "/ordenamentos/ativo", statusEsperado: fiber.StatusOK},
 			{metodo: "POST", caminho: "/ordenamentos", statusEsperado: fiber.StatusCreated},
 			{metodo: "POST", caminho: "/ordenamentos/1/objetos", statusEsperado: fiber.StatusCreated},
+			{metodo: "PATCH", caminho: "/ordenamentos/1/objetos/2/rua", statusEsperado: fiber.StatusOK},
 			{metodo: "DELETE", caminho: "/ordenamentos/1/objetos/2", statusEsperado: fiber.StatusOK},
 			{metodo: "DELETE", caminho: "/ordenamentos/1/objetos", statusEsperado: fiber.StatusOK},
 			{metodo: "POST", caminho: "/ordenamentos/1/gerar-ordem", statusEsperado: fiber.StatusOK},
@@ -96,6 +103,10 @@ func TestOrdenamentoPermiteColaboradorEAdmin(t *testing.T) {
 				req := httptest.NewRequest(caso.metodo, caso.caminho, nil)
 				if caso.metodo == "POST" && strings.HasSuffix(caso.caminho, "/objetos") {
 					req = httptest.NewRequest(caso.metodo, caso.caminho, strings.NewReader(`{"entrada":"Pelinca 520"}`))
+					req.Header.Set("Content-Type", "application/json")
+				}
+				if caso.metodo == "PATCH" {
+					req = httptest.NewRequest(caso.metodo, caso.caminho, strings.NewReader(`{"rua_id":10}`))
 					req.Header.Set("Content-Type", "application/json")
 				}
 				req.Header.Set("Authorization", "Bearer "+tokenTeste(t, papel))
@@ -123,6 +134,7 @@ func novoAppOrdenamentoTeste(t *testing.T) (*fiber.App, *ordenamentoServiceFake)
 	app.Get("/ordenamentos/ativo", middlewares.ExigirAutenticacao("segredo-teste"), handler.GetAtivo)
 	app.Post("/ordenamentos", middlewares.ExigirAutenticacao("segredo-teste"), handler.Criar)
 	app.Post("/ordenamentos/:id/objetos", middlewares.ExigirAutenticacao("segredo-teste"), handler.AdicionarObjeto)
+	app.Patch("/ordenamentos/:id/objetos/:objetoId/rua", middlewares.ExigirAutenticacao("segredo-teste"), handler.SelecionarRua)
 	app.Delete("/ordenamentos/:id/objetos", middlewares.ExigirAutenticacao("segredo-teste"), handler.Limpar)
 	app.Delete("/ordenamentos/:id/objetos/:objetoId", middlewares.ExigirAutenticacao("segredo-teste"), handler.ExcluirObjeto)
 	app.Post("/ordenamentos/:id/gerar-ordem", middlewares.ExigirAutenticacao("segredo-teste"), handler.GerarOrdem)

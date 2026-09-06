@@ -111,3 +111,73 @@ func TestEnderecoResolverPriorizaCorrespondenciaExataSobreParcial(t *testing.T) 
 		t.Fatalf("rua escolhida inesperada: %+v", resultado)
 	}
 }
+
+func TestEnderecoResolverAceitaTiposDeLogradouroInvertidos(t *testing.T) {
+	tests := []struct {
+		entrada  string
+		cadastro models.Rua
+		esperado string
+	}{
+		{entrada: "Rua Santa Cecilia", cadastro: models.Rua{ID: 1, NomeRua: "CECÍLIA, RUA SANTA"}, esperado: "RUA SANTA CECÍLIA"},
+		{entrada: "Travessa Sao Goncalo", cadastro: models.Rua{ID: 2, NomeRua: "GONÇALO, TV.SÃO"}, esperado: "TRAVESSA SÃO GONÇALO"},
+		{entrada: "Praca Athaide Barbosa", cadastro: models.Rua{ID: 3, NomeRua: "ATHAÍDE BARBOSA, PÇA"}, esperado: "PRAÇA ATHAÍDE BARBOSA"},
+	}
+
+	for _, caso := range tests {
+		resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{caso.cadastro}})
+		resultado, err := resolver.Resolver(context.Background(), caso.entrada+" 10")
+		if err != nil {
+			t.Fatalf("Resolver(%q) erro inesperado: %v", caso.entrada, err)
+		}
+		if resultado.Status != models.StatusResolucaoIdentificado || resultado.RuaID == nil || *resultado.RuaID != caso.cadastro.ID {
+			t.Fatalf("Resolver(%q) não identificou o cadastro: %+v", caso.entrada, resultado)
+		}
+		if resultado.NomeRua != caso.esperado {
+			t.Fatalf("Resolver(%q) nome = %q, esperado %q", caso.entrada, resultado.NomeRua, caso.esperado)
+		}
+	}
+}
+
+func TestEnderecoResolverUsaTipoParaDesempatarRuasHomônimas(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 1109, NomeRua: "GONÇALO, TV.SÃO", Distrito: "614"},
+		{ID: 197, NomeRua: "RUA SÃO GONÇALO", Distrito: "604"},
+		{ID: 1809, NomeRua: "RUA SÃO GONÇALO", Distrito: "620"},
+		{ID: 1924, NomeRua: "RUA SÃO GONÇALO", Distrito: "621"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "Travessa Sao Goncalo")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoIdentificado || resultado.RuaID == nil || *resultado.RuaID != 1109 {
+		t.Fatalf("resolução inesperada: %+v", resultado)
+	}
+}
+
+func TestEnderecoResolverExpõeOpcoesParaRuaAmbigua(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 197, NomeRua: "RUA SÃO GONÇALO", Distrito: "604", CEP: "28023592"},
+		{ID: 1809, NomeRua: "RUA SÃO GONÇALO", Distrito: "620", CEP: "28070216"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "São Gonçalo")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoPendente || len(resultado.Opcoes) != 2 {
+		t.Fatalf("opções inesperadas: %+v", resultado)
+	}
+
+	selecionavel, ok := resolver.(EnderecoResolverSelecionavel)
+	if !ok {
+		t.Fatal("resolvedor não permite selecionar opção")
+	}
+	confirmada, err := selecionavel.Selecionar(context.Background(), "São Gonçalo", 1809)
+	if err != nil {
+		t.Fatalf("Selecionar() erro inesperado: %v", err)
+	}
+	if confirmada.Status != models.StatusResolucaoIdentificado || confirmada.RuaID == nil || *confirmada.RuaID != 1809 || confirmada.CEP != "28070216" {
+		t.Fatalf("seleção inesperada: %+v", confirmada)
+	}
+}

@@ -15,6 +15,13 @@ export function adicionarObjeto(ordenamentoId, entrada, origem = 'manual') {
   })
 }
 
+export function selecionarRua(ordenamentoId, objetoId, ruaId) {
+  return apiFetchJson(`/ordenamentos/${ordenamentoId}/objetos/${objetoId}/rua`, {
+    method: 'PATCH',
+    body: JSON.stringify({ rua_id: ruaId }),
+  })
+}
+
 export function excluirObjeto(ordenamentoId, objetoId) {
   return apiFetchJson(`/ordenamentos/${ordenamentoId}/objetos/${objetoId}`, {
     method: 'DELETE',

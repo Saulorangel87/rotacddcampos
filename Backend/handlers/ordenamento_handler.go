@@ -75,6 +75,39 @@ func (h *OrdenamentoHandler) AdicionarObjeto(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(detalhe)
 }
 
+func (h *OrdenamentoHandler) SelecionarRua(c *fiber.Ctx) error {
+	usuarioID, ok := c.Locals("usuario_id").(uint)
+	if !ok || usuarioID == 0 {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "não autenticado"})
+	}
+	ordenamentoID, err := strconv.ParseUint(c.Params("id"), 10, 64)
+	if err != nil || ordenamentoID == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "id de ordenamento inválido"})
+	}
+	objetoID, err := strconv.ParseUint(c.Params("objetoId"), 10, 64)
+	if err != nil || objetoID == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "id de encomenda inválido"})
+	}
+	var corpo struct {
+		RuaID uint `json:"rua_id"`
+	}
+	if err := c.BodyParser(&corpo); err != nil || corpo.RuaID == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "rua inválida"})
+	}
+	detalhe, err := h.service.SelecionarRua(c.Context(), usuarioID, uint(ordenamentoID), uint(objetoID), corpo.RuaID)
+	if err != nil {
+		switch {
+		case errors.Is(err, services.ErrOrdenamentoNaoEncontrado), errors.Is(err, services.ErrObjetoNaoEncontrado):
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
+		case errors.Is(err, services.ErrOpcaoRuaInvalida):
+			return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
+		default:
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "não foi possível confirmar a rua"})
+		}
+	}
+	return c.JSON(detalhe)
+}
+
 func (h *OrdenamentoHandler) ExcluirObjeto(c *fiber.Ctx) error {
 	usuarioID, ok := c.Locals("usuario_id").(uint)
 	if !ok || usuarioID == 0 {

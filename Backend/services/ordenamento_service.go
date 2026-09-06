@@ -20,6 +20,7 @@ var (
 	ErrOrdenamentoSemObjetos     = errors.New("adicione ao menos uma rua identificada antes de gerar o ordenamento")
 	ErrOrdenamentoComPendencias  = errors.New("revise as encomendas pendentes antes de gerar o ordenamento")
 	ErrOrdenamentoSemCoordenadas = errors.New("há ruas sem coordenada disponível para gerar o ordenamento")
+	ErrOpcaoRuaInvalida          = errors.New("a rua escolhida não corresponde à encomenda")
 )
 
 type AdicionarObjetoDTO struct {
@@ -54,6 +55,7 @@ type OrdenamentoService interface {
 	GetAtivo(ctx context.Context, usuarioID uint) (*OrdenamentoDetalhe, error)
 	Criar(ctx context.Context, usuarioID uint) (*OrdenamentoDetalhe, error)
 	AdicionarObjeto(ctx context.Context, usuarioID, ordenamentoID uint, dto AdicionarObjetoDTO) (*OrdenamentoDetalhe, error)
+	SelecionarRua(ctx context.Context, usuarioID, ordenamentoID, objetoID, ruaID uint) (*OrdenamentoDetalhe, error)
 	ExcluirObjeto(ctx context.Context, usuarioID, ordenamentoID, objetoID uint) (*OrdenamentoDetalhe, error)
 	Limpar(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error)
 	GerarOrdem(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error)
@@ -127,6 +129,7 @@ func (s *ordenamentoService) AdicionarObjeto(ctx context.Context, usuarioID, ord
 		OrigemEntrada:    origem,
 		StatusResolucao:  resolucao.Status,
 		MotivoPendencia:  resolucao.MotivoPendencia,
+		OpcoesResolucao:  resolucao.Opcoes,
 	}
 	if resolucao.Status == models.StatusResolucaoIdentificado && s.coordenadas != nil {
 		coordenada, erroCoordenada := s.coordenadas.Resolver(ctx, SolicitacaoCoordenada{
@@ -144,6 +147,68 @@ func (s *ordenamentoService) AdicionarObjeto(ctx context.Context, usuarioID, ord
 		}
 	}
 	if err := s.repo.CreateObjeto(ctx, objeto); err != nil {
+		return nil, err
+	}
+	if err := s.limparOrdemSugerida(ctx, ordenamento.ID); err != nil {
+		return nil, err
+	}
+	return s.montarDetalhe(ctx, ordenamento)
+}
+
+func (s *ordenamentoService) SelecionarRua(ctx context.Context, usuarioID, ordenamentoID, objetoID, ruaID uint) (*OrdenamentoDetalhe, error) {
+	ordenamento, err := s.validarOrdenamentoAtivo(ctx, usuarioID, ordenamentoID)
+	if err != nil {
+		return nil, err
+	}
+	selecionavel, ok := s.resolver.(EnderecoResolverSelecionavel)
+	if !ok {
+		return nil, ErrOpcaoRuaInvalida
+	}
+	objetos, err := s.repo.ListObjetos(ctx, ordenamento.ID)
+	if err != nil {
+		return nil, err
+	}
+	var objeto *models.ObjetoOrdenamento
+	for indice := range objetos {
+		if objetos[indice].ID == objetoID {
+			objeto = &objetos[indice]
+			break
+		}
+	}
+	if objeto == nil {
+		return nil, ErrObjetoNaoEncontrado
+	}
+	resolucao, err := selecionavel.Selecionar(ctx, objeto.TextoEntrada, ruaID)
+	if err != nil {
+		return nil, err
+	}
+	if resolucao.Status != models.StatusResolucaoIdentificado || resolucao.RuaID == nil || *resolucao.RuaID != ruaID {
+		return nil, ErrOpcaoRuaInvalida
+	}
+	objeto.RuaID = resolucao.RuaID
+	objeto.NomeRua = resolucao.NomeRua
+	objeto.ChaveAgrupamento = resolucao.ChaveAgrupamento
+	objeto.Numero = resolucao.Numero
+	objeto.CEP = resolucao.CEP
+	objeto.StatusResolucao = resolucao.Status
+	objeto.MotivoPendencia = resolucao.MotivoPendencia
+	objeto.OpcoesResolucao = nil
+	if s.coordenadas != nil {
+		coordenada, erroCoordenada := s.coordenadas.Resolver(ctx, SolicitacaoCoordenada{
+			ChaveAgrupamento: resolucao.ChaveAgrupamento,
+			NomeRua:          resolucao.NomeRua,
+			RuaID:            resolucao.RuaID,
+			PermitirExterno:  true,
+		})
+		if erroCoordenada != nil {
+			slog.Warn("não foi possível obter coordenada da rua selecionada", "error", erroCoordenada)
+		} else if coordenada != nil {
+			objeto.Latitude = &coordenada.Latitude
+			objeto.Longitude = &coordenada.Longitude
+			objeto.FonteCoordenada = coordenada.Fonte
+		}
+	}
+	if err := s.repo.UpdateObjeto(ctx, objeto); err != nil {
 		return nil, err
 	}
 	if err := s.limparOrdemSugerida(ctx, ordenamento.ID); err != nil {
@@ -255,7 +320,44 @@ func (s *ordenamentoService) montarDetalhe(ctx context.Context, ordenamento *mod
 	}
 	agrupadas := make(map[string]*RuaAgrupada)
 	pendentes := 0
-	for _, objeto := range objetos {
+	for indice := range objetos {
+		objeto := &objetos[indice]
+		if objeto.StatusResolucao == models.StatusResolucaoPendente {
+			if resolucao, erroResolucao := s.resolver.Resolver(ctx, objeto.TextoEntrada); erroResolucao == nil {
+				if resolucao.Status == models.StatusResolucaoIdentificado {
+					// Reprocessa pendências antigas quando uma melhoria do
+					// resolvedor passa a identificá-las com segurança.
+					objeto.RuaID = resolucao.RuaID
+					objeto.NomeRua = resolucao.NomeRua
+					objeto.ChaveAgrupamento = resolucao.ChaveAgrupamento
+					objeto.Numero = resolucao.Numero
+					objeto.CEP = resolucao.CEP
+					objeto.StatusResolucao = resolucao.Status
+					objeto.MotivoPendencia = resolucao.MotivoPendencia
+					objeto.OpcoesResolucao = nil
+					if s.coordenadas != nil {
+						coordenada, erroCoordenada := s.coordenadas.Resolver(ctx, SolicitacaoCoordenada{
+							ChaveAgrupamento: resolucao.ChaveAgrupamento,
+							NomeRua:          resolucao.NomeRua,
+							RuaID:            resolucao.RuaID,
+							PermitirExterno:  true,
+						})
+						if erroCoordenada != nil {
+							slog.Warn("não foi possível obter coordenada da pendência reprocessada", "error", erroCoordenada)
+						} else if coordenada != nil {
+							objeto.Latitude = &coordenada.Latitude
+							objeto.Longitude = &coordenada.Longitude
+							objeto.FonteCoordenada = coordenada.Fonte
+						}
+					}
+					if erroAtualizacao := s.repo.UpdateObjeto(ctx, objeto); erroAtualizacao != nil {
+						slog.Warn("não foi possível salvar a resolução reprocessada", "error", erroAtualizacao)
+					}
+				} else {
+					objeto.OpcoesResolucao = resolucao.Opcoes
+				}
+			}
+		}
 		if objeto.StatusResolucao != models.StatusResolucaoIdentificado || objeto.ChaveAgrupamento == "" {
 			pendentes++
 			continue

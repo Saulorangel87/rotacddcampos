@@ -12,6 +12,7 @@ type OrdenamentoRepository interface {
 	Create(ctx context.Context, ordenamento *models.Ordenamento) error
 	ListObjetos(ctx context.Context, ordenamentoID uint) ([]models.ObjetoOrdenamento, error)
 	CreateObjeto(ctx context.Context, objeto *models.ObjetoOrdenamento) error
+	UpdateObjeto(ctx context.Context, objeto *models.ObjetoOrdenamento) error
 	DeleteObjeto(ctx context.Context, ordenamentoID, objetoID uint) (bool, error)
 	LimparConteudo(ctx context.Context, ordenamentoID uint) error
 }
@@ -54,6 +55,10 @@ func (r *ordenamentoRepository) ListObjetos(ctx context.Context, ordenamentoID u
 
 func (r *ordenamentoRepository) CreateObjeto(ctx context.Context, objeto *models.ObjetoOrdenamento) error {
 	return r.db.WithContext(ctx).Create(objeto).Error
+}
+
+func (r *ordenamentoRepository) UpdateObjeto(ctx context.Context, objeto *models.ObjetoOrdenamento) error {
+	return r.db.WithContext(ctx).Save(objeto).Error
 }
 
 func (r *ordenamentoRepository) DeleteObjeto(ctx context.Context, ordenamentoID, objetoID uint) (bool, error) {

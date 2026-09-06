@@ -6,6 +6,7 @@ import {
   excluirObjeto,
   gerarOrdem,
   limparOrdenamento,
+  selecionarRua,
 } from '../../api/ordenamentos.js'
 import styles from './OrdenamentoPanel.module.css'
 
@@ -19,6 +20,7 @@ export default function OrdenamentoPanel() {
   const [excluindoId, setExcluindoId] = useState(null)
   const [limpando, setLimpando] = useState(false)
   const [gerando, setGerando] = useState(false)
+  const [resolvendoId, setResolvendoId] = useState(null)
   const [erro, setErro] = useState('')
   const campoEntradaRef = useRef(null)
 
@@ -82,6 +84,19 @@ export default function OrdenamentoPanel() {
       setErro(e.message)
     } finally {
       setExcluindoId(null)
+    }
+  }
+
+  async function confirmarRua(objetoId, ruaId) {
+    if (!ordenamento || resolvendoId !== null) return
+    setResolvendoId(objetoId)
+    setErro('')
+    try {
+      setOrdenamento(await selecionarRua(ordenamento.id, objetoId, ruaId))
+    } catch (e) {
+      setErro(e.message)
+    } finally {
+      setResolvendoId(null)
     }
   }
 
@@ -243,6 +258,26 @@ export default function OrdenamentoPanel() {
                           <span className={styles.pendente}>
                             {mensagemPendencia(objeto.motivo_pendencia)}
                           </span>
+                          {(objeto.opcoes_resolucao?.length ?? 0) > 0 && (
+                            <div className={styles.opcoesResolucao}>
+                              <span>Escolha o cadastro correto:</span>
+                              {objeto.opcoes_resolucao.map((opcao) => (
+                                <button
+                                  key={opcao.rua_id}
+                                  type="button"
+                                  onClick={() => confirmarRua(objeto.id, opcao.rua_id)}
+                                  disabled={resolvendoId !== null}
+                                >
+                                  <strong>{opcao.nome_rua}</strong>
+                                  <small>
+                                    {opcao.distrito ? `Distrito ${opcao.distrito}` : ''}
+                                    {opcao.distrito && opcao.cep ? ' · ' : ''}
+                                    {opcao.cep ? `CEP ${opcao.cep}` : ''}
+                                  </small>
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </>
                       )}
                     </div>

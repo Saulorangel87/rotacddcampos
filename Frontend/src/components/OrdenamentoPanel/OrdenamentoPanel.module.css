@@ -364,6 +364,46 @@
   color: #9a5b00;
 }
 
+.opcoesResolucao {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.opcoesResolucao > span {
+  color: var(--azul-escuro, #17436c);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.opcoesResolucao button {
+  display: grid;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #c8d7e6;
+  border-radius: 0.55rem;
+  background: #f7fafc;
+  color: #17436c;
+  text-align: left;
+  cursor: pointer;
+}
+
+.opcoesResolucao button:hover:not(:disabled),
+.opcoesResolucao button:focus-visible {
+  border-color: #0a67ad;
+  background: #edf5fc;
+}
+
+.opcoesResolucao button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.opcoesResolucao small {
+  color: #5c7690;
+}
+
 .remover {
   padding: 7px 4px;
   border: 0;
