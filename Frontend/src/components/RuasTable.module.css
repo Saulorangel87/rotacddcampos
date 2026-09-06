@@ -50,6 +50,9 @@
 }
 
 .btnExportar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: var(--branco);
   border: 1px solid var(--cor-azul);
   color: var(--cor-azul);
@@ -112,12 +115,16 @@
 }
 
 .btnNotas {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
   padding: 4px 6px;
   border-radius: var(--raio-sm);
+  color: var(--cor-azul);
 }
 
 .btnNotas:hover {
@@ -125,12 +132,16 @@
 }
 
 .btnExcluir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
   padding: 4px 6px;
   border-radius: var(--raio-sm);
+  color: #b42318;
 }
 
 .btnExcluir:hover {

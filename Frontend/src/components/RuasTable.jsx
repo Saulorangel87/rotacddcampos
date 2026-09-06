@@ -8,6 +8,13 @@ import NovaRuaModal from './NovaRuaModal.jsx'
 import EditarRuaModal from './EditarRuaModal.jsx'
 import ConfirmModal from './ConfirmModal.jsx'
 import ObservacoesRuaModal from './ObservacoesRuaModal.jsx'
+import {
+  IconeDownload,
+  IconeEditar,
+  IconeImprimir,
+  IconeLixeira,
+  IconeNota,
+} from './icons/Icons.jsx'
 import styles from './RuasTable.module.css'
 
 const ABAS = [
@@ -139,10 +146,10 @@ export default function RuasTable({ versao = 0 }) {
             aria-label="Pesquisar ruas cadastradas"
           />
           <button type="button" className={styles.btnExportar} onClick={exportarCsv}>
-            ⬇ Exportar
+            <IconeDownload size={16} aria-hidden="true" /> Exportar
           </button>
           <button type="button" className={styles.btnExportar} onClick={imprimirTabela}>
-            🖨️ Imprimir
+            <IconeImprimir size={16} aria-hidden="true" /> Imprimir
           </button>
         </div>
       </div>
@@ -179,7 +186,7 @@ export default function RuasTable({ versao = 0 }) {
                     aria-label={`Observações de ${r.nome_rua}`}
                     title="Observações de campo"
                   >
-                    📝
+                    <IconeNota size={17} aria-hidden="true" />
                   </button>
                   {admin && (
                     <button
@@ -189,7 +196,7 @@ export default function RuasTable({ versao = 0 }) {
                       aria-label={`Editar ${r.nome_rua}`}
                       title="Editar rua"
                     >
-                      ✏️
+                      <IconeEditar size={17} aria-hidden="true" />
                     </button>
                   )}
                   {admin && (
@@ -201,7 +208,7 @@ export default function RuasTable({ versao = 0 }) {
                       aria-label={`Excluir ${r.nome_rua}`}
                       title="Excluir rua"
                     >
-                      {excluindoId === r.id ? '…' : '🗑️'}
+                      {excluindoId === r.id ? '…' : <IconeLixeira size={17} aria-hidden="true" />}
                     </button>
                   )}
                 </td>

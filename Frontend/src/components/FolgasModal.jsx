@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { consultarSaldoFolgas, lancarFolga, excluirLancamentoFolga } from '../api/folgas.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import ConfirmModal from './ConfirmModal.jsx'
+import { IconeLixeira } from './icons/Icons.jsx'
 import styles from './FolgasModal.module.css'
 
 export default function FolgasModal({ aberto, onFechar, onAlterado }) {
@@ -145,7 +146,7 @@ export default function FolgasModal({ aberto, onFechar, onAlterado }) {
                             aria-label="Excluir lançamento"
                             title="Excluir lançamento"
                           >
-                            {excluindoId === l.id ? '…' : '🗑️'}
+                            {excluindoId === l.id ? '…' : <IconeLixeira size={17} aria-hidden="true" />}
                           </button>
                         )}
                       </li>

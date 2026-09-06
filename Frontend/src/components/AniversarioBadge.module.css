@@ -14,7 +14,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.05rem;
+  color: var(--branco);
   cursor: pointer;
 }
 
@@ -70,7 +70,11 @@
   font-size: 0.82rem;
 }
 
-.icone { font-size: 1.1rem; }
+.icone {
+  display: inline-flex;
+  color: var(--cor-azul);
+  flex-shrink: 0;
+}
 
 .funcao {
   display: block;

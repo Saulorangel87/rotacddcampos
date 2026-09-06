@@ -125,14 +125,41 @@
 }
 
 .selo {
-  background: var(--cor-amarela);
-  color: var(--cor-azul-escuro);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   vertical-align: middle;
   font-weight: 800;
   text-transform: uppercase;
-  padding: 2px 5px;
+  letter-spacing: 0.02em;
+  padding: 3px 6px;
   border-radius: 999px;
+  line-height: 1;
+}
+
+.seloAdmin {
+  background: var(--cor-amarela);
+  color: var(--cor-azul-escuro);
+}
+
+.seloColaborador {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--branco);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+/* O papel fica legível mesmo sem depender de cor: o ícone e o rótulo mudam. */
+.avatar.avatarAdmin,
+.avatar.avatarColaborador {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.avatar.avatarAdmin {
+  background: var(--cor-amarela);
+  color: var(--cor-azul-escuro);
+}
+
+.avatar.avatarColaborador {
+  background: #e6f1f9;
+  color: var(--cor-azul);
 }
 
 /* removed duplicate .logo block */

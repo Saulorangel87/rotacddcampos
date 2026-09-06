@@ -206,3 +206,165 @@ export function IconeEstrela(props) {
     </Svg>
   );
 }
+
+export function IconeAdministrador(props) {
+  return (
+    <Svg {...props}>
+      <path d="M12 3 20 6v5.4c0 4.8-3.2 8.1-8 9.6-4.8-1.5-8-4.8-8-9.6V6l8-3Z" />
+      <path d="m8.5 12 2.3 2.3 4.7-4.7" />
+    </Svg>
+  );
+}
+
+export function IconeColaborador(props) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M5 20a7 7 0 0 1 14 0" />
+      <path d="M4 4h16" opacity=".45" />
+    </Svg>
+  );
+}
+
+export function IconeEntrar(props) {
+  return (
+    <Svg {...props}>
+      <path d="M14 5h5v14h-5" />
+      <path d="M11 8 7 12l4 4M7 12h11" />
+    </Svg>
+  );
+}
+
+export function IconeAniversario(props) {
+  return (
+    <Svg {...props}>
+      <path d="M4 10h16v10H4z" />
+      <path d="M3 10h18M7 6v4M12 6v4M17 6v4" />
+      <path d="M7 6c0-1.2 1-2 2-2s2 .8 2 2M12 6c0-1.2 1-2 2-2s2 .8 2 2" />
+      <path d="M8 14h.01M12 14h.01M16 14h.01" strokeWidth="2.5" />
+    </Svg>
+  );
+}
+
+export function IconeComemoracao(props) {
+  return (
+    <Svg {...props}>
+      <path d="m12 3 .8 2.3L15 6l-2.2.7L12 9l-.8-2.3L9 6l2.2-.7L12 3Z" />
+      <path d="m19 10 .5 1.5L21 12l-1.5.5L19 14l-.5-1.5L17 12l1.5-.5L19 10ZM5 14l.6 1.7L7 16.3l-1.4.6L5 18.5l-.6-1.6-1.4-.6 1.4-.6L5 14Z" />
+    </Svg>
+  );
+}
+
+export function IconeNota(props) {
+  return (
+    <Svg {...props}>
+      <path d="M5 3h10l4 4v14H5z" />
+      <path d="M15 3v5h4M8 12h8M8 16h6" />
+    </Svg>
+  );
+}
+
+export function IconeEditar(props) {
+  return (
+    <Svg {...props}>
+      <path d="m4 16-.8 4.8L8 20l11.5-11.5a2.1 2.1 0 0 0-3-3L5 17Z" />
+      <path d="m14.5 7.5 2 2" />
+    </Svg>
+  );
+}
+
+export function IconeLixeira(props) {
+  return (
+    <Svg {...props}>
+      <path d="M5 7h14M10 4h4l1 3H9l1-3ZM7 7l1 14h8l1-14M10 11v6M14 11v6" />
+    </Svg>
+  );
+}
+
+export function IconeDownload(props) {
+  return (
+    <Svg {...props}>
+      <path d="M12 3v12M7 11l5 5 5-5M4 20h16" />
+    </Svg>
+  );
+}
+
+export function IconeImprimir(props) {
+  return (
+    <Svg {...props}>
+      <path d="M7 9V4h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2" />
+      <path d="M7 14h10v7H7zM17 12h.01" strokeWidth="2.2" />
+    </Svg>
+  );
+}
+
+export function IconeScanner(props) {
+  return (
+    <Svg {...props}>
+      <path d="M5 8V5h3M16 5h3v3M19 16v3h-3M8 19H5v-3" />
+      <path d="M8 12h8" />
+    </Svg>
+  );
+}
+
+export function IconeMicrofone(props) {
+  return (
+    <Svg {...props}>
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8" />
+    </Svg>
+  );
+}
+
+export function IconeTeclado(props) {
+  return (
+    <Svg {...props}>
+      <rect x="3" y="6" width="18" height="12" rx="2" />
+      <path d="M6 10h.01M9 10h.01M12 10h.01M15 10h.01M18 10h.01M6 14h.01M9 14h6M18 14h.01" strokeWidth="2.2" />
+    </Svg>
+  );
+}
+
+export function IconeAlerta(props) {
+  return (
+    <Svg {...props}>
+      <path d="m12 3 9 17H3L12 3Z" />
+      <path d="M12 9v5M12 17h.01" strokeWidth="2.2" />
+    </Svg>
+  );
+}
+
+export function IconeInformacao(props) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5M12 8h.01" strokeWidth="2.2" />
+    </Svg>
+  );
+}
+
+export function IconeChave(props) {
+  return (
+    <Svg {...props}>
+      <circle cx="8" cy="15" r="4" />
+      <path d="m11 12 8-8M16 7l2 2M14 9l2 2" />
+    </Svg>
+  );
+}
+
+export function IconeFechar(props) {
+  return (
+    <Svg {...props}>
+      <path d="m6 6 12 12M18 6 6 18" />
+    </Svg>
+  );
+}
+
+export function IconeEnviar(props) {
+  return (
+    <Svg {...props}>
+      <path d="m4 4 17 8-17 8 3-8-3-8Z" />
+      <path d="M7 12h14" />
+    </Svg>
+  );
+}

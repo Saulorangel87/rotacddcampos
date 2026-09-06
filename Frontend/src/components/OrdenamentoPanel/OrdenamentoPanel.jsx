@@ -13,6 +13,7 @@ import {
 import { useReconhecimentoDeVoz } from '../../hooks/useReconhecimentoDeVoz.js'
 import HistoricoOrdens from './HistoricoOrdens.jsx'
 import { ordenarParadas } from './ordemManual.js'
+import { IconeMicrofone, IconeScanner, IconeTeclado } from '../icons/Icons.jsx'
 import styles from './OrdenamentoPanel.module.css'
 
 export default function OrdenamentoPanel() {
@@ -395,7 +396,7 @@ export default function OrdenamentoPanel() {
               disabled={salvando}
               aria-pressed={escaneando}
             >
-              <span aria-hidden="true">▣</span> {escaneando ? 'Parar câmera' : 'Escanear'}
+              <IconeScanner size={18} aria-hidden="true" /> {escaneando ? 'Parar câmera' : 'Escanear'}
             </button>
             <button
               type="button"
@@ -404,7 +405,7 @@ export default function OrdenamentoPanel() {
               disabled={salvando}
               aria-pressed={ouvindo}
             >
-              <span aria-hidden="true">●</span> {ouvindo ? 'Ouvindo…' : 'Falar'}
+              <IconeMicrofone size={18} aria-hidden="true" /> {ouvindo ? 'Ouvindo…' : 'Falar'}
             </button>
             <button
               type="button"
@@ -416,7 +417,7 @@ export default function OrdenamentoPanel() {
                 setDigitando(true)
               }}
             >
-              <span aria-hidden="true">⌨</span> Digitar
+              <IconeTeclado size={18} aria-hidden="true" /> Digitar
             </button>
           </div>
 

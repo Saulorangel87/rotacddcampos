@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { aniversariantesDeHoje } from '../api/colaboradores.js'
+import { IconeAniversario, IconeComemoracao } from './icons/Icons.jsx'
 import styles from './AniversarioBadge.module.css'
 
 export default function AniversarioBadge() {
@@ -29,7 +30,7 @@ export default function AniversarioBadge() {
         aria-label="Aniversariantes do dia"
         aria-expanded={aberto}
       >
-        <span aria-hidden="true">🎂</span>
+        <IconeAniversario size={18} aria-hidden="true" />
         {temAniversariante && <span className={styles.badge}>{aniversariantes.length}</span>}
       </button>
 
@@ -41,7 +42,9 @@ export default function AniversarioBadge() {
             <ul className={styles.lista}>
               {aniversariantes.map((c) => (
                 <li key={c.id}>
-                  <span className={styles.icone} aria-hidden="true">🎉</span>
+                  <span className={styles.icone} aria-hidden="true">
+                    <IconeComemoracao size={18} />
+                  </span>
                   <div>
                     <strong>Parabéns {c.nome}! A equipe CDD Campos te deseja um feliz aniversário!</strong>
                   </div>

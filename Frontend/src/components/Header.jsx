@@ -3,6 +3,11 @@ import AniversarioBadge from "./AniversarioBadge.jsx";
 import LoginModal from "./LoginModal.jsx";
 import TrocarSenhaModal from "./TrocarSenhaModal.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import {
+  IconeAdministrador,
+  IconeColaborador,
+  IconeEntrar,
+} from "./icons/Icons.jsx";
 import styles from "./Header.module.css";
 
 export default function Header({ onBuscar }) {
@@ -83,27 +88,27 @@ export default function Header({ onBuscar }) {
                 className={styles.usuario}
                 type="button"
                 onClick={() => setTrocarSenhaAberto(true)}
-                title="Trocar senha"
+                title={`Trocar senha — ${sessao.papel === "admin" ? "administrador" : "colaborador"}`}
               >
-                <span className={styles.avatar} aria-hidden="true">
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="18"
-                    height="18"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4Z"
-                    />
-                  </svg>
+                <span
+                  className={`${styles.avatar} ${
+                    sessao.papel === "admin" ? styles.avatarAdmin : styles.avatarColaborador
+                  }`}
+                  aria-hidden="true"
+                >
+                  {sessao.papel === "admin" ? <IconeAdministrador size={18} /> : <IconeColaborador size={18} />}
                 </span>
                 <span className={styles.matriculaLabel}>
                   {sessao.matricula}
                 </span>
-                {sessao.papel === "admin" && (
-                  <span className={styles.selo}>admin</span>
-                )}
+                <span
+                  className={`${styles.selo} ${
+                    sessao.papel === "admin" ? styles.seloAdmin : styles.seloColaborador
+                  }`}
+                  title={sessao.papel === "admin" ? "Administrador" : "Colaborador"}
+                >
+                  {sessao.papel === "admin" ? "ADMIN" : "COLAB."}
+                </span>
               </button>
               <button className={styles.btnSair} type="button" onClick={sair}>
                 Sair
@@ -114,9 +119,10 @@ export default function Header({ onBuscar }) {
               className={styles.usuario}
               type="button"
               onClick={() => setLoginAberto(true)}
+              title="Entrar no sistema"
             >
               <span className={styles.avatar} aria-hidden="true">
-                ?
+                <IconeEntrar size={18} />
               </span>
               Entrar
             </button>

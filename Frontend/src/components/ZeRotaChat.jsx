@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { conversarComZeRota } from '../api/zeRota.js'
 import { useReconhecimentoDeVoz } from '../hooks/useReconhecimentoDeVoz.js'
 import { useArrastar } from '../hooks/useArrastar.js'
+import { IconeEnviar, IconeMicrofone } from './icons/Icons.jsx'
 import styles from './ZeRotaChat.module.css'
 
 const MENSAGEM_BOAS_VINDAS = 'Oi, eu sou o Zé Rota! Pergunta onde fica uma rua que eu confiro pra você — pode falar ou escrever.'
@@ -166,10 +167,10 @@ export default function ZeRotaChat() {
               title="Falar com o Zé Rota"
               aria-label="Falar com o Zé Rota"
             >
-              🎤
+              <IconeMicrofone size={18} aria-hidden="true" />
             </button>
             <button type="submit" className={styles.btnEnviar} disabled={enviando || !texto.trim()}>
-              ➤
+              <IconeEnviar size={18} aria-hidden="true" />
             </button>
           </form>
         </div>

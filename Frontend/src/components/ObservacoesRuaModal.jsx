@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { listarObservacoes, adicionarObservacao, excluirObservacao, rotuloCategoria, CATEGORIAS } from '../api/observacoes.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import ConfirmModal from './ConfirmModal.jsx'
+import { IconeLixeira } from './icons/Icons.jsx'
 import styles from './ObservacoesRuaModal.module.css'
 
 export default function ObservacoesRuaModal({ rua, onFechar }) {
@@ -100,7 +101,7 @@ export default function ObservacoesRuaModal({ rua, onFechar }) {
                         disabled={excluindoId === o.id}
                         aria-label="Excluir observação"
                       >
-                        {excluindoId === o.id ? '…' : '🗑️'}
+                        {excluindoId === o.id ? '…' : <IconeLixeira size={17} aria-hidden="true" />}
                       </button>
                     )}
                   </li>

@@ -215,6 +215,9 @@
 }
 
 .btnExcluir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -222,6 +225,7 @@
   padding: 4px 6px;
   border-radius: var(--raio-sm);
   flex-shrink: 0;
+  color: #b42318;
 }
 
 .btnExcluir:hover {

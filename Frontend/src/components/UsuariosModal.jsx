@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { listarUsuarios, criarUsuario, resetarSenhaDeUsuario } from '../api/usuarios.js'
+import { IconeChave } from './icons/Icons.jsx'
 import styles from './ColaboradoresModal.module.css'
 
 const VISAO_LISTA = 'lista'
@@ -112,7 +113,7 @@ export default function UsuariosModal({ aberto, onFechar }) {
                       aria-label={`Resetar senha de ${u.matricula}`}
                       title="Resetar senha"
                     >
-                      🔑
+                      <IconeChave size={17} aria-hidden="true" />
                     </button>
                   </li>
                 ))}

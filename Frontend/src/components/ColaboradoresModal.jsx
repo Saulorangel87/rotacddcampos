@@ -3,6 +3,7 @@ import { listarColaboradores, criarColaborador, excluirColaborador } from '../ap
 import { FUNCOES } from '../data/funcoes.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import ConfirmModal from './ConfirmModal.jsx'
+import { IconeLixeira } from './icons/Icons.jsx'
 import styles from './ColaboradoresModal.module.css'
 
 export default function ColaboradoresModal({ aberto, onFechar, onAlterado }) {
@@ -114,7 +115,7 @@ export default function ColaboradoresModal({ aberto, onFechar, onAlterado }) {
                       title="Excluir colaborador"
                       hidden={!admin}
                     >
-                      {excluindoId === c.id ? '…' : '🗑️'}
+                      {excluindoId === c.id ? '…' : <IconeLixeira size={17} aria-hidden="true" />}
                     </button>
                   </li>
                 ))}

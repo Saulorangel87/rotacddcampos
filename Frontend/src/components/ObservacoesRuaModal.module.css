@@ -142,12 +142,16 @@
 }
 
 .btnExcluir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   cursor: pointer;
   font-size: 0.85rem;
   padding: 2px 4px;
   flex-shrink: 0;
+  color: #b42318;
 }
 
 .btnExcluir:disabled {

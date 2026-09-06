@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { listarHistorico } from '../api/historico.js'
 import { corDoDistrito } from '../data/distritos.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { IconeRelatorios } from './icons/Icons.jsx'
 import styles from './RelatorioMovimentacoes.module.css'
 
 const ITENS_POR_PAGINA = 10
@@ -29,7 +30,7 @@ export default function RelatorioMovimentacoes({ versao }) {
   if (!autenticado) {
     return (
       <section className={styles.caixa} aria-label="Relatório de movimentações">
-        <h2 className={styles.titulo}>📊 Relatório de movimentações</h2>
+        <h2 className={styles.titulo}><IconeRelatorios size={22} aria-hidden="true" /> Relatório de movimentações</h2>
         <p className={styles.vazio}>Faça login pra ver o histórico de movimentações entre distritos.</p>
       </section>
     )
@@ -37,7 +38,7 @@ export default function RelatorioMovimentacoes({ versao }) {
 
   return (
     <section className={styles.caixa} aria-label="Relatório de movimentações">
-      <h2 className={styles.titulo}>📊 Relatório de movimentações</h2>
+      <h2 className={styles.titulo}><IconeRelatorios size={22} aria-hidden="true" /> Relatório de movimentações</h2>
 
       <p className={styles.aviso}>
         Histórico completo, salvo no banco — não some ao fechar o navegador.

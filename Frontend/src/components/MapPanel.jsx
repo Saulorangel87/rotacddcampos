@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import LeafletMap from './LeafletMap.jsx'
 import { useDistritosAtivos } from '../hooks/useDistritosAtivos.js'
+import { IconeAjustes, IconeMapa, IconeRuas } from './icons/Icons.jsx'
 import styles from './MapPanel.module.css'
 
 export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirAjustes, admin = false, versao = 0, resultadoBusca = null, onLimparBusca }) {
@@ -11,7 +12,7 @@ export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirA
     <section className={styles.painel} aria-label="Mapa de distritos">
       <header className={styles.cabecalho}>
         <div className={styles.tituloBox}>
-          <span className={styles.icone} aria-hidden="true">🗺️</span>
+          <span className={styles.icone} aria-hidden="true"><IconeMapa size={20} /></span>
           <h2>Distritamento CDD Campos</h2>
         </div>
         <div className={styles.acoesCabecalho}>
@@ -22,11 +23,11 @@ export default function MapPanel({ distritoAtivo, onSelecionarDistrito, onAbrirA
             onClick={() => setMostrarRuasReais((v) => !v)}
             title="Mostra o traçado real das ruas (OpenStreetMap) por cima do mapa de distritos"
           >
-            <span aria-hidden="true">🛣️</span> Ruas reais (OSM)
+            <IconeRuas size={17} aria-hidden="true" /> Ruas reais (OSM)
           </button>
           {admin && (
             <button type="button" className={styles.btnAjustes} onClick={onAbrirAjustes}>
-              <span aria-hidden="true">🛠️</span> Ajustes de Rotas
+              <IconeAjustes size={17} aria-hidden="true" /> Ajustes de Rotas
             </button>
           )}
         </div>

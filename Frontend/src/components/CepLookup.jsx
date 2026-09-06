@@ -3,6 +3,7 @@ import { listarRuas } from '../api/ruas.js'
 import { corDoDistrito } from '../data/distritos.js'
 import { useReconhecimentoDeVoz } from '../hooks/useReconhecimentoDeVoz.js'
 import { normalizarCepBusca, ordenarRuasPorCorrespondencia } from '../utils/buscaRua.js'
+import { IconeCep } from './icons/Icons.jsx'
 import styles from './CepLookup.module.css'
 
 export default function CepLookup() {
@@ -44,7 +45,10 @@ export default function CepLookup() {
 
   return (
     <section className={styles.caixa} aria-label="Consulta de CEP por rua">
-      <h2 className={styles.titulo}>📮 Consultar CEP por rua</h2>
+      <h2 className={styles.titulo}>
+        <IconeCep size={22} aria-hidden="true" />
+        Consultar CEP por rua
+      </h2>
       <p className={styles.dica}>Digite pelo menos 3 letras do nome da rua ou um CEP completo.</p>
 
       {/* Wrapper do Input */}

@@ -1,4 +1,5 @@
 import styles from './ConfirmModal.module.css'
+import { IconeAlerta } from './icons/Icons.jsx'
 
 export default function ConfirmModal({
   aberto,
@@ -21,7 +22,7 @@ export default function ConfirmModal({
       }}
     >
       <div className={styles.modal} onClick={(e) => e.stopPropagation()} role="alertdialog" aria-label={titulo}>
-        <div className={styles.icone} aria-hidden="true">⚠️</div>
+        <div className={styles.icone} aria-hidden="true"><IconeAlerta size={30} /></div>
         <h2 className={styles.titulo}>{titulo}</h2>
         <p className={styles.mensagem}>{mensagem}</p>
 
