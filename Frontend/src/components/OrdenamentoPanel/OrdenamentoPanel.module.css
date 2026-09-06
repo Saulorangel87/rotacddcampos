@@ -266,7 +266,9 @@
 }
 
 .lista,
-.ruas {
+.ruas,
+.geracao,
+.ordem {
   margin-top: 22px;
   padding-top: 18px;
   border-top: 1px solid #e1e7ed;
@@ -384,6 +386,101 @@
   color: #315f89;
 }
 
+.geracao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.geracao h3,
+.ordem h3 {
+  margin: 0;
+  color: #163b60;
+  font-size: 1rem;
+}
+
+.geracao p,
+.ordem > p {
+  margin: 4px 0 0;
+  color: #657487;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.geracao span {
+  display: block;
+  margin-top: 6px;
+  color: #9a5b00;
+  font-size: 0.76rem;
+}
+
+.geracao button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #0b5fa5;
+  color: #fff;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.geracao button:hover:not(:disabled) {
+  background: #073b70;
+}
+
+.geracao button:disabled {
+  cursor: default;
+  opacity: 0.58;
+}
+
+.ordem ol {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ordem li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid #d5e4ef;
+  border-radius: 9px;
+  background: #f7fbfe;
+}
+
+.numeroOrdem {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #0b5fa5;
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.ordem li > span:not(.numeroOrdem) {
+  overflow-wrap: anywhere;
+  color: #294b6b;
+  font-size: 0.88rem;
+}
+
+.ordem li strong {
+  color: #5c6f82;
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
 .contadores div {
   display: flex;
   align-items: baseline;
@@ -459,5 +556,15 @@
 
   .lista li {
     align-items: flex-start;
+  }
+
+  .geracao {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .geracao button {
+    width: 100%;
+    min-height: 50px;
   }
 }

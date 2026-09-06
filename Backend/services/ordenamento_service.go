@@ -13,10 +13,13 @@ import (
 )
 
 var (
-	ErrOrdenamentoJaExiste      = errors.New("já existe um ordenamento em andamento")
-	ErrOrdenamentoNaoEncontrado = errors.New("ordenamento não encontrado")
-	ErrObjetoNaoEncontrado      = errors.New("encomenda não encontrada")
-	ErrEntradaVazia             = errors.New("informe o endereço da encomenda")
+	ErrOrdenamentoJaExiste       = errors.New("já existe um ordenamento em andamento")
+	ErrOrdenamentoNaoEncontrado  = errors.New("ordenamento não encontrado")
+	ErrObjetoNaoEncontrado       = errors.New("encomenda não encontrada")
+	ErrEntradaVazia              = errors.New("informe o endereço da encomenda")
+	ErrOrdenamentoSemObjetos     = errors.New("adicione ao menos uma rua identificada antes de gerar o ordenamento")
+	ErrOrdenamentoComPendencias  = errors.New("revise as encomendas pendentes antes de gerar o ordenamento")
+	ErrOrdenamentoSemCoordenadas = errors.New("há ruas sem coordenada disponível para gerar o ordenamento")
 )
 
 type AdicionarObjetoDTO struct {
@@ -44,6 +47,7 @@ type OrdenamentoDetalhe struct {
 	TotalSemCoordenadas int                        `json:"total_sem_coordenadas"`
 	Objetos             []models.ObjetoOrdenamento `json:"objetos"`
 	Ruas                []RuaAgrupada              `json:"ruas"`
+	OrdemSugerida       []models.ParadaOrdenamento `json:"ordem_sugerida"`
 }
 
 type OrdenamentoService interface {
@@ -51,16 +55,19 @@ type OrdenamentoService interface {
 	Criar(ctx context.Context, usuarioID uint) (*OrdenamentoDetalhe, error)
 	AdicionarObjeto(ctx context.Context, usuarioID, ordenamentoID uint, dto AdicionarObjetoDTO) (*OrdenamentoDetalhe, error)
 	ExcluirObjeto(ctx context.Context, usuarioID, ordenamentoID, objetoID uint) (*OrdenamentoDetalhe, error)
+	GerarOrdem(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error)
 }
 
 type ordenamentoService struct {
 	repo        repositories.OrdenamentoRepository
 	resolver    EnderecoResolver
 	coordenadas CoordenadaResolver
+	paradas     repositories.ParadaOrdenamentoRepository
+	otimizador  OtimizadorRota
 }
 
-func NewOrdenamentoService(repo repositories.OrdenamentoRepository, resolver EnderecoResolver, coordenadas CoordenadaResolver) OrdenamentoService {
-	return &ordenamentoService{repo: repo, resolver: resolver, coordenadas: coordenadas}
+func NewOrdenamentoService(repo repositories.OrdenamentoRepository, resolver EnderecoResolver, coordenadas CoordenadaResolver, paradas repositories.ParadaOrdenamentoRepository, otimizador OtimizadorRota) OrdenamentoService {
+	return &ordenamentoService{repo: repo, resolver: resolver, coordenadas: coordenadas, paradas: paradas, otimizador: otimizador}
 }
 
 func (s *ordenamentoService) GetAtivo(ctx context.Context, usuarioID uint) (*OrdenamentoDetalhe, error) {
@@ -138,6 +145,9 @@ func (s *ordenamentoService) AdicionarObjeto(ctx context.Context, usuarioID, ord
 	if err := s.repo.CreateObjeto(ctx, objeto); err != nil {
 		return nil, err
 	}
+	if err := s.limparOrdemSugerida(ctx, ordenamento.ID); err != nil {
+		return nil, err
+	}
 	return s.montarDetalhe(ctx, ordenamento)
 }
 
@@ -153,6 +163,56 @@ func (s *ordenamentoService) ExcluirObjeto(ctx context.Context, usuarioID, orden
 	if !excluido {
 		return nil, ErrObjetoNaoEncontrado
 	}
+	if err := s.limparOrdemSugerida(ctx, ordenamento.ID); err != nil {
+		return nil, err
+	}
+	return s.montarDetalhe(ctx, ordenamento)
+}
+
+// GerarOrdem cria uma sequência por proximidade entre as ruas identificadas,
+// sempre partindo do CDD. A sequência é uma sugestão geográfica local e não
+// considera trânsito ou condições da malha viária.
+func (s *ordenamentoService) GerarOrdem(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error) {
+	ordenamento, err := s.validarOrdenamentoAtivo(ctx, usuarioID, ordenamentoID)
+	if err != nil {
+		return nil, err
+	}
+	detalhe, err := s.montarDetalhe(ctx, ordenamento)
+	if err != nil {
+		return nil, err
+	}
+	if detalhe.TotalPendentes > 0 {
+		return nil, ErrOrdenamentoComPendencias
+	}
+	if detalhe.TotalRuas == 0 {
+		return nil, ErrOrdenamentoSemObjetos
+	}
+	if detalhe.TotalSemCoordenadas > 0 {
+		return nil, ErrOrdenamentoSemCoordenadas
+	}
+	if s.paradas == nil || s.otimizador == nil {
+		return nil, errors.New("serviço de ordenamento indisponível")
+	}
+
+	entrada := make([]ParadaParaOtimizar, 0, len(detalhe.Ruas))
+	for _, rua := range detalhe.Ruas {
+		entrada = append(entrada, ParadaParaOtimizar{
+			Chave: rua.Chave, NomeRua: rua.NomeRua, Quantidade: rua.Quantidade,
+			Latitude: *rua.Latitude, Longitude: *rua.Longitude, FonteCoordenada: rua.FonteCoordenada,
+		})
+	}
+	sugeridas := s.otimizador.Otimizar(PontoPartidaCDD(), entrada)
+	paradas := make([]models.ParadaOrdenamento, 0, len(sugeridas))
+	for indice, parada := range sugeridas {
+		paradas = append(paradas, models.ParadaOrdenamento{
+			OrdenamentoID: ordenamento.ID, ChaveAgrupamento: parada.Chave, NomeRua: parada.NomeRua,
+			QuantidadeObjetos: parada.Quantidade, Latitude: parada.Latitude, Longitude: parada.Longitude,
+			OrdemSugerida: indice + 1,
+		})
+	}
+	if err := s.paradas.ReplaceByOrdenamento(ctx, ordenamento.ID, paradas); err != nil {
+		return nil, err
+	}
 	return s.montarDetalhe(ctx, ordenamento)
 }
 
@@ -165,6 +225,13 @@ func (s *ordenamentoService) validarOrdenamentoAtivo(ctx context.Context, usuari
 		return nil, ErrOrdenamentoNaoEncontrado
 	}
 	return ordenamento, nil
+}
+
+func (s *ordenamentoService) limparOrdemSugerida(ctx context.Context, ordenamentoID uint) error {
+	if s.paradas == nil {
+		return nil
+	}
+	return s.paradas.DeleteByOrdenamento(ctx, ordenamentoID)
 }
 
 func (s *ordenamentoService) montarDetalhe(ctx context.Context, ordenamento *models.Ordenamento) (*OrdenamentoDetalhe, error) {
@@ -218,7 +285,7 @@ func (s *ordenamentoService) montarDetalhe(ctx context.Context, ordenamento *mod
 	}
 	sort.Slice(ruas, func(i, j int) bool { return ruas[i].NomeRua < ruas[j].NomeRua })
 
-	return &OrdenamentoDetalhe{
+	detalhe := &OrdenamentoDetalhe{
 		ID:                  ordenamento.ID,
 		Status:              ordenamento.Status,
 		CreatedAt:           ordenamento.CreatedAt,
@@ -229,5 +296,13 @@ func (s *ordenamentoService) montarDetalhe(ctx context.Context, ordenamento *mod
 		TotalSemCoordenadas: semCoordenadas,
 		Objetos:             objetos,
 		Ruas:                ruas,
-	}, nil
+	}
+	if s.paradas != nil {
+		ordemSugerida, err := s.paradas.ListByOrdenamento(ctx, ordenamento.ID)
+		if err != nil {
+			return nil, err
+		}
+		detalhe.OrdemSugerida = ordemSugerida
+	}
+	return detalhe, nil
 }

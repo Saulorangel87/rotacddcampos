@@ -418,13 +418,6 @@ func (s *zeRotaService) buscarRua(ctx context.Context, chamada groqToolCall) str
 	return string(saida)
 }
 
-// Coordenadas fixas do CDD Campos dos Goytacazes — suficiente pra previsão
-// do tempo da cidade toda, não precisa de geolocalização por rua.
-const (
-	latCampos = -21.7545
-	lonCampos = -41.3244
-)
-
 // consultarClima usa a Open-Meteo: API pública, gratuita, sem chave e sem
 // limite prático pro nosso volume de uso. Devolve os dados brutos da API e
 // deixa o próprio modelo interpretar e resumir pro carteiro (a instrução de
@@ -432,7 +425,7 @@ const (
 func (s *zeRotaService) consultarClima(ctx context.Context) string {
 	endpoint := fmt.Sprintf(
 		"https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current=temperature_2m,precipitation,rain,weather_code,wind_speed_10m&hourly=precipitation_probability,rain&forecast_days=1&timezone=America%%2FSao_Paulo",
-		latCampos, lonCampos,
+		LatitudeCDD, LongitudeCDD,
 	)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)

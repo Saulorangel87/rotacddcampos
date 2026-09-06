@@ -20,3 +20,9 @@ export function excluirObjeto(ordenamentoId, objetoId) {
     method: 'DELETE',
   })
 }
+
+export function gerarOrdem(ordenamentoId) {
+  return apiFetchJson(`/ordenamentos/${ordenamentoId}/gerar-ordem`, {
+    method: 'POST',
+  })
+}

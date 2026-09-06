@@ -4,6 +4,7 @@ import {
   buscarOrdenamentoAtivo,
   criarOrdenamento,
   excluirObjeto,
+  gerarOrdem,
 } from '../../api/ordenamentos.js'
 import styles from './OrdenamentoPanel.module.css'
 
@@ -15,6 +16,7 @@ export default function OrdenamentoPanel() {
   const [entrada, setEntrada] = useState('')
   const [salvando, setSalvando] = useState(false)
   const [excluindoId, setExcluindoId] = useState(null)
+  const [gerando, setGerando] = useState(false)
   const [erro, setErro] = useState('')
   const campoEntradaRef = useRef(null)
 
@@ -80,6 +82,21 @@ export default function OrdenamentoPanel() {
       setExcluindoId(null)
     }
   }
+
+  async function gerarOrdenamento() {
+    if (!ordenamento || gerando) return
+    setGerando(true)
+    setErro('')
+    try {
+      setOrdenamento(await gerarOrdem(ordenamento.id))
+    } catch (e) {
+      setErro(e.message)
+    } finally {
+      setGerando(false)
+    }
+  }
+
+  const motivoBloqueio = mensagemBloqueio(ordenamento)
 
   return (
     <section className={styles.pagina} aria-labelledby="titulo-ordenamento">
@@ -240,6 +257,40 @@ export default function OrdenamentoPanel() {
               )}
             </section>
           )}
+
+          <section className={styles.geracao} aria-labelledby="titulo-gerar-ordem">
+            <div>
+              <h3 id="titulo-gerar-ordem">Ordenamento por proximidade</h3>
+              <p>Gera uma sequência sugerida a partir do CDD Campos dos Goytacazes.</p>
+              {motivoBloqueio && <span>{motivoBloqueio}</span>}
+            </div>
+            <button
+              type="button"
+              onClick={gerarOrdenamento}
+              disabled={Boolean(motivoBloqueio) || gerando}
+            >
+              {gerando ? 'Gerando…' : ordenamento.ordem_sugerida?.length ? 'Gerar novamente' : 'Gerar ordenamento'}
+            </button>
+          </section>
+
+          {(ordenamento.ordem_sugerida?.length ?? 0) > 0 && (
+            <section className={styles.ordem} aria-labelledby="titulo-ordem-sugerida">
+              <div className={styles.listaTopo}>
+                <h3 id="titulo-ordem-sugerida">Ordem sugerida</h3>
+                <span>{ordenamento.ordem_sugerida.length} {ordenamento.ordem_sugerida.length === 1 ? 'parada' : 'paradas'}</span>
+              </div>
+              <p>Sequência calculada pela proximidade entre as ruas, começando no CDD.</p>
+              <ol>
+                {ordenamento.ordem_sugerida.map((parada) => (
+                  <li key={parada.id ?? parada.chave_agrupamento}>
+                    <span className={styles.numeroOrdem}>{parada.ordem_sugerida}</span>
+                    <span>{parada.nome_rua}</span>
+                    <strong>{parada.quantidade_objetos} {parada.quantidade_objetos === 1 ? 'objeto' : 'objetos'}</strong>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
         </article>
       ) : (
         <article className={styles.estadoInicial}>
@@ -267,6 +318,14 @@ function rotuloCoordenada(rua) {
   if (rua.latitude == null || rua.longitude == null) return 'Coordenada ainda indisponível'
   if (rua.fonte_coordenada === 'nominatim') return 'Coordenada aproximada · OpenStreetMap'
   return 'Coordenada obtida do mapa interno'
+}
+
+function mensagemBloqueio(ordenamento) {
+  if (!ordenamento) return ''
+  if ((ordenamento.total_pendentes ?? 0) > 0) return 'Revise as encomendas pendentes antes de gerar a ordem.'
+  if ((ordenamento.total_sem_coordenadas ?? 0) > 0) return 'Aguarde a coordenada de todas as ruas identificadas.'
+  if ((ordenamento.total_ruas ?? 0) === 0) return 'Adicione ao menos uma encomenda identificada para gerar a ordem.'
+  return ''
 }
 
 function formatarData(valor) {

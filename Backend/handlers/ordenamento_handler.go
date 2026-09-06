@@ -98,3 +98,30 @@ func (h *OrdenamentoHandler) ExcluirObjeto(c *fiber.Ctx) error {
 	}
 	return c.JSON(detalhe)
 }
+
+// GerarOrdem monta a sequência sugerida de ruas para o ordenamento ativo.
+func (h *OrdenamentoHandler) GerarOrdem(c *fiber.Ctx) error {
+	usuarioID, ok := c.Locals("usuario_id").(uint)
+	if !ok || usuarioID == 0 {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "não autenticado"})
+	}
+	ordenamentoID, err := strconv.ParseUint(c.Params("id"), 10, 64)
+	if err != nil || ordenamentoID == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "id de ordenamento inválido"})
+	}
+
+	detalhe, err := h.service.GerarOrdem(c.Context(), usuarioID, uint(ordenamentoID))
+	if err != nil {
+		switch {
+		case errors.Is(err, services.ErrOrdenamentoNaoEncontrado):
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
+		case errors.Is(err, services.ErrOrdenamentoSemObjetos),
+			errors.Is(err, services.ErrOrdenamentoComPendencias),
+			errors.Is(err, services.ErrOrdenamentoSemCoordenadas):
+			return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
+		default:
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "não foi possível gerar o ordenamento"})
+		}
+	}
+	return c.JSON(detalhe)
+}
