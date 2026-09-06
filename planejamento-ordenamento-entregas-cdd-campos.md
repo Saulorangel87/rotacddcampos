@@ -702,6 +702,11 @@ operacional (por exemplo, a sequência real de paradas ou uma planilha de
 ordem por rua). Essa referência será usada para medir o erro e ajustar o motor
 sem transformar uma preferência arbitrária em regra geral.
 
+Pendência registrada: a referência operacional deverá ser obtida em até dois
+dias. Até que ela esteja disponível, não alterar a heurística de proximidade;
+seguir com as verificações independentes de acesso, interface e preparação para
+produção.
+
 Validação desta auditoria: consulta PostgreSQL local somente leitura, `go test
 ./...`, 10 testes Node e `npm run build`. Nenhuma tabela ou geometria foi
 alterada.

@@ -338,7 +338,8 @@ Resultados automáticos de baixa confiança foram descartados para evitar associ
 - **Ordenamento por rua** — futura tabela com sequência real de entrega (`rua_id`, `ordem`, `numero`).
 - **Precisão do ordenamento** — as geometrias existentes foram auditadas e estão
   válidas; falta uma lista operacional real para medir a sequência sugerida e
-  orientar qualquer ajuste antes da publicação.
+  orientar qualquer ajuste antes da publicação. A planilha está pendente e deve
+  ser obtida nos próximos dois dias.
 - **Zé Rota — próxima fase** — sugestão de rota para múltiplas encomendas, dependente do ordenamento das ruas.
 - **AGC (Agência Comunitária)** — áreas sem entrega domiciliária ainda não modeladas.
 - **Botão "Contribuir"** — planejado para alimentar o Zé Rota com características dos distritos.

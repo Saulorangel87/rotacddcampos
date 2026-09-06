@@ -64,4 +64,5 @@ src/
    das coordenadas.
 3. Comparar a sequência sugerida com uma sequência operacional real; o cadastro
    atual não possui `rota` preenchida, então o ajuste do algoritmo depende dessa
-   referência antes da publicação em produção.
+   referência antes da publicação em produção. A planilha está pendente e será
+   incorporada quando estiver disponível.

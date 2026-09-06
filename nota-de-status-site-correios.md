@@ -158,6 +158,10 @@ operacional a partir do cadastro. A próxima alteração do motor deve ser medid
 contra uma sequência real de paradas ou uma planilha de ordem por rua. Até lá,
 o algoritmo de proximidade permanece inalterado para evitar uma precisão falsa.
 
+A planilha ou sequência operacional real está pendente, com previsão de obtenção
+em até dois dias. Enquanto ela não chega, a próxima frente é revisar permissões
+e preparar a validação final para produção.
+
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
 - `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real
