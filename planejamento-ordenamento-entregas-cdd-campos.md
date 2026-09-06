@@ -637,6 +637,23 @@ teste de integração PostgreSQL opt-in em schema isolado com rollback; testes N
 de restauração por cadastro e build do frontend. O compartilhamento coletivo
 continua pendente, sem aprendizado de máquina nesta fase.
 
+### Evolução local — 06/09/2026: refinamento criterioso da busca
+
+Esta melhoria permanece dentro da Fase 8 — Refinamento e aperfeiçoa o pipeline
+de entrada das Fases 2 e 7, sem alterar as permissões ou o escopo do MVP:
+
+- nomes são comparados sem acentos, pontuação, tipo do logradouro e artigos opcionais;
+- todos os termos relevantes precisam corresponder, com prefixos controlados para digitação progressiva;
+- correspondências exatas vencem resultados parciais; homônimos continuam pendentes para escolha explícita;
+- CEPs são pesquisados com ou sem hífen e podem ser usados no cabeçalho e na tela de consulta;
+- a busca visual evita escolher o primeiro resultado apenas por ordem alfabética;
+- respostas antigas não são sobrescritas por consultas mais recentes na tela de CEP;
+- testes cobrem Silva Tavares, abreviações, acentos, artigos omitidos, prefixos e CEP.
+
+A próxima parte da Fase 8 é validar a busca com a lista operacional completa e,
+depois, atacar a precisão das coordenadas e do ordenamento com exemplos reais,
+antes da publicação conjunta em produção.
+
 ---
 
 # 17. SIDEBAR — ORGANIZAÇÃO

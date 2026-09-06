@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { listarRuas } from '../api/ruas.js'
 import { corDoDistrito } from '../data/distritos.js'
 import { useReconhecimentoDeVoz } from '../hooks/useReconhecimentoDeVoz.js'
+import { normalizarCepBusca, ordenarRuasPorCorrespondencia } from '../utils/buscaRua.js'
 import styles from './CepLookup.module.css'
 
 export default function CepLookup() {
@@ -12,33 +13,46 @@ export default function CepLookup() {
   const { ouvindo, ouvirVoz } = useReconhecimentoDeVoz(setTermo)
 
   useEffect(() => {
-    if (termo.trim().length < 3) {
+    const cep = normalizarCepBusca(termo)
+    const buscaPorCep = /^\d{8}$/.test(cep)
+    if (!buscaPorCep && termo.trim().length < 3) {
       setResultados([])
+      setBuscando(false)
       setJaBuscou(false)
       return
     }
     setBuscando(true)
+    let ativo = true
     const timer = setTimeout(() => {
-      listarRuas({ nome: termo }).then((dados) => {
-        setResultados(dados)
+      listarRuas(buscaPorCep ? { cep: termo } : { nome: termo }).then((dados) => {
+        if (!ativo) return
+        setResultados(buscaPorCep ? dados : ordenarRuasPorCorrespondencia(dados, termo))
+        setBuscando(false)
+        setJaBuscou(true)
+      }).catch(() => {
+        if (!ativo) return
+        setResultados([])
         setBuscando(false)
         setJaBuscou(true)
       })
     }, 400)
-    return () => clearTimeout(timer)
+    return () => {
+      ativo = false
+      clearTimeout(timer)
+    }
   }, [termo])
 
   return (
     <section className={styles.caixa} aria-label="Consulta de CEP por rua">
       <h2 className={styles.titulo}>📮 Consultar CEP por rua</h2>
-      <p className={styles.dica}>Digite pelo menos 3 letras do nome da rua.</p>
+      <p className={styles.dica}>Digite pelo menos 3 letras do nome da rua ou um CEP completo.</p>
 
       {/* Wrapper do Input */}
       <div className={styles.inputWrapper}>
         <input
           type="search"
           className={styles.campo}
-          placeholder="Ex: Alberto Torres"
+          placeholder="Ex.: Alberto Torres ou 28010-562"
           value={termo}
           onChange={(e) => setTermo(e.target.value)}
           autoFocus

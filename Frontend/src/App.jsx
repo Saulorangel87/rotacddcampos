@@ -25,6 +25,7 @@ import { listarRuas } from "./api/ruas.js";
 import { useAuth } from "./context/AuthContext.jsx";
 import styles from "./App.module.css";
 import { APP_VERSION } from "./release.js";
+import { normalizarCepBusca, ordenarRuasPorCorrespondencia } from "./utils/buscaRua.js";
 
 const CHAVE_SECAO_ATIVA = "rotas_secao_ativa";
 const SECOES_PERSISTIVEIS = new Set(["mapa", "ordenamento", "cep", "relatorios"]);
@@ -110,13 +111,12 @@ export default function App() {
     setSecaoAtiva("mapa");
     setPainelAjustesAberto(false);
     try {
-      const ruas = await listarRuas({ nome: termo });
-      // Prioriza um match exato de nome (ex: buscou "Alberto Torres" e existe
-      // uma rua com esse nome exato); senão usa o primeiro resultado parcial.
-      const exata = ruas.find(
-        (r) => r.nome_rua?.toLowerCase() === termo.toLowerCase(),
-      );
-      const encontrada = exata || ruas[0] || null;
+      const cep = normalizarCepBusca(termo);
+      const ruas = await listarRuas(cep.length === 8 ? { cep: termo } : { nome: termo });
+      // O backend pode devolver várias correspondências. Ordenar no cliente
+      // garante que uma rua exata ou equivalente (sem acento/tipo/artigos)
+      // vença um resultado parcial que apenas apareceu antes alfabeticamente.
+      const encontrada = ordenarRuasPorCorrespondencia(ruas, termo)[0] || null;
       setResultadoBusca({ termo, rua: encontrada });
     } catch {
       setResultadoBusca({ termo, rua: null });

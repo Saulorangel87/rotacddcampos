@@ -1,5 +1,6 @@
 import { MOCK_RUAS } from '../data/mockRuas.js'
 import { apiFetch, apiFetchJson } from './client.js'
+import { normalizarCepBusca, ruaCorrespondeBusca } from '../utils/buscaRua.js'
 
 /**
  * Busca ruas na API. Filtros aceitos hoje pelo backend (Backend/handlers/rua_handler.go):
@@ -59,9 +60,10 @@ export async function moverRuasEmLote(ids, novoDistrito) {
 
 function filtrarMock({ nome, cep, distrito }) {
   return MOCK_RUAS.filter((r) => {
-    const okNome = !nome || r.nome_rua.toLowerCase().includes(nome.toLowerCase())
-    const okCep = !cep || r.cep.includes(cep)
-    const okDistrito = !distrito || r.distrito === distrito
+    const okNome = !nome || ruaCorrespondeBusca(r, nome)
+    const alvoCep = normalizarCepBusca(cep)
+    const okCep = !alvoCep || normalizarCepBusca(r.cep).includes(alvoCep)
+    const okDistrito = !distrito || String(r.distrito).toUpperCase() === String(distrito).trim().toUpperCase()
     return okNome && okCep && okDistrito
   })
 }

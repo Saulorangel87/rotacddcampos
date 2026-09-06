@@ -112,6 +112,50 @@ func TestEnderecoResolverPriorizaCorrespondenciaExataSobreParcial(t *testing.T) 
 	}
 }
 
+func TestEnderecoResolverAceitaArtigosOmitidosEAbreviacao(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 75, NomeRua: "AVENIDA SETE DE SETEMBRO", Distrito: "614", CEP: "28010562"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "Av. Sete Setembro")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoIdentificado || resultado.RuaID == nil || *resultado.RuaID != 75 {
+		t.Fatalf("rua não identificada com artigo omitido: %+v", resultado)
+	}
+}
+
+func TestEnderecoResolverExigeTodosOsTermosDaBusca(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 1, NomeRua: "RUA SILVA TAVARES", Distrito: "607"},
+		{ID: 2, NomeRua: "RUA SILVA TORRES", Distrito: "608"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "Silva Tavares")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoIdentificado || resultado.RuaID == nil || *resultado.RuaID != 1 {
+		t.Fatalf("a busca não priorizou os dois termos informados: %+v", resultado)
+	}
+}
+
+func TestEnderecoResolverAceitaPrefixoSemEscolherOutroTermo(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 1, NomeRua: "RUA SÉRGIO CARDOSO", Distrito: "608"},
+		{ID: 2, NomeRua: "RUA SILVIO FONTOURA", Distrito: "608"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "Serg")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoIdentificado || resultado.RuaID == nil || *resultado.RuaID != 1 {
+		t.Fatalf("prefixo foi resolvido incorretamente: %+v", resultado)
+	}
+}
+
 func TestEnderecoResolverAceitaTiposDeLogradouroInvertidos(t *testing.T) {
 	tests := []struct {
 		entrada  string
@@ -121,6 +165,7 @@ func TestEnderecoResolverAceitaTiposDeLogradouroInvertidos(t *testing.T) {
 		{entrada: "Rua Santa Cecilia", cadastro: models.Rua{ID: 1, NomeRua: "CECÍLIA, RUA SANTA"}, esperado: "RUA SANTA CECÍLIA"},
 		{entrada: "Travessa Sao Goncalo", cadastro: models.Rua{ID: 2, NomeRua: "GONÇALO, TV.SÃO"}, esperado: "TRAVESSA SÃO GONÇALO"},
 		{entrada: "Praca Athaide Barbosa", cadastro: models.Rua{ID: 3, NomeRua: "ATHAÍDE BARBOSA, PÇA"}, esperado: "PRAÇA ATHAÍDE BARBOSA"},
+		{entrada: "Estrada Alto da Pitanga", cadastro: models.Rua{ID: 4, NomeRua: "ALTO DA PITANGA, EST."}, esperado: "ESTRADA ALTO DA PITANGA"},
 	}
 
 	for _, caso := range tests {

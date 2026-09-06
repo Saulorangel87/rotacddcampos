@@ -28,7 +28,7 @@ var (
 	reCEP              = regexp.MustCompile(`^\d{5}-?\d{3}$`)
 	prefixosLogradouro = map[string]bool{
 		"RUA": true, "R": true, "AVENIDA": true, "AV": true,
-		"TRAVESSA": true, "TV": true, "PRACA": true, "PCA": true, "ESTRADA": true,
+		"TRAVESSA": true, "TV": true, "PRACA": true, "PCA": true, "ESTRADA": true, "EST": true,
 		"RODOVIA": true, "ALAMEDA": true, "LARGO": true, "BOULEVARD": true,
 	}
 	palavrasBuscaIgnoradas = map[string]bool{
@@ -165,12 +165,14 @@ func (r *enderecoResolver) resolverTermo(ctx context.Context, termo, numero stri
 	gruposParciais := make(map[string][]models.Rua)
 	for _, rua := range candidatas {
 		base := normalizarNomeBase(rua.NomeRua)
-		if base == normalizado {
-			gruposExatos[base] = append(gruposExatos[base], rua)
+		chaveBusca := normalizarNomeComparacao(base)
+		exato, parcial := correspondeNome(base, normalizado)
+		if exato {
+			gruposExatos[chaveBusca] = append(gruposExatos[chaveBusca], rua)
 			continue
 		}
-		if len(normalizado) >= 4 && strings.Contains(base, normalizado) {
-			gruposParciais[base] = append(gruposParciais[base], rua)
+		if parcial {
+			gruposParciais[chaveBusca] = append(gruposParciais[chaveBusca], rua)
 		}
 	}
 	// Uma rua cujo nome normalizado coincide por completo é mais confiável do
@@ -424,7 +426,7 @@ func tipoLogradouroExibicao(token string) string {
 		return "TRAVESSA"
 	case "PCA", "PRACA":
 		return "PRAÇA"
-	case "ESTRADA":
+	case "EST", "ESTRADA":
 		return "ESTRADA"
 	case "RODOVIA":
 		return "RODOVIA"
@@ -490,6 +492,64 @@ func normalizarNomeBase(texto string) string {
 		partes = reordenadas
 	}
 	return strings.Join(partes, " ")
+}
+
+// normalizarNomeComparacao cria uma forma canônica apenas para comparar o
+// texto informado com o cadastro. A chave persistida da encomenda continua
+// usando normalizarNomeBase; assim, esta melhoria não invalida dados já
+// salvos. Artigos podem ser omitidos na digitação ("Sete Setembro"), mas uma
+// busca formada só por artigos preserva o texto para não virar uma consulta
+// vazia ou ampla demais.
+func normalizarNomeComparacao(texto string) string {
+	partes := strings.Fields(normalizarTexto(texto))
+	if len(partes) == 0 {
+		return ""
+	}
+
+	completas := make([]string, 0, len(partes))
+	for _, parte := range partes {
+		if !palavrasBuscaIgnoradas[parte] {
+			completas = append(completas, parte)
+		}
+	}
+	if len(completas) == 0 {
+		return strings.Join(partes, " ")
+	}
+	return strings.Join(completas, " ")
+}
+
+// correspondeNome retorna se o cadastro é uma correspondência exata ou uma
+// correspondência parcial segura. A comparação parcial exige que todos os
+// termos informados apareçam como palavras completas (ou prefixos) no
+// cadastro; usar apenas o maior token causava resultados incorretos quando a
+// entrada tinha várias palavras.
+func correspondeNome(cadastro, termo string) (bool, bool) {
+	base := normalizarNomeComparacao(cadastro)
+	consulta := normalizarNomeComparacao(termo)
+	if base == "" || consulta == "" {
+		return false, false
+	}
+	if base == consulta {
+		return true, true
+	}
+	if len(consulta) < 4 {
+		return false, false
+	}
+
+	palavrasBase := strings.Fields(base)
+	for _, palavraConsulta := range strings.Fields(consulta) {
+		presente := false
+		for _, palavraBase := range palavrasBase {
+			if palavraBase == palavraConsulta || strings.HasPrefix(palavraBase, palavraConsulta) {
+				presente = true
+				break
+			}
+		}
+		if !presente {
+			return false, false
+		}
+	}
+	return false, true
 }
 
 func normalizarTexto(texto string) string {
