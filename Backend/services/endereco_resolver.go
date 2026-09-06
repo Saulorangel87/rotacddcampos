@@ -243,94 +243,49 @@ func (r *enderecoResolver) resolverTermo(ctx context.Context, termo, numero stri
 	return resolucao, true, nil
 }
 
-// Selecionar confirma um cadastro específico dentre as opções de uma busca
-// ambígua. A validação repete a normalização e nunca aceita uma rua que não
-// corresponda ao texto informado.
+// Selecionar confirma um cadastro específico dentre as opções que a busca
+// ambígua exibiu. Reutilizar Resolver aqui mantém as duas etapas com as mesmas
+// regras de normalização e evita rejeitar uma opção válida só porque o usuário
+// usou um tipo genérico de logradouro (por exemplo, "Rua" para uma avenida).
 func (r *enderecoResolver) Selecionar(ctx context.Context, entrada string, ruaID uint) (ResolucaoEndereco, error) {
 	entrada = strings.TrimSpace(entrada)
 	if entrada == "" || ruaID == 0 {
 		return pendencia(MotivoRuaNaoEncontrada, ""), nil
 	}
 
-	if cep := normalizarCEP(entrada); cep != "" {
-		candidatas, err := r.ruas.FindAll(ctx, map[string]string{"cep": cep})
-		if err != nil {
-			return ResolucaoEndereco{}, err
-		}
-		for _, rua := range candidatas {
-			if rua.ID != ruaID || normalizarCEP(rua.CEP) != cep {
-				continue
-			}
-			id := rua.ID
-			return ResolucaoEndereco{
-				RuaID:            &id,
-				NomeRua:          nomeBaseExibicao(rua.NomeRua),
-				ChaveAgrupamento: "rua:" + strconv.FormatUint(uint64(id), 10),
-				CEP:              rua.CEP,
-				Status:           models.StatusResolucaoIdentificado,
-			}, nil
-		}
-		return pendencia(MotivoCEPNaoEncontrado, ""), nil
+	resolucao, err := r.Resolver(ctx, entrada)
+	if err != nil {
+		return ResolucaoEndereco{}, err
 	}
 
-	for _, tentativa := range []struct {
-		nome   string
-		numero string
-	}{
-		{nome: entrada},
-		func() struct {
-			nome   string
-			numero string
-		} {
-			nome, numero := extrairNumeroFinal(entrada)
-			return struct {
-				nome   string
-				numero string
-			}{nome: nome, numero: numero}
-		}(),
-	} {
-		if tentativa.nome == "" {
-			continue
+	// Quando a busca já resolveu sem ambiguidade, só o mesmo cadastro pode ser
+	// confirmado. Isso também cobre entradas únicas por CEP.
+	if resolucao.Status == models.StatusResolucaoIdentificado {
+		if resolucao.RuaID != nil && *resolucao.RuaID == ruaID {
+			return resolucao, nil
 		}
-		normalizado := normalizarNomeBase(tentativa.nome)
-		if normalizado == "" {
-			continue
-		}
-		candidatas, err := r.ruas.FindAll(ctx, map[string]string{"nome": melhorTokenBusca(normalizado)})
-		if err != nil {
-			return ResolucaoEndereco{}, err
-		}
-		tipo := tipoLogradouroInformado(tentativa.nome)
-		for _, rua := range candidatas {
-			baseCandidata := normalizarNomeBase(rua.NomeRua)
-			if rua.ID != ruaID || !nomeCandidatoCorresponde(baseCandidata, normalizado) {
-				continue
-			}
-			if tipo != "" && tipoLogradouroNormalizado(rua.NomeRua) != tipo {
-				continue
-			}
-			id := rua.ID
-			return ResolucaoEndereco{
-				RuaID:            &id,
-				NomeRua:          nomeBaseExibicao(rua.NomeRua),
-				ChaveAgrupamento: "rua:" + strconv.FormatUint(uint64(id), 10),
-				Numero:           tentativa.numero,
-				CEP:              rua.CEP,
-				Status:           models.StatusResolucaoIdentificado,
-			}, nil
-		}
-		if tentativa.numero != "" {
-			break
-		}
+		return pendencia(MotivoRuaNaoEncontrada, resolucao.Numero), nil
 	}
-	return pendencia(MotivoRuaNaoEncontrada, ""), nil
-}
 
-func nomeCandidatoCorresponde(candidato, termo string) bool {
-	if candidato == termo {
-		return true
+	// Em uma busca ambígua, a lista de opções é a fonte de verdade. Assim, uma
+	// opção mostrada ao usuário continua selecionável mesmo quando o texto
+	// digitado usou "Rua" como forma genérica para avenida ou travessa.
+	for _, opcao := range resolucao.Opcoes {
+		if opcao.RuaID != ruaID {
+			continue
+		}
+		id := opcao.RuaID
+		return ResolucaoEndereco{
+			RuaID:            &id,
+			NomeRua:          opcao.NomeRua,
+			ChaveAgrupamento: "rua:" + strconv.FormatUint(uint64(id), 10),
+			Numero:           resolucao.Numero,
+			CEP:              opcao.CEP,
+			Status:           models.StatusResolucaoIdentificado,
+		}, nil
 	}
-	return len(termo) >= 4 && strings.Contains(candidato, termo)
+
+	return pendencia(MotivoRuaNaoEncontrada, resolucao.Numero), nil
 }
 
 func pendencia(motivo, numero string) ResolucaoEndereco {

@@ -207,6 +207,41 @@ func TestEnderecoResolverConfirmaOpcaoDeCorrespondenciaParcial(t *testing.T) {
 	}
 }
 
+func TestEnderecoResolverConfirmaOpcaoExibidaMesmoComTipoGenerico(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 131, NomeRua: "AVENIDA MIGUEL RINALDI", Distrito: "614", CEP: "28148042"},
+		{ID: 132, NomeRua: "TRAVESSA MIGUEL RINALDI", Distrito: "614", CEP: "28148014"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "Rua Miguel Rinaldi")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoPendente || len(resultado.Opcoes) != 2 {
+		t.Fatalf("opções inesperadas: %+v", resultado)
+	}
+
+	selecionavel := resolver.(EnderecoResolverSelecionavel)
+	confirmada, err := selecionavel.Selecionar(context.Background(), "Rua Miguel Rinaldi", 131)
+	if err != nil {
+		t.Fatalf("Selecionar() erro inesperado: %v", err)
+	}
+	if confirmada.Status != models.StatusResolucaoIdentificado || confirmada.RuaID == nil || *confirmada.RuaID != 131 {
+		t.Fatalf("seleção inesperada: %+v", confirmada)
+	}
+	if confirmada.NomeRua != "AVENIDA MIGUEL RINALDI" || confirmada.CEP != "28148042" {
+		t.Fatalf("cadastro selecionado inesperado: %+v", confirmada)
+	}
+
+	naoExibida, err := selecionavel.Selecionar(context.Background(), "Rua Miguel Rinaldi", 999)
+	if err != nil {
+		t.Fatalf("Selecionar() para opção não exibida retornou erro inesperado: %v", err)
+	}
+	if naoExibida.Status == models.StatusResolucaoIdentificado {
+		t.Fatalf("cadastro não exibido foi aceito: %+v", naoExibida)
+	}
+}
+
 func TestEnderecoResolverIdentificaRuaPorCEP(t *testing.T) {
 	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
 		{ID: 75, NomeRua: "AVENIDA SETE DE SETEMBRO - DE 230 AO 490 - LADO PAR", Distrito: "614", CEP: "28010562"},
