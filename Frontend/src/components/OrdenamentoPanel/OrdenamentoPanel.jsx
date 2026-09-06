@@ -107,7 +107,6 @@ export default function OrdenamentoPanel() {
     scannerAtivoRef.current = false
     controlesScannerRef.current?.stop()
     controlesScannerRef.current = null
-    leitorScannerRef.current?.reset()
     leitorScannerRef.current = null
     if (videoScannerRef.current) {
       videoScannerRef.current.pause()
