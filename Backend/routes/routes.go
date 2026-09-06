@@ -142,12 +142,14 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, ze
 	ordenamentos := app.Group("/ordenamentos", autenticado)
 	{
 		ordenamentos.Get("/ativo", ordenamentoHandler.GetAtivo)
+		ordenamentos.Delete("/referencias/:referenciaId", ordenamentoHandler.EsquecerReferencia)
 		ordenamentos.Post("/", ordenamentoHandler.Criar)
 		ordenamentos.Post("/:id/objetos", ordenamentoHandler.AdicionarObjeto)
 		ordenamentos.Patch("/:id/objetos/:objetoId/rua", ordenamentoHandler.SelecionarRua)
 		ordenamentos.Delete("/:id/objetos", ordenamentoHandler.Limpar)
 		ordenamentos.Delete("/:id/objetos/:objetoId", ordenamentoHandler.ExcluirObjeto)
 		ordenamentos.Post("/:id/gerar-ordem", ordenamentoHandler.GerarOrdem)
+		ordenamentos.Patch("/:id/ordem-final", ordenamentoHandler.SalvarOrdemFinal)
 	}
 
 	// Injeção de dependências - Redistritamento

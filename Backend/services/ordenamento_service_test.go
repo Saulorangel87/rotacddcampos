@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/empresa/rotas-entrega/models"
 )
@@ -13,6 +14,7 @@ type ordenamentoRepoFake struct {
 	objetos   []models.ObjetoOrdenamento
 	erroBusca error
 	erroCriar error
+	paradas   *paradaOrdenamentoRepoFake
 }
 
 func (r *ordenamentoRepoFake) FindAtivoByUsuario(_ context.Context, _ uint) (*models.Ordenamento, error) {
@@ -60,6 +62,9 @@ func (r *ordenamentoRepoFake) DeleteObjeto(_ context.Context, ordenamentoID, obj
 
 func (r *ordenamentoRepoFake) LimparConteudo(_ context.Context, _ uint) error {
 	r.objetos = nil
+	if r.paradas != nil {
+		r.paradas.paradas = nil
+	}
 	return nil
 }
 
@@ -77,7 +82,9 @@ type coordenadaResolverFake struct {
 }
 
 type paradaOrdenamentoRepoFake struct {
-	paradas []models.ParadaOrdenamento
+	paradas   []models.ParadaOrdenamento
+	historico []models.CorrecaoOrdenamento
+	proximoID uint
 }
 
 func (r *paradaOrdenamentoRepoFake) ListByOrdenamento(_ context.Context, _ uint) ([]models.ParadaOrdenamento, error) {
@@ -86,7 +93,76 @@ func (r *paradaOrdenamentoRepoFake) ListByOrdenamento(_ context.Context, _ uint)
 
 func (r *paradaOrdenamentoRepoFake) ReplaceByOrdenamento(_ context.Context, _ uint, paradas []models.ParadaOrdenamento) error {
 	r.paradas = append([]models.ParadaOrdenamento(nil), paradas...)
+	for i := range r.paradas {
+		r.proximoID++
+		r.paradas[i].ID = r.proximoID
+	}
 	return nil
+}
+
+func (r *paradaOrdenamentoRepoFake) UpdateOrdemFinal(_ context.Context, _ uint, paradaIDs []uint, correcao *models.CorrecaoOrdenamento) error {
+	for indice := range r.paradas {
+		r.paradas[indice].OrdemFinal = nil
+	}
+	for indice, paradaID := range paradaIDs {
+		encontrada := false
+		for paradaIndice := range r.paradas {
+			if r.paradas[paradaIndice].ID == paradaID {
+				ordem := indice + 1
+				r.paradas[paradaIndice].OrdemFinal = &ordem
+				r.paradas[paradaIndice].FonteOrdemFinal = "manual"
+				encontrada = true
+				break
+			}
+		}
+		if !encontrada {
+			return errors.New("parada não encontrada")
+		}
+	}
+	if correcao.Reutilizar {
+		for i := range r.historico {
+			anterior := &r.historico[i]
+			if anterior.UsuarioID == correcao.UsuarioID && anterior.Contexto == correcao.Contexto && anterior.AssinaturaRuas == correcao.AssinaturaRuas && anterior.Reutilizar && anterior.DesativadaEm == nil {
+				agora := time.Now()
+				anterior.DesativadaEm = &agora
+			}
+		}
+	}
+	correcao.ID = uint(len(r.historico) + 1)
+	r.historico = append(r.historico, *correcao)
+	return nil
+}
+
+func (r *paradaOrdenamentoRepoFake) FindReferencia(_ context.Context, usuarioID uint, contexto, assinatura string) (*models.CorrecaoOrdenamento, error) {
+	for i := len(r.historico) - 1; i >= 0; i-- {
+		c := r.historico[i]
+		if c.UsuarioID == usuarioID && c.Contexto == contexto && c.AssinaturaRuas == assinatura && c.Reutilizar && c.DesativadaEm == nil {
+			return &c, nil
+		}
+	}
+	return nil, nil
+}
+
+func (r *paradaOrdenamentoRepoFake) ListHistorico(_ context.Context, usuarioID uint) ([]models.CorrecaoOrdenamento, error) {
+	resultado := make([]models.CorrecaoOrdenamento, 0)
+	for i := len(r.historico) - 1; i >= 0 && len(resultado) < 20; i-- {
+		if r.historico[i].UsuarioID == usuarioID {
+			resultado = append(resultado, r.historico[i])
+		}
+	}
+	return resultado, nil
+}
+
+func (r *paradaOrdenamentoRepoFake) DesativarReferencia(_ context.Context, usuarioID, referenciaID uint) error {
+	for i := range r.historico {
+		c := &r.historico[i]
+		if c.UsuarioID == usuarioID && c.ID == referenciaID && c.Reutilizar && c.DesativadaEm == nil {
+			agora := time.Now()
+			c.DesativadaEm = &agora
+			return nil
+		}
+	}
+	return ErrReferenciaNaoEncontrada
 }
 
 func (r *paradaOrdenamentoRepoFake) DeleteByOrdenamento(_ context.Context, _ uint) error {
@@ -230,7 +306,7 @@ func TestOrdenamentoServiceGeraOrdemSugerida(t *testing.T) {
 	paradas := &paradaOrdenamentoRepoFake{}
 	service := NewOrdenamentoService(repo, enderecoResolverFake{}, nil, paradas, otimizadorFake{})
 
-	detalhe, err := service.GerarOrdem(context.Background(), 42, 7)
+	detalhe, err := service.GerarOrdem(context.Background(), 42, 7, GerarOrdemDTO{})
 	if err != nil {
 		t.Fatalf("GerarOrdem() erro inesperado: %v", err)
 	}
@@ -242,6 +318,54 @@ func TestOrdenamentoServiceGeraOrdemSugerida(t *testing.T) {
 	}
 }
 
+func TestOrdenamentoServiceSalvaOrdemFinal(t *testing.T) {
+	repo := &ordenamentoRepoFake{
+		ativo: &models.Ordenamento{ID: 7, UsuarioID: 42, Status: models.StatusOrdenamentoEmAndamento},
+	}
+	paradas := &paradaOrdenamentoRepoFake{paradas: []models.ParadaOrdenamento{
+		{ID: 10, OrdenamentoID: 7, NomeRua: "RUA A", OrdemSugerida: 1},
+		{ID: 20, OrdenamentoID: 7, NomeRua: "RUA B", OrdemSugerida: 2},
+	}}
+	service := NewOrdenamentoService(repo, enderecoResolverFake{}, nil, paradas, nil)
+
+	detalhe, err := service.SalvarOrdemFinal(context.Background(), 42, 7, SalvarOrdemFinalDTO{ParadaIDs: []uint{20, 10}})
+	if err != nil {
+		t.Fatalf("SalvarOrdemFinal() erro inesperado: %v", err)
+	}
+	for _, parada := range paradas.paradas {
+		if parada.ID == 20 && (parada.OrdemFinal == nil || *parada.OrdemFinal != 1) {
+			t.Fatalf("ordem final da parada 20 inesperada: %+v", parada)
+		}
+		if parada.ID == 10 && (parada.OrdemFinal == nil || *parada.OrdemFinal != 2) {
+			t.Fatalf("ordem final da parada 10 inesperada: %+v", parada)
+		}
+	}
+	if len(detalhe.OrdemSugerida) != 2 || detalhe.OrdemSugerida[0].OrdemSugerida != 1 {
+		t.Fatalf("detalhe após salvar inesperado: %+v", detalhe.OrdemSugerida)
+	}
+}
+
+func TestOrdenamentoServiceRejeitaOrdemFinalInvalida(t *testing.T) {
+	repo := &ordenamentoRepoFake{
+		ativo: &models.Ordenamento{ID: 7, UsuarioID: 42, Status: models.StatusOrdenamentoEmAndamento},
+	}
+	paradas := &paradaOrdenamentoRepoFake{paradas: []models.ParadaOrdenamento{
+		{ID: 10, OrdenamentoID: 7, NomeRua: "RUA A", OrdemSugerida: 1},
+		{ID: 20, OrdenamentoID: 7, NomeRua: "RUA B", OrdemSugerida: 2},
+	}}
+	service := NewOrdenamentoService(repo, enderecoResolverFake{}, nil, paradas, nil)
+
+	_, err := service.SalvarOrdemFinal(context.Background(), 42, 7, SalvarOrdemFinalDTO{ParadaIDs: []uint{10, 10}})
+	if !errors.Is(err, ErrOrdemFinalInvalida) {
+		t.Fatalf("SalvarOrdemFinal() erro = %v, esperado %v", err, ErrOrdemFinalInvalida)
+	}
+	for _, parada := range paradas.paradas {
+		if parada.OrdemFinal != nil {
+			t.Fatalf("ordem inválida alterou a parada: %+v", parada)
+		}
+	}
+}
+
 func TestOrdenamentoServiceNaoGeraOrdemComPendencia(t *testing.T) {
 	repo := &ordenamentoRepoFake{
 		ativo:   &models.Ordenamento{ID: 7, UsuarioID: 42, Status: models.StatusOrdenamentoEmAndamento},
@@ -249,7 +373,7 @@ func TestOrdenamentoServiceNaoGeraOrdemComPendencia(t *testing.T) {
 	}
 	service := NewOrdenamentoService(repo, enderecoResolverFake{}, nil, &paradaOrdenamentoRepoFake{}, otimizadorFake{})
 
-	_, err := service.GerarOrdem(context.Background(), 42, 7)
+	_, err := service.GerarOrdem(context.Background(), 42, 7, GerarOrdemDTO{})
 	if !errors.Is(err, ErrOrdenamentoComPendencias) {
 		t.Fatalf("GerarOrdem() erro = %v, esperado %v", err, ErrOrdenamentoComPendencias)
 	}
@@ -262,7 +386,7 @@ func TestOrdenamentoServiceNaoGeraOrdemSemCoordenada(t *testing.T) {
 	}
 	service := NewOrdenamentoService(repo, enderecoResolverFake{}, nil, &paradaOrdenamentoRepoFake{}, otimizadorFake{})
 
-	_, err := service.GerarOrdem(context.Background(), 42, 7)
+	_, err := service.GerarOrdem(context.Background(), 42, 7, GerarOrdemDTO{})
 	if !errors.Is(err, ErrOrdenamentoSemCoordenadas) {
 		t.Fatalf("GerarOrdem() erro = %v, esperado %v", err, ErrOrdenamentoSemCoordenadas)
 	}

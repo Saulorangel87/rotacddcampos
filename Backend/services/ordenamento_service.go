@@ -21,11 +21,23 @@ var (
 	ErrOrdenamentoComPendencias  = errors.New("revise as encomendas pendentes antes de gerar o ordenamento")
 	ErrOrdenamentoSemCoordenadas = errors.New("há ruas sem coordenada disponível para gerar o ordenamento")
 	ErrOpcaoRuaInvalida          = errors.New("a rua escolhida não corresponde ao texto informado")
+	ErrOrdemFinalInvalida        = errors.New("a ordem final deve conter cada rua uma única vez")
+	ErrReferenciaSemCadastro     = errors.New("para guardar uma sequência habitual, todas as ruas precisam de um cadastro específico; identifique os trechos agrupados pelo CEP")
+	ErrReferenciaNaoEncontrada   = errors.New("sequência habitual não encontrada")
 )
 
 type AdicionarObjetoDTO struct {
 	Entrada string `json:"entrada"`
 	Origem  string `json:"origem"`
+}
+
+type SalvarOrdemFinalDTO struct {
+	ParadaIDs  []uint `json:"parada_ids"`
+	Reutilizar bool   `json:"reutilizar"`
+}
+
+type GerarOrdemDTO struct {
+	SomenteAlgoritmo bool `json:"somente_algoritmo"`
 }
 
 type RuaAgrupada struct {
@@ -38,17 +50,20 @@ type RuaAgrupada struct {
 }
 
 type OrdenamentoDetalhe struct {
-	ID                  uint                       `json:"id"`
-	Status              string                     `json:"status"`
-	CreatedAt           time.Time                  `json:"created_at"`
-	UpdatedAt           time.Time                  `json:"updated_at"`
-	TotalObjetos        int                        `json:"total_objetos"`
-	TotalRuas           int                        `json:"total_ruas"`
-	TotalPendentes      int                        `json:"total_pendentes"`
-	TotalSemCoordenadas int                        `json:"total_sem_coordenadas"`
-	Objetos             []models.ObjetoOrdenamento `json:"objetos"`
-	Ruas                []RuaAgrupada              `json:"ruas"`
-	OrdemSugerida       []models.ParadaOrdenamento `json:"ordem_sugerida"`
+	ID                      uint                         `json:"id"`
+	Status                  string                       `json:"status"`
+	CreatedAt               time.Time                    `json:"created_at"`
+	UpdatedAt               time.Time                    `json:"updated_at"`
+	TotalObjetos            int                          `json:"total_objetos"`
+	TotalRuas               int                          `json:"total_ruas"`
+	TotalPendentes          int                          `json:"total_pendentes"`
+	TotalSemCoordenadas     int                          `json:"total_sem_coordenadas"`
+	Objetos                 []models.ObjetoOrdenamento   `json:"objetos"`
+	Ruas                    []RuaAgrupada                `json:"ruas"`
+	OrdemSugerida           []models.ParadaOrdenamento   `json:"ordem_sugerida"`
+	PermiteSequenciaPessoal bool                         `json:"permite_sequencia_pessoal"`
+	ReferenciaPessoalID     *uint                        `json:"referencia_pessoal_id,omitempty"`
+	HistoricoOrdens         []models.CorrecaoOrdenamento `json:"historico_ordens"`
 }
 
 type OrdenamentoService interface {
@@ -58,7 +73,9 @@ type OrdenamentoService interface {
 	SelecionarRua(ctx context.Context, usuarioID, ordenamentoID, objetoID, ruaID uint) (*OrdenamentoDetalhe, error)
 	ExcluirObjeto(ctx context.Context, usuarioID, ordenamentoID, objetoID uint) (*OrdenamentoDetalhe, error)
 	Limpar(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error)
-	GerarOrdem(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error)
+	GerarOrdem(ctx context.Context, usuarioID, ordenamentoID uint, dto GerarOrdemDTO) (*OrdenamentoDetalhe, error)
+	SalvarOrdemFinal(ctx context.Context, usuarioID, ordenamentoID uint, dto SalvarOrdemFinalDTO) (*OrdenamentoDetalhe, error)
+	EsquecerReferencia(ctx context.Context, usuarioID, referenciaID uint) error
 }
 
 type ordenamentoService struct {
@@ -251,7 +268,7 @@ func (s *ordenamentoService) Limpar(ctx context.Context, usuarioID, ordenamentoI
 // GerarOrdem cria uma sequência por proximidade entre as ruas identificadas,
 // sempre partindo do CDD. A sequência é uma sugestão geográfica local e não
 // considera trânsito ou condições da malha viária.
-func (s *ordenamentoService) GerarOrdem(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error) {
+func (s *ordenamentoService) GerarOrdem(ctx context.Context, usuarioID, ordenamentoID uint, dto GerarOrdemDTO) (*OrdenamentoDetalhe, error) {
 	ordenamento, err := s.validarOrdenamentoAtivo(ctx, usuarioID, ordenamentoID)
 	if err != nil {
 		return nil, err
@@ -289,7 +306,83 @@ func (s *ordenamentoService) GerarOrdem(ctx context.Context, usuarioID, ordename
 			OrdemSugerida: indice + 1,
 		})
 	}
+	if !dto.SomenteAlgoritmo && !preservarOrdemDaCarga(paradas, detalhe.OrdemSugerida) {
+		assinatura, identificadas := assinaturaParadas(paradas)
+		if identificadas {
+			referencia, err := s.paradas.FindReferencia(ctx, usuarioID, contextoMemoriaOrdenamento(), assinatura)
+			if err != nil {
+				return nil, err
+			}
+			if referencia != nil {
+				aplicarSequencia(paradas, referencia.Paradas, "pessoal")
+			}
+		}
+	}
 	if err := s.paradas.ReplaceByOrdenamento(ctx, ordenamento.ID, paradas); err != nil {
+		return nil, err
+	}
+	return s.montarDetalhe(ctx, ordenamento)
+}
+
+// SalvarOrdemFinal registra a sequência escolhida pelo carteiro, mantendo a
+// ordem sugerida pelo algoritmo para comparação e histórico.
+func (s *ordenamentoService) SalvarOrdemFinal(ctx context.Context, usuarioID, ordenamentoID uint, dto SalvarOrdemFinalDTO) (*OrdenamentoDetalhe, error) {
+	paradaIDs := dto.ParadaIDs
+	ordenamento, err := s.validarOrdenamentoAtivo(ctx, usuarioID, ordenamentoID)
+	if err != nil {
+		return nil, err
+	}
+	if s.paradas == nil {
+		return nil, ErrOrdemFinalInvalida
+	}
+
+	paradas, err := s.paradas.ListByOrdenamento(ctx, ordenamento.ID)
+	if err != nil {
+		return nil, err
+	}
+	if len(paradaIDs) == 0 || len(paradaIDs) != len(paradas) {
+		return nil, ErrOrdemFinalInvalida
+	}
+
+	existentes := make(map[uint]struct{}, len(paradas))
+	for _, parada := range paradas {
+		existentes[parada.ID] = struct{}{}
+	}
+	visitas := make(map[uint]struct{}, len(paradaIDs))
+	for _, paradaID := range paradaIDs {
+		if paradaID == 0 {
+			return nil, ErrOrdemFinalInvalida
+		}
+		if _, ok := existentes[paradaID]; !ok {
+			return nil, ErrOrdemFinalInvalida
+		}
+		if _, ok := visitas[paradaID]; ok {
+			return nil, ErrOrdemFinalInvalida
+		}
+		visitas[paradaID] = struct{}{}
+	}
+
+	assinatura, identificadas := assinaturaParadas(paradas)
+	if dto.Reutilizar && !identificadas {
+		return nil, ErrReferenciaSemCadastro
+	}
+	porID := make(map[uint]models.ParadaOrdenamento, len(paradas))
+	for _, parada := range paradas {
+		porID[parada.ID] = parada
+	}
+	correcao := &models.CorrecaoOrdenamento{
+		UsuarioID: usuarioID, OrdenamentoID: ordenamento.ID,
+		Contexto: contextoMemoriaOrdenamento(), AssinaturaRuas: assinatura, Reutilizar: dto.Reutilizar,
+		Paradas: make([]models.ParadaCorrecao, 0, len(paradas)),
+	}
+	for indice, id := range paradaIDs {
+		parada := porID[id]
+		correcao.Paradas = append(correcao.Paradas, models.ParadaCorrecao{
+			ChaveAgrupamento: parada.ChaveAgrupamento, NomeRua: parada.NomeRua,
+			OrdemSugerida: parada.OrdemSugerida, OrdemFinal: indice + 1,
+		})
+	}
+	if err := s.paradas.UpdateOrdemFinal(ctx, ordenamento.ID, paradaIDs, correcao); err != nil {
 		return nil, err
 	}
 	return s.montarDetalhe(ctx, ordenamento)
@@ -300,7 +393,7 @@ func (s *ordenamentoService) validarOrdenamentoAtivo(ctx context.Context, usuari
 	if err != nil {
 		return nil, err
 	}
-	if ordenamento == nil || ordenamento.ID != ordenamentoID {
+	if ordenamento == nil || ordenamento.ID != ordenamentoID || ordenamento.UsuarioID != usuarioID {
 		return nil, ErrOrdenamentoNaoEncontrado
 	}
 	return ordenamento, nil
@@ -419,6 +512,22 @@ func (s *ordenamentoService) montarDetalhe(ctx context.Context, ordenamento *mod
 			return nil, err
 		}
 		detalhe.OrdemSugerida = ordemSugerida
+		assinatura, identificadas := assinaturaParadas(ordemSugerida)
+		detalhe.PermiteSequenciaPessoal = identificadas
+		if identificadas {
+			referencia, err := s.paradas.FindReferencia(ctx, ordenamento.UsuarioID, contextoMemoriaOrdenamento(), assinatura)
+			if err != nil {
+				return nil, err
+			}
+			if referencia != nil {
+				detalhe.ReferenciaPessoalID = &referencia.ID
+			}
+		}
+		historico, err := s.paradas.ListHistorico(ctx, ordenamento.UsuarioID)
+		if err != nil {
+			return nil, err
+		}
+		detalhe.HistoricoOrdens = historico
 	}
 	return detalhe, nil
 }

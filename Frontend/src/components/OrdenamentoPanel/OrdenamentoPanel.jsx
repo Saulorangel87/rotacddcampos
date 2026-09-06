@@ -4,11 +4,15 @@ import {
   buscarOrdenamentoAtivo,
   criarOrdenamento,
   excluirObjeto,
+  esquecerReferencia,
   gerarOrdem,
   limparOrdenamento,
+  salvarOrdemFinal,
   selecionarRua,
 } from '../../api/ordenamentos.js'
 import { useReconhecimentoDeVoz } from '../../hooks/useReconhecimentoDeVoz.js'
+import HistoricoOrdens from './HistoricoOrdens.jsx'
+import { ordenarParadas } from './ordemManual.js'
 import styles from './OrdenamentoPanel.module.css'
 
 export default function OrdenamentoPanel() {
@@ -27,6 +31,11 @@ export default function OrdenamentoPanel() {
   const [resolvendoId, setResolvendoId] = useState(null)
   const [erro, setErro] = useState('')
   const [feedbackAdicao, setFeedbackAdicao] = useState(null)
+  const [ordemEditada, setOrdemEditada] = useState(null)
+  const [salvandoOrdemFinal, setSalvandoOrdemFinal] = useState(false)
+  const [paradaArrastadaId, setParadaArrastadaId] = useState(null)
+  const [reutilizarOrdem, setReutilizarOrdem] = useState(false)
+  const [esquecendo, setEsquecendo] = useState(false)
   const campoEntradaRef = useRef(null)
   const videoScannerRef = useRef(null)
   const leitorScannerRef = useRef(null)
@@ -126,6 +135,12 @@ export default function OrdenamentoPanel() {
   }, [])
 
   useEffect(() => {
+    setOrdemEditada(null)
+    setReutilizarOrdem(false)
+    setParadaArrastadaId(null)
+  }, [ordenamento])
+
+  useEffect(() => {
     if (digitando) campoEntradaRef.current?.focus()
   }, [digitando])
 
@@ -153,7 +168,7 @@ export default function OrdenamentoPanel() {
   async function cadastrarObjeto(evento) {
     evento.preventDefault()
     const texto = entrada.trim()
-    if (!texto || !ordenamento) return
+    if (!texto || !ordenamento || operacaoEmAndamento) return
 
     setSalvando(true)
     setErro('')
@@ -176,7 +191,7 @@ export default function OrdenamentoPanel() {
   }
 
   async function removerObjeto(objetoId) {
-    if (!ordenamento || excluindoId) return
+    if (!ordenamento || operacaoEmAndamento) return
     setExcluindoId(objetoId)
     setErro('')
     try {
@@ -189,7 +204,7 @@ export default function OrdenamentoPanel() {
   }
 
   async function confirmarRua(objetoId, ruaId) {
-    if (!ordenamento || resolvendoId !== null) return
+    if (!ordenamento || operacaoEmAndamento) return
     setResolvendoId(objetoId)
     setErro('')
     try {
@@ -201,12 +216,12 @@ export default function OrdenamentoPanel() {
     }
   }
 
-  async function gerarOrdenamento() {
-    if (!ordenamento || gerando) return
+  async function gerarOrdenamento(somenteAlgoritmo = false) {
+    if (!ordenamento || operacaoEmAndamento || ordemFoiAlterada) return
     setGerando(true)
     setErro('')
     try {
-      setOrdenamento(await gerarOrdem(ordenamento.id))
+      setOrdenamento(await gerarOrdem(ordenamento.id, somenteAlgoritmo))
     } catch (e) {
       setErro(e.message)
     } finally {
@@ -215,9 +230,9 @@ export default function OrdenamentoPanel() {
   }
 
   async function limparLista() {
-    if (!ordenamento || limpando || (ordenamento.total_objetos ?? 0) === 0) return
+    if (!ordenamento || operacaoEmAndamento || (ordenamento.total_objetos ?? 0) === 0) return
     const confirmado = window.confirm(
-      'Limpar esta lista? As encomendas adicionadas e a ordem sugerida serão removidas. O cadastro geral de ruas não será alterado.',
+      'Limpar esta carga? As encomendas e a ordem atual serão removidas. O histórico salvo e suas sequências habituais serão mantidos.',
     )
     if (!confirmado) return
 
@@ -236,7 +251,80 @@ export default function OrdenamentoPanel() {
     }
   }
 
+  function moverParada(indice, deslocamento) {
+    if (operacaoEmAndamento) return
+    setOrdemEditada((atual) => {
+      const base = atual ?? ordenarParadas(ordenamento?.ordem_sugerida ?? [])
+      const destino = indice + deslocamento
+      if (destino < 0 || destino >= base.length) return base
+      const nova = [...base]
+      const [movida] = nova.splice(indice, 1)
+      nova.splice(destino, 0, movida)
+      return nova
+    })
+  }
+
+  function iniciarArraste(evento, paradaId) {
+    if (operacaoEmAndamento) { evento.preventDefault(); return }
+    setParadaArrastadaId(paradaId)
+    evento.dataTransfer.effectAllowed = 'move'
+    evento.dataTransfer.setData('text/plain', String(paradaId))
+  }
+
+  function soltarParada(evento, destinoId) {
+    evento.preventDefault()
+    if (operacaoEmAndamento) { setParadaArrastadaId(null); return }
+    const origemId = paradaArrastadaId || Number(evento.dataTransfer.getData('text/plain'))
+    if (!origemId || origemId === destinoId) {
+      setParadaArrastadaId(null)
+      return
+    }
+
+    setOrdemEditada((atual) => {
+      const base = atual ?? ordenarParadas(ordenamento?.ordem_sugerida ?? [])
+      const origem = base.findIndex((parada) => parada.id === origemId)
+      const destino = base.findIndex((parada) => parada.id === destinoId)
+      if (origem < 0 || destino < 0) return base
+      const nova = [...base]
+      const [movida] = nova.splice(origem, 1)
+      nova.splice(destino, 0, movida)
+      return nova
+    })
+    setParadaArrastadaId(null)
+  }
+
+  async function salvarOrdemManual() {
+    if (!ordenamento || operacaoEmAndamento || (!ordemFoiAlterada && !reutilizarOrdem) || ordemAtual.length === 0) return
+    setSalvandoOrdemFinal(true)
+    setErro('')
+    try {
+      setOrdenamento(await salvarOrdemFinal(ordenamento.id, ordemAtual.map((parada) => parada.id), reutilizarOrdem))
+    } catch (e) {
+      setErro(e.message)
+    } finally {
+      setSalvandoOrdemFinal(false)
+    }
+  }
+
   const motivoBloqueio = mensagemBloqueio(ordenamento)
+  const operacaoEmAndamento = salvando || excluindoId !== null || resolvendoId !== null || limpando || gerando || salvandoOrdemFinal || esquecendo
+  const ordemBase = ordenarParadas(ordenamento?.ordem_sugerida ?? [])
+  const ordemAtual = ordemEditada ?? ordemBase
+  const ordemFoiAlterada = ordemAtual.length === ordemBase.length
+    && ordemAtual.some((parada, indice) => parada.id !== ordemBase[indice]?.id)
+  const temOrdemFinal = ordemAtual.some((parada) => parada.ordem_final != null)
+
+  async function desativarReferencia(referenciaId) {
+    if (operacaoEmAndamento || ordemFoiAlterada) return
+    if (!window.confirm('Deixar de reutilizar esta sequência? O histórico e a ordem desta carga serão mantidos.')) return
+    setEsquecendo(true)
+    setErro('')
+    try {
+      await esquecerReferencia(referenciaId)
+      setOrdenamento(await buscarOrdenamentoAtivo())
+    } catch (e) { setErro(e.message) }
+    finally { setEsquecendo(false) }
+  }
 
   return (
     <section className={styles.pagina} aria-labelledby="titulo-ordenamento">
@@ -270,7 +358,7 @@ export default function OrdenamentoPanel() {
             <div className={styles.andamentoAcoes}>
               <span className={styles.data}>Iniciado {formatarData(ordenamento.created_at)}</span>
               {(ordenamento.total_objetos ?? 0) > 0 && (
-                <button type="button" className={styles.limparLista} onClick={limparLista} disabled={limpando}>
+                <button type="button" className={styles.limparLista} onClick={limparLista} disabled={operacaoEmAndamento}>
                   {limpando ? 'Limpando…' : 'Limpar lista'}
                 </button>
               )}
@@ -345,7 +433,7 @@ export default function OrdenamentoPanel() {
                   autoComplete="off"
                   disabled={salvando}
                 />
-                <button type="submit" disabled={salvando || !entrada.trim()}>
+                <button type="submit" disabled={operacaoEmAndamento || !entrada.trim()}>
                   {salvando ? 'Adicionando…' : 'Adicionar'}
                 </button>
               </div>
@@ -400,7 +488,7 @@ export default function OrdenamentoPanel() {
                                   key={opcao.rua_id}
                                   type="button"
                                   onClick={() => confirmarRua(objeto.id, opcao.rua_id)}
-                                  disabled={resolvendoId !== null}
+                                  disabled={operacaoEmAndamento}
                                 >
                                   <strong>{opcao.nome_rua}</strong>
                                   <small>
@@ -419,7 +507,7 @@ export default function OrdenamentoPanel() {
                       type="button"
                       className={styles.remover}
                       onClick={() => removerObjeto(objeto.id)}
-                      disabled={excluindoId !== null}
+                      disabled={operacaoEmAndamento}
                       aria-label={`Remover encomenda ${objeto.texto_entrada}`}
                     >
                       {excluindoId === objeto.id ? 'Removendo…' : 'Remover'}
@@ -461,34 +549,105 @@ export default function OrdenamentoPanel() {
               <h3 id="titulo-gerar-ordem">Ordenamento por proximidade</h3>
               <p>Gera uma sequência sugerida a partir do CDD Campos dos Goytacazes.</p>
               {motivoBloqueio && <span>{motivoBloqueio}</span>}
+              {ordemFoiAlterada && <span>Salve ou descarte o ajuste antes de gerar novamente.</span>}
             </div>
-            <button
-              type="button"
-              onClick={gerarOrdenamento}
-              disabled={Boolean(motivoBloqueio) || gerando}
-            >
-              {gerando ? 'Gerando…' : ordenamento.ordem_sugerida?.length ? 'Gerar novamente' : 'Gerar ordenamento'}
-            </button>
+            <div className={styles.geracaoAcoes}>
+              <button
+                type="button"
+                onClick={() => gerarOrdenamento(false)}
+                disabled={Boolean(motivoBloqueio) || operacaoEmAndamento || ordemFoiAlterada}
+              >
+                {gerando ? 'Gerando…' : ordenamento.ordem_sugerida?.length ? 'Gerar novamente' : 'Gerar ordenamento'}
+              </button>
+              {ordemAtual.length > 0 && (
+                <button type="button" className={styles.botaoSecundario} onClick={() => gerarOrdenamento(true)} disabled={Boolean(motivoBloqueio) || operacaoEmAndamento || ordemFoiAlterada}>
+                  Recalcular sem meus ajustes
+                </button>
+              )}
+            </div>
           </section>
 
           {(ordenamento.ordem_sugerida?.length ?? 0) > 0 && (
             <section className={styles.ordem} aria-labelledby="titulo-ordem-sugerida">
               <div className={styles.listaTopo}>
-                <h3 id="titulo-ordem-sugerida">Ordem sugerida</h3>
-                <span>{ordenamento.ordem_sugerida.length} {ordenamento.ordem_sugerida.length === 1 ? 'parada' : 'paradas'}</span>
+                <h3 id="titulo-ordem-sugerida">{temOrdemFinal ? 'Ordem final' : 'Ordem sugerida'}</h3>
+                <span>{ordemAtual.length} {ordemAtual.length === 1 ? 'parada' : 'paradas'}</span>
               </div>
-              <p>Sequência calculada pela proximidade entre as ruas, começando no CDD.</p>
+              <p>
+                {temOrdemFinal
+                  ? 'Sequência ajustada manualmente. Arraste uma rua ou use os botões para corrigir.'
+                  : 'Sequência calculada pela proximidade entre as ruas, começando no CDD. Arraste uma rua ou use os botões para ajustar.'}
+              </p>
               <ol>
-                {ordenamento.ordem_sugerida.map((parada) => (
-                  <li key={parada.id ?? parada.chave_agrupamento}>
-                    <span className={styles.numeroOrdem}>{parada.ordem_sugerida}</span>
+                {ordemAtual.map((parada, indice) => (
+                  <li
+                    key={parada.id ?? parada.chave_agrupamento}
+                    className={paradaArrastadaId === parada.id ? styles.paradaArrastada : ''}
+                    draggable={!operacaoEmAndamento}
+                    onDragStart={(evento) => iniciarArraste(evento, parada.id)}
+                    onDragOver={(evento) => evento.preventDefault()}
+                    onDrop={(evento) => soltarParada(evento, parada.id)}
+                    onDragEnd={() => setParadaArrastadaId(null)}
+                  >
+                    <span className={styles.numeroOrdem}>{indice + 1}</span>
                     <span>{parada.nome_rua}</span>
                     <strong>{parada.quantidade_objetos} {parada.quantidade_objetos === 1 ? 'objeto' : 'objetos'}</strong>
+                    <div className={styles.acoesOrdem} aria-label={`Ajustar posição de ${parada.nome_rua}`}>
+                      <button
+                        type="button"
+                        onClick={() => moverParada(indice, -1)}
+                        disabled={indice === 0 || operacaoEmAndamento}
+                        aria-label={`Mover ${parada.nome_rua} para cima`}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moverParada(indice, 1)}
+                        disabled={indice === ordemAtual.length - 1 || operacaoEmAndamento}
+                        aria-label={`Mover ${parada.nome_rua} para baixo`}
+                      >
+                        ↓
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ol>
+              <label className={styles.opcaoMemoria}>
+                <input type="checkbox" checked={reutilizarOrdem} onChange={(evento) => setReutilizarOrdem(evento.target.checked)} disabled={operacaoEmAndamento || !ordenamento.permite_sequencia_pessoal} />
+                Usar como minha sequência habitual
+              </label>
+              <p>
+                {ordenamento.permite_sequencia_pessoal
+                  ? 'Ao salvar com esta opção, a sequência será usada nas suas próximas cargas com as mesmas ruas. Ela vale apenas para você.'
+                  : 'Você pode salvar o ajuste desta carga. Para reutilizar a sequência, identifique os trechos agrupados pelo CEP.'}
+              </p>
+              {ordenamento.referencia_pessoal_id && (
+                <p>Você tem uma sequência habitual guardada para estas ruas.</p>
+              )}
+              {(ordemFoiAlterada || reutilizarOrdem) && (
+                <div className={styles.ordemAcoes}>
+                  <span>{reutilizarOrdem ? 'Salvar também para suas próximas cargas.' : 'Salvar somente para esta carga.'}</span>
+                  <button type="button" className={styles.botaoSecundario} onClick={() => { setOrdemEditada(null); setReutilizarOrdem(false) }} disabled={operacaoEmAndamento}>Descartar ajuste</button>
+                  <button type="button" onClick={salvarOrdemManual} disabled={operacaoEmAndamento}>
+                    {salvandoOrdemFinal ? 'Salvando…' : 'Salvar ordem final'}
+                  </button>
+                </div>
+              )}
+              {temOrdemFinal && !ordemFoiAlterada && (
+                <p className={styles.ordemSalva} role="status">
+                  {ordemAtual.every((parada) => parada.fonte_ordem_final === 'pessoal') ? 'Sua sequência habitual foi aplicada nesta carga.' : 'Ordem final salva. Gerar novamente mantém esta sequência.'}
+                </p>
+              )}
             </section>
           )}
+          <HistoricoOrdens
+            historico={ordenamento.historico_ordens ?? []}
+            paradas={ordemBase}
+            ocupado={operacaoEmAndamento || ordemFoiAlterada}
+            onRestaurar={(sequencia) => { setOrdemEditada(sequencia); setReutilizarOrdem(false); setErro('') }}
+            onEsquecer={desativarReferencia}
+          />
         </article>
       ) : (
         <article className={styles.estadoInicial}>

@@ -34,8 +34,20 @@ export function limparOrdenamento(ordenamentoId) {
   })
 }
 
-export function gerarOrdem(ordenamentoId) {
+export function gerarOrdem(ordenamentoId, somenteAlgoritmo = false) {
   return apiFetchJson(`/ordenamentos/${ordenamentoId}/gerar-ordem`, {
     method: 'POST',
+    body: JSON.stringify({ somente_algoritmo: somenteAlgoritmo }),
   })
+}
+
+export function salvarOrdemFinal(ordenamentoId, paradaIds, reutilizar = false) {
+  return apiFetchJson(`/ordenamentos/${ordenamentoId}/ordem-final`, {
+    method: 'PATCH',
+    body: JSON.stringify({ parada_ids: paradaIds, reutilizar }),
+  })
+}
+
+export function esquecerReferencia(referenciaId) {
+  return apiFetchJson(`/ordenamentos/referencias/${referenciaId}`, { method: 'DELETE' })
 }

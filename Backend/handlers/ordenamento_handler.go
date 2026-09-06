@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strconv"
 
+	"github.com/empresa/rotas-entrega/repositories"
 	"github.com/empresa/rotas-entrega/services"
 	"github.com/gofiber/fiber/v2"
 )
@@ -164,7 +165,13 @@ func (h *OrdenamentoHandler) GerarOrdem(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "id de ordenamento inválido"})
 	}
 
-	detalhe, err := h.service.GerarOrdem(c.Context(), usuarioID, uint(ordenamentoID))
+	var dto services.GerarOrdemDTO
+	if len(c.Body()) > 0 {
+		if err := c.BodyParser(&dto); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "corpo da requisição inválido"})
+		}
+	}
+	detalhe, err := h.service.GerarOrdem(c.Context(), usuarioID, uint(ordenamentoID), dto)
 	if err != nil {
 		switch {
 		case errors.Is(err, services.ErrOrdenamentoNaoEncontrado):
@@ -178,4 +185,53 @@ func (h *OrdenamentoHandler) GerarOrdem(c *fiber.Ctx) error {
 		}
 	}
 	return c.JSON(detalhe)
+}
+
+// SalvarOrdemFinal persiste a sequência de ruas ajustada manualmente.
+func (h *OrdenamentoHandler) SalvarOrdemFinal(c *fiber.Ctx) error {
+	usuarioID, ok := c.Locals("usuario_id").(uint)
+	if !ok || usuarioID == 0 {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "não autenticado"})
+	}
+	ordenamentoID, err := strconv.ParseUint(c.Params("id"), 10, 64)
+	if err != nil || ordenamentoID == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "id de ordenamento inválido"})
+	}
+
+	var dto services.SalvarOrdemFinalDTO
+	if err := c.BodyParser(&dto); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "corpo da requisição inválido"})
+	}
+	detalhe, err := h.service.SalvarOrdemFinal(c.Context(), usuarioID, uint(ordenamentoID), dto)
+	if err != nil {
+		switch {
+		case errors.Is(err, services.ErrOrdenamentoNaoEncontrado):
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
+		case errors.Is(err, services.ErrOrdemFinalInvalida), errors.Is(err, services.ErrReferenciaSemCadastro):
+			return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
+		case errors.Is(err, repositories.ErrParadasAlteradas):
+			return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": err.Error()})
+		default:
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "não foi possível salvar a ordem final"})
+		}
+	}
+	return c.JSON(detalhe)
+}
+
+func (h *OrdenamentoHandler) EsquecerReferencia(c *fiber.Ctx) error {
+	usuarioID, ok := c.Locals("usuario_id").(uint)
+	if !ok || usuarioID == 0 {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "não autenticado"})
+	}
+	referenciaID, err := strconv.ParseUint(c.Params("referenciaId"), 10, 64)
+	if err != nil || referenciaID == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "sequência inválida"})
+	}
+	if err := h.service.EsquecerReferencia(c.Context(), usuarioID, uint(referenciaID)); err != nil {
+		if errors.Is(err, services.ErrReferenciaNaoEncontrada) {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "não foi possível desativar a sequência habitual"})
+	}
+	return c.SendStatus(fiber.StatusNoContent)
 }

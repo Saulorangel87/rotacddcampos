@@ -2,8 +2,8 @@ package models
 
 import "time"
 
-// ParadaOrdenamento representa uma rua agrupada e sua posição na sequência
-// sugerida. A ordem final será preenchida quando a correção manual existir.
+// ParadaOrdenamento representa uma rua agrupada e suas posições na sequência
+// sugerida pelo algoritmo e, quando ajustada, na ordem final escolhida.
 type ParadaOrdenamento struct {
 	ID                uint      `gorm:"primaryKey;autoIncrement" json:"id"`
 	OrdenamentoID     uint      `gorm:"not null;uniqueIndex:idx_paradas_ordenamento_chave" json:"ordenamento_id"`
@@ -14,6 +14,7 @@ type ParadaOrdenamento struct {
 	Longitude         float64   `gorm:"not null" json:"longitude"`
 	OrdemSugerida     int       `gorm:"not null" json:"ordem_sugerida"`
 	OrdemFinal        *int      `json:"ordem_final,omitempty"`
+	FonteOrdemFinal   string    `gorm:"type:varchar(20)" json:"fonte_ordem_final,omitempty"`
 	CreatedAt         time.Time `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
 }

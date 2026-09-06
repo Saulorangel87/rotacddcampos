@@ -28,5 +28,6 @@ func RunMigrations(db *gorm.DB) error {
 		&models.ObjetoOrdenamento{},
 		&models.GeocodificacaoRua{},
 		&models.ParadaOrdenamento{},
+		&models.CorrecaoOrdenamento{},
 	)
 }

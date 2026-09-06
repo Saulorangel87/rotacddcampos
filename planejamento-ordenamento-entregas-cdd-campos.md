@@ -605,6 +605,38 @@ Não implementar machine learning agora.
 
 Apenas preservar o histórico quando fizer sentido.
 
+### Evolução local — 06/09/2026: preservação e memória pessoal
+
+Decisão: evoluir em etapas, mantendo as correções individuais separadas de
+referências coletivas. Publicar em produção somente após concluir as etapas
+e validar o conjunto com o responsável pela unidade.
+
+Implementado nesta etapa local:
+
+- “Gerar novamente” preserva a ordem final salva quando as ruas da carga são as mesmas;
+- cada novo salvamento registra autor, data, sugestão original e sequência escolhida;
+- o histórico de correções fica separado das paradas temporárias e sobrevive a “Limpar lista”;
+- “Usar como minha sequência habitual” é opcional e vale apenas para o próprio usuário;
+- a reutilização automática exige o mesmo conjunto de cadastros de ruas e a mesma origem no CDD;
+- nomes de ruas, sozinhos, não autorizam reutilização: grupos de trechos sem cadastro específico continuam permitindo ajuste da carga, mas precisam ser identificados pelo CEP para a memória pessoal;
+- recalcular somente pelo algoritmo preserva o histórico e a referência habitual para uso futuro;
+- o histórico mostra os últimos 20 salvamentos, permite preparar uma versão anterior para a carga compatível e desativar uma sequência habitual;
+- salvar a ordem e seu histórico ocorre em uma transação; cada sequência habitual possui uma única versão ativa por usuário, origem e conjunto de ruas.
+
+Limites e próximos passos:
+
+- salvamentos feitos antes desta etapa não possuem histórico retroativo; a ordem final ainda presente é preservada ao gerar novamente e pode ser salva como habitual;
+- mudanças na composição da carga invalidam a lista calculada; a memória habitual é reaplicada quando o conjunto completo de cadastros volta a coincidir;
+- ainda não adaptar automaticamente uma referência a listas parciais ou ruas novas;
+- melhorar coordenadas e precisão do motor com exemplos concretos;
+- planejar referências por área/trecho e revisão das sugestões pelo admin antes de qualquer influência sobre outros usuários;
+- manter versões e reversão também na futura publicação coletiva; quantidade de salvamentos não deve equivaler a aprovação.
+
+Validação: testes Go de preservação, isolamento, incompatibilidade e desativação;
+teste de integração PostgreSQL opt-in em schema isolado com rollback; testes Node
+de restauração por cadastro e build do frontend. O compartilhamento coletivo
+continua pendente, sem aprendizado de máquina nesta fase.
+
 ---
 
 # 17. SIDEBAR — ORGANIZAÇÃO
