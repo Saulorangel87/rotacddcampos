@@ -140,7 +140,7 @@
 
 .contadores {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 140px));
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
   gap: 10px;
   margin: 18px 0;
 }
@@ -349,15 +349,39 @@
   opacity: 0.55;
 }
 
+.ruas li > div {
+  display: grid;
+  gap: 3px;
+}
+
 .ruas li span {
   color: #294b6b;
   font-size: 0.88rem;
+}
+
+.ruas li small {
+  color: #567a61;
+  font-size: 0.72rem;
+}
+
+.ruas li .coordenadaPendente {
+  color: #9a5b00;
 }
 
 .ruas li strong {
   color: #5c6f82;
   font-size: 0.78rem;
   white-space: nowrap;
+}
+
+.atribuicao {
+  margin: 10px 2px 0;
+  color: #718090;
+  font-size: 0.7rem;
+}
+
+.atribuicao a {
+  color: #315f89;
 }
 
 .contadores div {

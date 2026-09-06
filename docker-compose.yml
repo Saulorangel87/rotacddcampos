@@ -32,6 +32,8 @@ services:
       DB_SSLMODE: disable
       JWT_SECRET: ${JWT_SECRET}
       CORS_ORIGINS: ${CORS_ORIGINS}
+      GEOCODER_URL: ${GEOCODER_URL:-https://nominatim.openstreetmap.org}
+      GEOCODER_USER_AGENT: "${GEOCODER_USER_AGENT:-CDD-Campos-Ordenamento/1.0 (https://github.com/Saulorangel87/rotacddcampos)}"
     ports:
       - "8081:8080"
     depends_on:

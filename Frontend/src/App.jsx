@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header.jsx";
 import DistrictNav from "./components/DistrictNav.jsx";
 import Sidebar from "./components/Sidebar.jsx";
@@ -24,10 +24,18 @@ import { listarRuas } from "./api/ruas.js";
 import { useAuth } from "./context/AuthContext.jsx";
 import styles from "./App.module.css";
 
+const CHAVE_SECAO_ATIVA = "rotas_secao_ativa";
+const SECOES_PERSISTIVEIS = new Set(["mapa", "ordenamento", "cep", "relatorios"]);
+
+function obterSecaoInicial() {
+  const salva = localStorage.getItem(CHAVE_SECAO_ATIVA);
+  return SECOES_PERSISTIVEIS.has(salva) ? salva : "mapa";
+}
+
 export default function App() {
   const { sessao, autenticado, admin } = useAuth();
   const [distritoAtivo, setDistritoAtivo] = useState("");
-  const [secaoAtiva, setSecaoAtiva] = useState("mapa");
+  const [secaoAtiva, setSecaoAtiva] = useState(obterSecaoInicial);
   const [painelAjustesAberto, setPainelAjustesAberto] = useState(false);
   const [colaboradoresAberto, setColaboradoresAberto] = useState(false);
   const [folgasAberto, setFolgasAberto] = useState(false);
@@ -37,6 +45,10 @@ export default function App() {
   const [historicoVersao, setHistoricoVersao] = useState(0);
   const [alteracoes, setAlteracoes] = useState([]);
   const [resultadoBusca, setResultadoBusca] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem(CHAVE_SECAO_ATIVA, secaoAtiva);
+  }, [secaoAtiva]);
 
   async function executarBusca(termo) {
     // A busca sempre leva pro Mapa Geral, senão o resultado não teria onde

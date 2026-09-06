@@ -52,13 +52,21 @@ type enderecoResolverFake struct {
 	resolucao ResolucaoEndereco
 }
 
+type coordenadaResolverFake struct {
+	coordenada *CoordenadaReferencia
+}
+
+func (r coordenadaResolverFake) Resolver(_ context.Context, _ SolicitacaoCoordenada) (*CoordenadaReferencia, error) {
+	return r.coordenada, nil
+}
+
 func (r enderecoResolverFake) Resolver(_ context.Context, _ string) (ResolucaoEndereco, error) {
 	return r.resolucao, nil
 }
 
 func TestOrdenamentoServiceCriar(t *testing.T) {
 	repo := &ordenamentoRepoFake{}
-	service := NewOrdenamentoService(repo, enderecoResolverFake{})
+	service := NewOrdenamentoService(repo, enderecoResolverFake{}, nil)
 
 	ordenamento, err := service.Criar(context.Background(), 42)
 	if err != nil {
@@ -74,7 +82,7 @@ func TestOrdenamentoServiceCriar(t *testing.T) {
 
 func TestOrdenamentoServiceNaoCriaSegundoAtivo(t *testing.T) {
 	repo := &ordenamentoRepoFake{ativo: &models.Ordenamento{ID: 7, UsuarioID: 42}}
-	service := NewOrdenamentoService(repo, enderecoResolverFake{})
+	service := NewOrdenamentoService(repo, enderecoResolverFake{}, nil)
 
 	_, err := service.Criar(context.Background(), 42)
 	if !errors.Is(err, ErrOrdenamentoJaExiste) {
@@ -91,7 +99,7 @@ func TestOrdenamentoServiceAgrupaObjetosPorRua(t *testing.T) {
 		ChaveAgrupamento: "nome:SETE DE SETEMBRO",
 		Status:           models.StatusResolucaoIdentificado,
 	}}
-	service := NewOrdenamentoService(repo, resolver)
+	service := NewOrdenamentoService(repo, resolver, nil)
 
 	for i := 0; i < 2; i++ {
 		if _, err := service.AdicionarObjeto(context.Background(), 42, 7, AdicionarObjetoDTO{Entrada: "Sete de Setembro", Origem: "manual"}); err != nil {
@@ -109,10 +117,34 @@ func TestOrdenamentoServiceAgrupaObjetosPorRua(t *testing.T) {
 
 func TestOrdenamentoServiceNaoAcessaOrdenamentoDeOutroUsuario(t *testing.T) {
 	repo := &ordenamentoRepoFake{ativo: &models.Ordenamento{ID: 9, UsuarioID: 99, Status: models.StatusOrdenamentoEmAndamento}}
-	service := NewOrdenamentoService(repo, enderecoResolverFake{})
+	service := NewOrdenamentoService(repo, enderecoResolverFake{}, nil)
 
 	_, err := service.AdicionarObjeto(context.Background(), 42, 7, AdicionarObjetoDTO{Entrada: "Rua A"})
 	if !errors.Is(err, ErrOrdenamentoNaoEncontrado) {
 		t.Fatalf("AdicionarObjeto() erro = %v, esperado %v", err, ErrOrdenamentoNaoEncontrado)
+	}
+}
+
+func TestOrdenamentoServiceGuardaCoordenadaDoObjeto(t *testing.T) {
+	ruaID := uint(10)
+	repo := &ordenamentoRepoFake{ativo: &models.Ordenamento{ID: 7, UsuarioID: 42, Status: models.StatusOrdenamentoEmAndamento}}
+	resolverEndereco := enderecoResolverFake{resolucao: ResolucaoEndereco{
+		RuaID: &ruaID, NomeRua: "RUA TESTE", ChaveAgrupamento: "rua:10", Status: models.StatusResolucaoIdentificado,
+	}}
+	resolverCoordenada := coordenadaResolverFake{coordenada: &CoordenadaReferencia{
+		Latitude: -21.75, Longitude: -41.32, Fonte: models.FonteCoordenadaGeometria,
+	}}
+	service := NewOrdenamentoService(repo, resolverEndereco, resolverCoordenada)
+
+	detalhe, err := service.AdicionarObjeto(context.Background(), 42, 7, AdicionarObjetoDTO{Entrada: "Rua Teste"})
+	if err != nil {
+		t.Fatalf("AdicionarObjeto() erro inesperado: %v", err)
+	}
+	objeto := detalhe.Objetos[0]
+	if objeto.Latitude == nil || objeto.Longitude == nil || *objeto.Latitude != -21.75 || *objeto.Longitude != -41.32 {
+		t.Fatalf("coordenada do objeto inesperada: %+v", objeto)
+	}
+	if detalhe.TotalSemCoordenadas != 0 || detalhe.Ruas[0].FonteCoordenada != models.FonteCoordenadaGeometria {
+		t.Fatalf("resumo de coordenadas inesperado: %+v", detalhe)
 	}
 }

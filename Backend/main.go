@@ -7,13 +7,13 @@ import (
 
 	"github.com/empresa/rotas-entrega/config"
 	"github.com/empresa/rotas-entrega/database"
+	_ "github.com/empresa/rotas-entrega/docs"
 	"github.com/empresa/rotas-entrega/routes"
-	_"github.com/empresa/rotas-entrega/docs"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 // @title API Rotas de Entrega
@@ -49,10 +49,10 @@ func main() {
 	app.Use(logger.New())
 
 	app.Use(cors.New(cors.Config{
-    AllowOrigins: cfg.CORSOrigins,
-    AllowHeaders: "Origin, Content-Type, Accept, Authorization",
-    AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
-}))
+		AllowOrigins: cfg.CORSOrigins,
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
+	}))
 
 	// Proteção extra contra força bruta: no máximo 10 tentativas de login por IP
 	// a cada minuto. O bloqueio por conta (5 tentativas/15min) já existe no
@@ -68,7 +68,7 @@ func main() {
 		},
 	}))
 
-	routes.SetupRoutes(app, db, cfg.JWTSecret, cfg.JWTExpiracaoHoras, cfg.ZeRotaWorkerURL)
+	routes.SetupRoutes(app, db, cfg.JWTSecret, cfg.JWTExpiracaoHoras, cfg.ZeRotaWorkerURL, cfg.GeocoderURL, cfg.GeocoderUserAgent)
 
 	slog.Info("servidor iniciado", "port", cfg.ServerPort)
 	if err := app.Listen(":" + cfg.ServerPort); err != nil {

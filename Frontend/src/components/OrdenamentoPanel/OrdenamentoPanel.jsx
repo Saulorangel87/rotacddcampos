@@ -95,7 +95,7 @@ export default function OrdenamentoPanel() {
         <div className={styles.marcador} aria-hidden="true">CDD</div>
         <div>
           <span className={styles.rotulo}>Ponto de partida fixo</span>
-          <strong>CDD Campos</strong>
+          <strong>CDD Campos dos Goytacazes</strong>
           <span>Av. Sete de Setembro, 342</span>
           <span>Campos dos Goytacazes — RJ</span>
         </div>
@@ -119,6 +119,11 @@ export default function OrdenamentoPanel() {
             {(ordenamento.total_pendentes ?? 0) > 0 && (
               <div className={styles.contadorPendente}>
                 <strong>{ordenamento.total_pendentes}</strong><span>para revisar</span>
+              </div>
+            )}
+            {(ordenamento.total_sem_coordenadas ?? 0) > 0 && (
+              <div className={styles.contadorPendente}>
+                <strong>{ordenamento.total_sem_coordenadas}</strong><span>sem coordenada</span>
               </div>
             )}
           </div>
@@ -218,11 +223,21 @@ export default function OrdenamentoPanel() {
               <ul>
                 {ordenamento.ruas.map((rua) => (
                   <li key={rua.chave}>
-                    <span>{rua.nome_rua}</span>
+                    <div>
+                      <span>{rua.nome_rua}</span>
+                      <small className={rua.latitude == null ? styles.coordenadaPendente : ''}>
+                        {rotuloCoordenada(rua)}
+                      </small>
+                    </div>
                     <strong>{rua.quantidade} {rua.quantidade === 1 ? 'objeto' : 'objetos'}</strong>
                   </li>
                 ))}
               </ul>
+              {ordenamento.ruas.some((rua) => rua.fonte_coordenada === 'nominatim') && (
+                <p className={styles.atribuicao}>
+                  Coordenadas externas © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">colaboradores do OpenStreetMap</a>
+                </p>
+              )}
             </section>
           )}
         </article>
@@ -246,6 +261,12 @@ export default function OrdenamentoPanel() {
 function mensagemPendencia(motivo) {
   if (motivo === 'rua_ambigua') return 'Precisa de revisão · Há mais de uma rua possível'
   return 'Precisa de revisão · Rua não encontrada no cadastro'
+}
+
+function rotuloCoordenada(rua) {
+  if (rua.latitude == null || rua.longitude == null) return 'Coordenada ainda indisponível'
+  if (rua.fonte_coordenada === 'nominatim') return 'Coordenada aproximada · OpenStreetMap'
+  return 'Coordenada obtida do mapa interno'
 }
 
 function formatarData(valor) {

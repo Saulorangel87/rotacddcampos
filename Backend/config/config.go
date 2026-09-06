@@ -23,7 +23,9 @@ type Config struct {
 	// URL do Worker do Cloudflare que faz proxy pro Groq (chave da Groq
 	// mora só lá, o Backend nunca vê ela). Opcional — sem isso, o Zé Rota
 	// fica desligado, o resto do site funciona normal.
-	ZeRotaWorkerURL string
+	ZeRotaWorkerURL   string
+	GeocoderURL       string
+	GeocoderUserAgent string
 }
 
 func Load() *Config {
@@ -40,8 +42,10 @@ func Load() *Config {
 		JWTSecret:         getEnv("JWT_SECRET", ""),
 		JWTExpiracaoHoras: getEnvInt("JWT_EXPIRACAO_HORAS", 3),
 		// Lista separada por vírgula, sem espaço, ex: "https://devsaulo.com.br,http://localhost:5173"
-		CORSOrigins:     getEnv("CORS_ORIGINS", "http://localhost:5173"),
-		ZeRotaWorkerURL: getEnv("ZE_ROTA_WORKER_URL", ""),
+		CORSOrigins:       getEnv("CORS_ORIGINS", "http://localhost:5173"),
+		ZeRotaWorkerURL:   getEnv("ZE_ROTA_WORKER_URL", ""),
+		GeocoderURL:       getEnv("GEOCODER_URL", "https://nominatim.openstreetmap.org"),
+		GeocoderUserAgent: getEnv("GEOCODER_USER_AGENT", "CDD-Campos-Ordenamento/1.0 (https://github.com/Saulorangel87/rotacddcampos)"),
 	}
 
 	if cfg.JWTSecret == "" {

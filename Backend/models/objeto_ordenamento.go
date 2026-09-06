@@ -22,6 +22,9 @@ type ObjetoOrdenamento struct {
 	ChaveAgrupamento string    `gorm:"type:varchar(255);index" json:"chave_agrupamento,omitempty"`
 	Numero           string    `gorm:"type:varchar(30)" json:"numero,omitempty"`
 	CEP              string    `gorm:"type:varchar(20)" json:"cep,omitempty"`
+	Latitude         *float64  `json:"latitude,omitempty"`
+	Longitude        *float64  `json:"longitude,omitempty"`
+	FonteCoordenada  string    `gorm:"type:varchar(30)" json:"fonte_coordenada,omitempty"`
 	OrigemEntrada    string    `gorm:"type:varchar(20);not null" json:"origem_entrada"`
 	StatusResolucao  string    `gorm:"type:varchar(20);not null;index" json:"status_resolucao"`
 	MotivoPendencia  string    `gorm:"type:varchar(50)" json:"motivo_pendencia,omitempty"`

@@ -19,7 +19,7 @@ import (
 //     leitura — mapa/distritos, busca de ruas, CEP, aniversariantes, folgas,
 //     observações de rua, Zé Rota, colaboradores, histórico, estatísticas
 //   - Admin: criar/editar/excluir ruas e colaboradores, gerenciar usuários
-func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, zeRotaWorkerURL string) {
+func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, zeRotaWorkerURL, geocoderURL, geocoderUserAgent string) {
 	autenticado := middlewares.ExigirAutenticacao(jwtSecret)
 	somenteAdmin := middlewares.ExigirAdmin(jwtSecret)
 
@@ -131,8 +131,11 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, ze
 	// Injeção de dependências - Ordenamento de entregas
 	// Disponível para colaborador e admin, sempre isolado pelo usuario_id do JWT.
 	ordenamentoRepo := repositories.NewOrdenamentoRepository(db)
+	geocodificacaoRepo := repositories.NewGeocodificacaoRepository(db)
 	enderecoResolver := services.NewEnderecoResolver(ruaRepo)
-	ordenamentoService := services.NewOrdenamentoService(ordenamentoRepo, enderecoResolver)
+	geocodificador := services.NewNominatimGeocodificador(geocoderURL, geocoderUserAgent)
+	coordenadaResolver := services.NewCoordenadaResolver(ruaRepo, geocodificacaoRepo, geocodificador)
+	ordenamentoService := services.NewOrdenamentoService(ordenamentoRepo, enderecoResolver, coordenadaResolver)
 	ordenamentoHandler := handlers.NewOrdenamentoHandler(ordenamentoService)
 
 	ordenamentos := app.Group("/ordenamentos", autenticado)
