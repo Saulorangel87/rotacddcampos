@@ -47,8 +47,9 @@ export default function LoginModal({ aberto, onFechar, onEntrou }) {
         </header>
 
         <p className={styles.aviso}>
-          Consulta de ruas, mapa e impressão continuam livres pra qualquer pessoa.
-          O login é só pra ver colaboradores ou editar dados.
+          Este conteúdo é de uso interno do CDD Campos dos Goytacazes. Entre
+          com sua matrícula para acessar o mapa, as ruas, o CEP, o ordenamento
+          e as demais ferramentas.
         </p>
 
         <form className={styles.form} onSubmit={aoSubmeter}>

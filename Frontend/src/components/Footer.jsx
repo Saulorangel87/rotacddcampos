@@ -1,6 +1,6 @@
 import styles from './Footer.module.css'
+import { APP_VERSION } from '../release.js'
 
-const VERSAO = 'v1.2.0'
 const ANO = new Date().getFullYear()
 
 // Ícones desenhados como SVG inline (mesma abordagem do resto do projeto) em vez
@@ -34,7 +34,7 @@ export default function Footer() {
   return (
     <footer className={styles.rodape}>
       <span>
-        &copy; {ANO} Desenvolvido por Saulo Rangel - {VERSAO}
+        &copy; {ANO} Desenvolvido por Saulo Rangel - v{APP_VERSION}
       </span>
       <div className={styles.icones}>
         <a

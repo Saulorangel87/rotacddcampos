@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "./components/Header.jsx";
 import DistrictNav from "./components/DistrictNav.jsx";
 import Sidebar from "./components/Sidebar.jsx";
@@ -16,6 +16,7 @@ import ColaboradoresModal from "./components/ColaboradoresModal.jsx";
 import FolgasModal from "./components/FolgasModal.jsx";
 import UsuariosModal from "./components/UsuariosModal.jsx";
 import LoginModal from "./components/LoginModal.jsx";
+import NovidadesModal from "./components/NovidadesModal.jsx";
 import TrocarSenhaModal from "./components/TrocarSenhaModal.jsx";
 import Footer from "./components/Footer.jsx";
 import ZeRotaChat from "./components/ZeRotaChat.jsx";
@@ -23,13 +24,19 @@ import AcessoRestrito from "./components/AcessoRestrito.jsx";
 import { listarRuas } from "./api/ruas.js";
 import { useAuth } from "./context/AuthContext.jsx";
 import styles from "./App.module.css";
+import { APP_VERSION } from "./release.js";
 
 const CHAVE_SECAO_ATIVA = "rotas_secao_ativa";
 const SECOES_PERSISTIVEIS = new Set(["mapa", "ordenamento", "cep", "relatorios"]);
+const PREFIXO_NOVIDADES = "rotas_novidades";
 
 function obterSecaoInicial() {
   const salva = localStorage.getItem(CHAVE_SECAO_ATIVA);
   return SECOES_PERSISTIVEIS.has(salva) ? salva : "mapa";
+}
+
+function chaveNovidades(matricula) {
+  return `${PREFIXO_NOVIDADES}:${encodeURIComponent(String(matricula))}:${APP_VERSION}`;
 }
 
 export default function App() {
@@ -41,14 +48,61 @@ export default function App() {
   const [folgasAberto, setFolgasAberto] = useState(false);
   const [usuariosAberto, setUsuariosAberto] = useState(false);
   const [loginAberto, setLoginAberto] = useState(false);
+  const [novidadesAbertas, setNovidadesAbertas] = useState(false);
   const [statsVersao, setStatsVersao] = useState(0);
   const [historicoVersao, setHistoricoVersao] = useState(0);
   const [alteracoes, setAlteracoes] = useState([]);
   const [resultadoBusca, setResultadoBusca] = useState(null);
+  const autenticadoAnterior = useRef(autenticado);
+  const matriculaAnterior = useRef(sessao?.matricula ?? null);
 
   useEffect(() => {
     localStorage.setItem(CHAVE_SECAO_ATIVA, secaoAtiva);
   }, [secaoAtiva]);
+
+  // Os três pontos de login do site atualizam o AuthContext. Reagir à mudança
+  // de sessão aqui garante o mesmo destino, independentemente de onde o login
+  // foi iniciado: sempre a tela principal, nunca a seção salva anteriormente.
+  useEffect(() => {
+    const matriculaAtual = sessao?.matricula ?? null;
+    const acabouDeEntrar =
+      autenticado &&
+      (!autenticadoAnterior.current || matriculaAnterior.current !== matriculaAtual);
+
+    if (acabouDeEntrar) {
+      setSecaoAtiva("mapa");
+      setDistritoAtivo("");
+      setPainelAjustesAberto(false);
+      setColaboradoresAberto(false);
+      setFolgasAberto(false);
+      setUsuariosAberto(false);
+      setResultadoBusca(null);
+      setLoginAberto(false);
+
+      try {
+        if (!localStorage.getItem(chaveNovidades(matriculaAtual))) {
+          setNovidadesAbertas(true);
+        }
+      } catch {
+        // Se o navegador bloquear o storage, a novidade ainda aparece após o login.
+        setNovidadesAbertas(true);
+      }
+    }
+
+    autenticadoAnterior.current = autenticado;
+    matriculaAnterior.current = matriculaAtual;
+  }, [autenticado, sessao?.matricula]);
+
+  function fecharNovidades() {
+    try {
+      if (sessao?.matricula) {
+        localStorage.setItem(chaveNovidades(sessao.matricula), "vista");
+      }
+    } catch {
+      // O fechamento não deve falhar se o storage estiver indisponível.
+    }
+    setNovidadesAbertas(false);
+  }
 
   async function executarBusca(termo) {
     // A busca sempre leva pro Mapa Geral, senão o resultado não teria onde
@@ -245,6 +299,8 @@ export default function App() {
         onFechar={() => setLoginAberto(false)}
         onEntrou={() => setLoginAberto(false)}
       />
+
+      <NovidadesModal aberto={autenticado && novidadesAbertas} onFechar={fecharNovidades} />
 
       {/* Senha provisória (primeiro login ou reset pelo admin) — bloqueia o resto até trocar */}
       {autenticado && sessao.senhaProvisoria && (
