@@ -57,37 +57,51 @@
 }
 
 .marca {
-  display: flex;
-  align-items: center;
+  display: grid;
   gap: 10px;
   background: var(--cor-azul-escuro);
   color: var(--branco);
   border-radius: var(--raio);
-  padding: 14px;
-  box-shadow: 0 0 0 1px black;
+  padding: 15px 14px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 5px 14px rgba(7, 59, 112, 0.18);
 }
 
 .marcaLogo {
-  width: 60px;
-  height: 32px;
+  width: 112px;
+  height: auto;
   object-fit: contain;
   flex-shrink: 0;
-  filter: brightness(0) invert(1);
+  justify-self: start;
+}
+
+.marcaTexto {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
 }
 
 .marca strong {
   display: block;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 800;
+  line-height: 1.2;
 }
 
 .marca span {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.25;
-  margin-top: 2px;
+}
+
+.marca .marcaTag {
+  color: var(--cor-amarela);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
 }
 
 .endereco {

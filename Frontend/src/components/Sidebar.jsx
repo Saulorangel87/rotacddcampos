@@ -51,12 +51,12 @@ export default function Sidebar({ ativo, onSelecionar, admin }) {
         <img
           className={styles.marcaLogo}
           src="/images/logocorreios.png?v=2"
-          alt=""
-          aria-hidden="true"
+          alt="Correios"
         />
-        <div>
-          {/* <strong>Correios</strong> */}
-          <span>Entrega que conecta o Brasil!</span>
+        <div className={styles.marcaTexto}>
+          <span className={styles.marcaTag}>UNIDADE OPERACIONAL</span>
+          <strong>CDD Campos dos Goytacazes</strong>
+          <span>Organização de entregas</span>
         </div>
       </div>
       <div className={styles.endereco}>

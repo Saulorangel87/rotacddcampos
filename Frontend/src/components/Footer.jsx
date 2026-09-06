@@ -7,11 +7,15 @@ const CHAVE_PWA_INSTALADO = 'rotas_pwa_instalado'
 
 function ehCelular() {
   const mobileData = navigator.userAgentData?.mobile
-  if (typeof mobileData === 'boolean') return mobileData
+  if (mobileData === true) return true
 
-  return /Android.*Mobile|iPhone|iPod|Windows Phone|IEMobile|Opera Mini/i.test(
-    navigator.userAgent,
-  )
+  if (/Android.*Mobile|iPhone|iPad|iPod|Windows Phone|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    return true
+  }
+
+  // Também cobre o modo responsivo do navegador, que simula um celular sem
+  // necessariamente alterar o user agent ou o userAgentData.mobile.
+  return window.matchMedia?.('(max-width: 600px)').matches ?? false
 }
 
 // Ícones desenhados como SVG inline (mesma abordagem do resto do projeto) em vez
@@ -55,11 +59,14 @@ export default function Footer() {
   const [installPrompt, setInstallPrompt] = useState(null)
   const [instalado, setInstalado] = useState(false)
   const [celular, setCelular] = useState(false)
+  const [mensagemInstalacao, setMensagemInstalacao] = useState('')
 
   useEffect(() => {
-    const dispositivoMovel = ehCelular()
-    setCelular(dispositivoMovel)
-    if (!dispositivoMovel) return undefined
+    function atualizarDispositivo() {
+      setCelular(ehCelular())
+    }
+
+    atualizarDispositivo()
 
     const standalone =
       window.matchMedia('(display-mode: standalone)').matches ||
@@ -73,6 +80,7 @@ export default function Footer() {
     queueMicrotask(() => setInstalado(standalone || instaladoSalvo))
 
     function capturarPrompt(evento) {
+      if (!ehCelular()) return
       // O evento só é retido no celular; em desktop o navegador mantém seu
       // comportamento nativo de instalação, sem criar um botão no rodapé.
       evento.preventDefault()
@@ -82,6 +90,7 @@ export default function Footer() {
         // O storage é apenas uma lembrança visual, não é requisito da instalação.
       }
       setInstalado(false)
+      setMensagemInstalacao('')
       setInstallPrompt(evento)
     }
 
@@ -93,18 +102,24 @@ export default function Footer() {
       }
       setInstalado(true)
       setInstallPrompt(null)
+      setMensagemInstalacao('')
     }
 
+    window.addEventListener('resize', atualizarDispositivo)
     window.addEventListener('beforeinstallprompt', capturarPrompt)
     window.addEventListener('appinstalled', marcarInstalado)
     return () => {
+      window.removeEventListener('resize', atualizarDispositivo)
       window.removeEventListener('beforeinstallprompt', capturarPrompt)
       window.removeEventListener('appinstalled', marcarInstalado)
     }
   }, [])
 
   async function instalarApp() {
-    if (!installPrompt) return
+    if (!installPrompt) {
+      setMensagemInstalacao('Abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.')
+      return
+    }
 
     try {
       await installPrompt.prompt()
@@ -116,6 +131,7 @@ export default function Footer() {
           // O evento appinstalled atualiza o estado quando o storage falhar.
         }
         setInstalado(true)
+        setMensagemInstalacao('')
       }
     } catch {
       // O navegador pode encerrar o prompt sem concluir a instalação.
@@ -132,11 +148,14 @@ export default function Footer() {
         &copy; {ANO} Desenvolvido por Saulo Rangel - v{APP_VERSION}
       </span>
       <div className={styles.icones}>
-        {celular && installPrompt && !instalado && (
+        {celular && !instalado && (
           <button type="button" className={styles.instalar} onClick={instalarApp}>
             <IconeDownload />
             Instalar app
           </button>
+        )}
+        {celular && mensagemInstalacao && !instalado && (
+          <span className={styles.ajudaInstalacao} role="status">{mensagemInstalacao}</span>
         )}
         {celular && instalado && (
           <span className={styles.instalado}>
