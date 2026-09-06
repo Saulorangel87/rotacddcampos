@@ -715,6 +715,22 @@
   white-space: normal;
 }
 
+.geracao button.botaoSecundario:hover:not(:disabled),
+.ordemAcoes button.botaoSecundario:hover:not(:disabled) {
+  border-color: #8bb6d6;
+  background: #e6f1f9;
+  color: #0b4f8a;
+}
+
+.geracao button.botaoSecundario:disabled,
+.ordemAcoes button.botaoSecundario:disabled {
+  border-color: #c8d8e6;
+  background: #eef4f8;
+  color: #66839b;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
 .ordemAcoes {
   flex-wrap: wrap;
 }
