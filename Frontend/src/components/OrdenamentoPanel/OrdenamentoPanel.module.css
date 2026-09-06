@@ -294,6 +294,42 @@
   font-size: 0.76rem;
 }
 
+.scanner {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 11px;
+  background: #f4f7fa;
+}
+
+.scanner video {
+  width: 100%;
+  max-height: 280px;
+  border-radius: 8px;
+  background: #12263a;
+  object-fit: cover;
+}
+
+.scanner p {
+  margin: 0;
+  color: #536b80;
+  font-size: 0.82rem;
+}
+
+.scanner button {
+  justify-self: start;
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid #b8c7d5;
+  border-radius: 8px;
+  background: #fff;
+  color: #174b78;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .lista,
 .ruas,
 .geracao,

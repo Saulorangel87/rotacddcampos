@@ -18,6 +18,8 @@ export default function OrdenamentoPanel() {
   const [digitando, setDigitando] = useState(false)
   const [entrada, setEntrada] = useState('')
   const [origemEntrada, setOrigemEntrada] = useState('manual')
+  const [escaneando, setEscaneando] = useState(false)
+  const [avisoScanner, setAvisoScanner] = useState('')
   const [salvando, setSalvando] = useState(false)
   const [excluindoId, setExcluindoId] = useState(null)
   const [limpando, setLimpando] = useState(false)
@@ -25,6 +27,10 @@ export default function OrdenamentoPanel() {
   const [resolvendoId, setResolvendoId] = useState(null)
   const [erro, setErro] = useState('')
   const campoEntradaRef = useRef(null)
+  const videoScannerRef = useRef(null)
+  const leitorScannerRef = useRef(null)
+  const controlesScannerRef = useRef(null)
+  const scannerAtivoRef = useRef(false)
   const { ouvindo, ouvirVoz } = useReconhecimentoDeVoz((textoTranscrito) => {
     setEntrada(textoTranscrito)
     setOrigemEntrada('voz')
@@ -33,9 +39,81 @@ export default function OrdenamentoPanel() {
   })
 
   function iniciarEntradaPorVoz() {
+    encerrarScanner()
     setOrigemEntrada('voz')
     setDigitando(true)
+    setAvisoScanner('')
     ouvirVoz()
+  }
+
+  useEffect(() => () => encerrarScanner(), [])
+
+  async function iniciarScanner() {
+    setErro('')
+    setAvisoScanner('')
+    setDigitando(false)
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setErro('A câmera não está disponível neste navegador. Use Digitar ou Falar.')
+      return
+    }
+
+    try {
+      const { BrowserMultiFormatReader } = await import('@zxing/browser')
+      leitorScannerRef.current = new BrowserMultiFormatReader()
+      scannerAtivoRef.current = true
+      setEscaneando(true)
+      requestAnimationFrame(iniciarLeituraScanner)
+    } catch (e) {
+      encerrarScanner()
+      setErro(e.name === 'NotAllowedError'
+        ? 'Permita o acesso à câmera para escanear a etiqueta.'
+        : 'Não foi possível abrir a câmera. Use Digitar ou Falar.')
+    }
+  }
+
+  async function iniciarLeituraScanner() {
+    if (!scannerAtivoRef.current || !videoScannerRef.current || !leitorScannerRef.current) return
+    try {
+      const controles = await leitorScannerRef.current.decodeFromVideoDevice(
+        undefined,
+        videoScannerRef.current,
+        (resultado) => {
+          if (!scannerAtivoRef.current) return
+          const codigo = resultado?.getText()?.trim()
+          if (!codigo) return
+          encerrarScanner()
+          setEntrada(codigo)
+          setOrigemEntrada('scanner')
+          setDigitando(true)
+          setAvisoScanner('Código lido. Confira ou complemente com o endereço antes de adicionar.')
+          setErro('')
+        },
+      )
+      if (!scannerAtivoRef.current) {
+        controles.stop()
+        return
+      }
+      controlesScannerRef.current = controles
+    } catch (e) {
+      if (!scannerAtivoRef.current) return
+      encerrarScanner()
+      setErro(e.name === 'NotAllowedError'
+        ? 'Permita o acesso à câmera para escanear a etiqueta.'
+        : 'Não foi possível abrir a câmera. Use Digitar ou Falar.')
+    }
+  }
+
+  function encerrarScanner() {
+    scannerAtivoRef.current = false
+    controlesScannerRef.current?.stop()
+    controlesScannerRef.current = null
+    leitorScannerRef.current?.reset()
+    leitorScannerRef.current = null
+    if (videoScannerRef.current) {
+      videoScannerRef.current.pause()
+      videoScannerRef.current.srcObject = null
+    }
+    setEscaneando(false)
   }
 
   useEffect(() => {
@@ -81,6 +159,7 @@ export default function OrdenamentoPanel() {
       setOrdenamento(await adicionarObjeto(ordenamento.id, texto, origemEntrada))
       setEntrada('')
       setOrigemEntrada('manual')
+      setAvisoScanner('')
       requestAnimationFrame(() => campoEntradaRef.current?.focus())
     } catch (e) {
       setErro(e.message)
@@ -141,6 +220,7 @@ export default function OrdenamentoPanel() {
       setOrdenamento(await limparOrdenamento(ordenamento.id))
       setEntrada('')
       setOrigemEntrada('manual')
+      setAvisoScanner('')
       setDigitando(false)
     } catch (e) {
       setErro(e.message)
@@ -213,8 +293,14 @@ export default function OrdenamentoPanel() {
           </div>
 
           <div className={styles.modosEntrada} aria-label="Formas de adicionar encomenda">
-            <button type="button" disabled title="Disponível em breve">
-              <span aria-hidden="true">▣</span> Escanear <small>Em breve</small>
+            <button
+              type="button"
+              className={escaneando ? styles.modoAtivo : ''}
+              onClick={escaneando ? encerrarScanner : iniciarScanner}
+              disabled={salvando}
+              aria-pressed={escaneando}
+            >
+              <span aria-hidden="true">▣</span> {escaneando ? 'Parar câmera' : 'Escanear'}
             </button>
             <button
               type="button"
@@ -230,6 +316,7 @@ export default function OrdenamentoPanel() {
               className={digitando ? styles.modoAtivo : ''}
               onClick={() => {
                 setOrigemEntrada('manual')
+                setAvisoScanner('')
                 setDigitando(true)
               }}
             >
@@ -239,7 +326,7 @@ export default function OrdenamentoPanel() {
 
           {digitando && (
             <form className={styles.formulario} onSubmit={cadastrarObjeto}>
-              <label htmlFor="endereco-encomenda">Rua e número</label>
+              <label htmlFor="endereco-encomenda">{avisoScanner ? 'Código lido — confira o endereço' : 'Rua e número'}</label>
               <div>
                 <input
                   ref={campoEntradaRef}
@@ -254,8 +341,16 @@ export default function OrdenamentoPanel() {
                   {salvando ? 'Adicionando…' : 'Adicionar'}
                 </button>
               </div>
-              <span>Após adicionar, o campo fica pronto para a próxima encomenda.</span>
+              <span>{avisoScanner || 'Após adicionar, o campo fica pronto para a próxima encomenda.'}</span>
             </form>
+          )}
+
+          {escaneando && (
+            <div className={styles.scanner} aria-label="Leitura da etiqueta">
+              <video ref={videoScannerRef} autoPlay muted playsInline />
+              <p>Aponte a câmera para um código da etiqueta.</p>
+              <button type="button" onClick={encerrarScanner}>Cancelar</button>
+            </div>
           )}
 
           {(ordenamento.objetos?.length ?? 0) > 0 ? (
