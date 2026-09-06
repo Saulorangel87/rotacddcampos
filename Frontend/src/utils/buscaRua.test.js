@@ -4,6 +4,7 @@ import {
   normalizarNomeRuaBusca,
   normalizarCepBusca,
   ordenarRuasPorCorrespondencia,
+  filtrarRuasPorCorrespondencia,
   ruaCorrespondeBusca,
 } from './buscaRua.js'
 
@@ -41,4 +42,17 @@ test('prioriza o CEP exato quando a busca do cabeçalho é numérica', () => {
     { id: 2, nome_rua: 'RUA ZETA', cep: '28010562' },
   ]
   assert.deepEqual(ordenarRuasPorCorrespondencia(ruas, '28010-562').map((rua) => rua.id), [2, 1])
+})
+
+test('remove prefixo que coincide apenas com uma palavra maior quando há termo exato', () => {
+  const ruas = [
+    { id: 1, nome_rua: 'AVENIDA SETE DE SETEMBRO' },
+    { id: 2, nome_rua: 'RUA VINTE E OITO DE SETEMBRO' },
+  ]
+  assert.deepEqual(filtrarRuasPorCorrespondencia(ruas, 'Av. Sete Setembro').map((rua) => rua.id), [1])
+})
+
+test('mantém prefixo progressivo quando ainda não existe palavra completa', () => {
+  const ruas = [{ id: 1, nome_rua: 'AVENIDA SETEMBRO' }]
+  assert.deepEqual(filtrarRuasPorCorrespondencia(ruas, 'Setem').map((rua) => rua.id), [1])
 })

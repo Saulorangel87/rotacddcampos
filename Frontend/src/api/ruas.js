@@ -1,6 +1,6 @@
 import { MOCK_RUAS } from '../data/mockRuas.js'
 import { apiFetch, apiFetchJson } from './client.js'
-import { normalizarCepBusca, ruaCorrespondeBusca } from '../utils/buscaRua.js'
+import { filtrarRuasPorCorrespondencia, normalizarCepBusca } from '../utils/buscaRua.js'
 
 /**
  * Busca ruas na API. Filtros aceitos hoje pelo backend (Backend/handlers/rua_handler.go):
@@ -17,7 +17,8 @@ export async function listarRuas({ nome = '', cep = '', distrito = '' } = {}) {
   try {
     const res = await apiFetch(`/ruas?${params.toString()}`)
     if (!res.ok) throw new Error(`API respondeu ${res.status}`)
-    return await res.json()
+    const dados = await res.json()
+    return nome ? filtrarRuasPorCorrespondencia(dados, nome) : dados
   } catch (err) {
     console.warn('[api/ruas] usando dados de exemplo — API indisponível:', err.message)
     return filtrarMock({ nome, cep, distrito })
@@ -59,12 +60,12 @@ export async function moverRuasEmLote(ids, novoDistrito) {
 }
 
 function filtrarMock({ nome, cep, distrito }) {
-  return MOCK_RUAS.filter((r) => {
-    const okNome = !nome || ruaCorrespondeBusca(r, nome)
+  const porNome = nome ? filtrarRuasPorCorrespondencia(MOCK_RUAS, nome) : MOCK_RUAS
+  return porNome.filter((r) => {
     const alvoCep = normalizarCepBusca(cep)
     const okCep = !alvoCep || normalizarCepBusca(r.cep).includes(alvoCep)
     const okDistrito = !distrito || String(r.distrito).toUpperCase() === String(distrito).trim().toUpperCase()
-    return okNome && okCep && okDistrito
+    return okCep && okDistrito
   })
 }
 

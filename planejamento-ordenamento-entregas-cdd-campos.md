@@ -654,6 +654,31 @@ A próxima parte da Fase 8 é validar a busca com a lista operacional completa e
 depois, atacar a precisão das coordenadas e do ordenamento com exemplos reais,
 antes da publicação conjunta em produção.
 
+### Evolução local — 06/09/2026: validação no cadastro sincronizado
+
+Foi feita uma leitura somente no PostgreSQL local para conferir a base usada
+pela busca, sem criar, editar ou excluir registros. O snapshot encontrado foi:
+
+- 2.115 ruas cadastradas em 24 distritos;
+- 1.810 ruas com geometria e 305 ainda sem geometria;
+- `Silva Tavares`: 2 resultados, mantendo a rua homônima distinta de
+  `Pedreval da Silva Tavares`;
+- `Av. Sete Setembro`: os quatro trechos da avenida permanecem priorizados;
+  o filtro da interface remove `Rua Vinte e Oito de Setembro`, que só coincidia
+  pelo prefixo `Sete` dentro de `Setembro`;
+- `sergio`: 3 opções para escolha explícita;
+- `28010-562`: 1 trecho identificado diretamente pelo CEP;
+- `Santa Cecilia`: 2 opções homônimas, sem escolher automaticamente uma delas.
+
+O filtro compartilhado agora exige a palavra exata quando ela existe entre as
+candidatas e mantém prefixo apenas para a parte ainda digitada. A validação
+local passou de 8 para 10 testes de frontend, além do build Vite. A contagem
+de geometrias é um retrato da base local nesta data; deve ser conferida de novo
+quando a produção for sincronizada.
+
+Próxima etapa da Fase 8: confrontar a busca com a lista operacional real de
+etiquetas e, em seguida, revisar coordenadas ausentes e a sequência sugerida.
+
 ### Evolução local — 06/09/2026: identidade visual, ciclo de carga e instalação
 
 Refinamento concluído dentro da Fase 8, sem alterar o modelo de permissões ou

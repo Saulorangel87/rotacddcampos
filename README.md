@@ -324,13 +324,16 @@ Foram utilizados:
 
 Parte das ruas foi automaticamente associada a geometrias reais.
 
-Atualmente ainda existem **303 ruas sem geometria**, que precisam ser desenhadas manualmente.
+O snapshot local consultado em 06/09/2026 tem **305 ruas sem geometria**, que
+precisam ser desenhadas manualmente. A contagem pode mudar quando a base for
+sincronizada novamente; o registro anterior de 303 ruas era de outro snapshot.
 
 Resultados automáticos de baixa confiança foram descartados para evitar associação de ruas incorretas.
 
 ## Pendências conhecidas
 
-- **303 ruas sem geometria real** — desenho manual em andamento.
+- **305 ruas sem geometria real no snapshot local de 06/09/2026** — desenho
+  manual em andamento; conferir novamente após sincronizar a base.
 - **Fluxo de aumento do Redistritamento** — estrutura do banco pronta; faltam lógica de negócio e interface.
 - **Ordenamento por rua** — futura tabela com sequência real de entrega (`rua_id`, `ordem`, `numero`).
 - **Precisão do ordenamento** — validar coordenadas ausentes e a sequência sugerida com listas operacionais reais antes da publicação.

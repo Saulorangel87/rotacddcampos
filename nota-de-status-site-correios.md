@@ -97,7 +97,7 @@ No início da sessão: **442 ruas sem geometria** (de 2.115 ativas).
 - Descoberta de dado: muita rua no banco tem o tipo de logradouro
   **invertido** ("Manoel P. Barbosa, Rua" em vez de "Rua Manoel P.
   Barbosa") — o script do Overpass já trata isso (`desinverter_tipo()`)
-- **Hoje: 303 ruas ainda sem geometria** — prováveis loteamentos não
+- **No snapshot anterior: 303 ruas ainda sem geometria** — prováveis loteamentos não
   mapeados no OSM, seguem pra desenho manual (ferramenta que já existe),
   sem mais atalho automático gratuito disponível
 - Considerado (e descartado) usar Google Maps API: exige pré-pagamento de
@@ -136,6 +136,18 @@ No início da sessão: **442 ruas sem geometria** (de 2.115 ativas).
 - A busca e a entrada por CEP continuam cobertas pelos testes anteriores;
   nenhuma permissão foi ampliada nesta atualização.
 
+### Validação local da busca — 06/09/2026
+
+Uma consulta somente leitura ao PostgreSQL local encontrou 2.115 ruas em 24
+distritos, com 1.810 geometrias e 305 ruas sem geometria. Os casos `Silva
+Tavares`, `sergio`, `Santa Cecilia` e o CEP `28010-562` retornaram as opções
+esperadas. A busca `Av. Sete Setembro` também foi conferida: a interface
+remove a falsa coincidência de `Rua Vinte e Oito de Setembro`, causada pelo
+prefixo `Sete` dentro de `Setembro`, sem perder a digitação progressiva.
+
+Esse número é um retrato da base local nesta data e não substitui a conferência
+da produção no momento da publicação.
+
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
 - `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real
@@ -155,7 +167,8 @@ No início da sessão: **442 ruas sem geometria** (de 2.115 ativas).
 
 ## Pendências conhecidas / combinadas pra próxima sessão
 
-- **303 ruas sem geometria** — desenho manual, ritmo próprio, sem mais
+- **305 ruas sem geometria no snapshot local de 06/09/2026** — desenho manual,
+  ritmo próprio, sem mais
   atalho automático gratuito disponível
 - **Fluxo de AUMENTO do Redistritamento** — banco já preparado, falta
   lógica de negócio (service/handler) e tela

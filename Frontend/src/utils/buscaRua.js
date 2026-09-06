@@ -49,6 +49,44 @@ function todosOsTermosEstaoPresentes(cadastro, consulta) {
   )
 }
 
+function palavrasDoNome(rua) {
+  return normalizarNomeRuaBusca(rua?.nome_rua).split(' ').filter(Boolean)
+}
+
+/**
+ * Evita que um prefixo já completo contamine a lista com uma palavra maior.
+ * Ex.: ao buscar "Sete Setembro", "Sete" deve ser uma palavra exata; só
+ * aceitamos prefixo quando nenhum resultado possui aquela palavra completa.
+ * Isso mantém a digitação progressiva ("Setem") sem trazer "Setembro" junto
+ * quando existe uma rua realmente chamada "Sete".
+ */
+export function filtrarRuasPorCorrespondencia(ruas, termo) {
+  const lista = [...(ruas ?? [])]
+  const consultaCep = normalizarCepBusca(termo)
+  if (/^\d{8}$/.test(consultaCep)) {
+    return lista.filter((rua) => normalizarCepBusca(rua?.cep).startsWith(consultaCep))
+  }
+
+  const consulta = normalizarNomeRuaBusca(termo)
+  if (!consulta) return lista
+
+  const candidatas = lista.filter((rua) => ruaCorrespondeBusca(rua, termo))
+  const termos = consulta.split(' ').filter(Boolean)
+  const exigirExato = termos.map((termoBusca) =>
+    candidatas.some((rua) => palavrasDoNome(rua).some((palavra) => palavra === termoBusca)),
+  )
+
+  return candidatas.filter((rua) => {
+    const palavras = palavrasDoNome(rua)
+    const nomeCorresponde = termos.every((termoBusca, indice) =>
+      palavras.some((palavra) => palavra === termoBusca || (!exigirExato[indice] && palavra.startsWith(termoBusca))),
+    )
+    const rota = normalizarTextoBusca(rua?.rota)
+    const buscaRota = normalizarTextoBusca(termo)
+    return nomeCorresponde || (buscaRota && rota.includes(buscaRota))
+  })
+}
+
 /** Retorna 0 para o melhor resultado e valores maiores para resultados mais fracos. */
 export function pontuacaoRua(rua, termo) {
   const consultaBruta = normalizarTextoBusca(termo)

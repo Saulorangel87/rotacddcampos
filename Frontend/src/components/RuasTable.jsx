@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { listarRuas, excluirRua } from '../api/ruas.js'
 import { corDoDistrito } from '../data/distritos.js'
 import { useAuth } from '../context/AuthContext.jsx'
-import { normalizarCepBusca, normalizarTextoBusca, ruaCorrespondeBusca } from '../utils/buscaRua.js'
+import { filtrarRuasPorCorrespondencia, normalizarCepBusca, normalizarTextoBusca } from '../utils/buscaRua.js'
 import NovaRuaModal from './NovaRuaModal.jsx'
 import EditarRuaModal from './EditarRuaModal.jsx'
 import ConfirmModal from './ConfirmModal.jsx'
@@ -75,11 +75,14 @@ export default function RuasTable({ versao = 0 }) {
   const linhas = useMemo(() => {
     const alvo = normalizarTextoBusca(busca)
     const alvoCep = normalizarCepBusca(busca)
+    const nomesCorrespondentes = alvo
+      ? new Set(filtrarRuasPorCorrespondencia(ruas, busca).map((rua) => rua.id))
+      : null
     const filtradas = ruas.filter((r) => {
       if (!alvo) return true
       const bateDistrito = normalizarTextoBusca(r.distrito) === alvo
       const bateCep = alvoCep.length > 0 && normalizarCepBusca(r.cep).startsWith(alvoCep)
-      const bateTexto = ruaCorrespondeBusca(r, busca)
+      const bateTexto = nomesCorrespondentes.has(r.id)
       return bateDistrito || bateCep || bateTexto
     })
     if (aba === 'todas') return filtradas

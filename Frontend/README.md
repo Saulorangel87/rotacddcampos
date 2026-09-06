@@ -32,7 +32,7 @@ src/
     AjustesRotasPanel/     # assistente de 3 passos: selecionar ruas → escolher distrito → confirmar
     OrdenamentoPanel/      # entrada manual, voz, câmera e sequência de entregas
     RuasTable.jsx          # tabela com busca por nome, CEP e distrito
-    utils/buscaRua.js      # normalização e ranqueamento de ruas/CEPs
+  utils/buscaRua.js      # normalização, filtro e ranqueamento de ruas/CEPs
   App.jsx                  # junta tudo
 ```
 
@@ -47,7 +47,9 @@ src/
 ## Comportamentos de interface
 
 - A busca ignora acentos, pontuação, tipos de logradouro e artigos opcionais;
-  prefixos e CEPs formatados também são aceitos.
+  prefixos e CEPs formatados também são aceitos. Quando uma palavra completa
+  já existe entre as candidatas, resultados que só repetem esse trecho dentro
+  de uma palavra maior são descartados.
 - O cabeçalho usa escudo para administradores e identificação para
   colaboradores.
 - A área de instalação do PWA só aparece em layout móvel enquanto o app não
@@ -58,6 +60,7 @@ src/
 ## Próximos passos sugeridos
 
 1. Validar a busca com a lista operacional completa da unidade.
-2. Revisar as 303 ruas sem geometria e melhorar a precisão das coordenadas.
+2. Revisar as 305 ruas sem geometria do snapshot local e melhorar a precisão
+   das coordenadas.
 3. Comparar a sequência sugerida com rotas reais antes da publicação em
    produção.
