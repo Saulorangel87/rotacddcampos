@@ -330,6 +330,27 @@
   cursor: pointer;
 }
 
+.feedback {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.feedbackSucesso {
+  border-color: #a8d1b1;
+  background: #f0faf2;
+  color: #2e7042;
+}
+
+.feedbackAviso {
+  border-color: #e4c482;
+  background: #fff8e9;
+  color: #8a5200;
+}
+
 .lista,
 .ruas,
 .geracao,

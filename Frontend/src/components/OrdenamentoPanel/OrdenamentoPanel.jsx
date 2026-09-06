@@ -26,6 +26,7 @@ export default function OrdenamentoPanel() {
   const [gerando, setGerando] = useState(false)
   const [resolvendoId, setResolvendoId] = useState(null)
   const [erro, setErro] = useState('')
+  const [feedbackAdicao, setFeedbackAdicao] = useState(null)
   const campoEntradaRef = useRef(null)
   const videoScannerRef = useRef(null)
   const leitorScannerRef = useRef(null)
@@ -43,6 +44,7 @@ export default function OrdenamentoPanel() {
     setOrigemEntrada('voz')
     setDigitando(true)
     setAvisoScanner('')
+    setFeedbackAdicao(null)
     ouvirVoz()
   }
 
@@ -51,6 +53,7 @@ export default function OrdenamentoPanel() {
   async function iniciarScanner() {
     setErro('')
     setAvisoScanner('')
+    setFeedbackAdicao(null)
     setDigitando(false)
     if (!navigator.mediaDevices?.getUserMedia) {
       setErro('A câmera não está disponível neste navegador. Use Digitar ou Falar.')
@@ -154,8 +157,13 @@ export default function OrdenamentoPanel() {
 
     setSalvando(true)
     setErro('')
+    setFeedbackAdicao(null)
     try {
-      setOrdenamento(await adicionarObjeto(ordenamento.id, texto, origemEntrada))
+      const origemAtual = origemEntrada
+      const atualizado = await adicionarObjeto(ordenamento.id, texto, origemAtual)
+      setOrdenamento(atualizado)
+      const objetoAdicionado = atualizado.objetos?.[atualizado.objetos.length - 1]
+      setFeedbackAdicao(feedbackDaAdicao(objetoAdicionado, origemAtual, texto))
       setEntrada('')
       setOrigemEntrada('manual')
       setAvisoScanner('')
@@ -316,6 +324,7 @@ export default function OrdenamentoPanel() {
               onClick={() => {
                 setOrigemEntrada('manual')
                 setAvisoScanner('')
+                setFeedbackAdicao(null)
                 setDigitando(true)
               }}
             >
@@ -350,6 +359,12 @@ export default function OrdenamentoPanel() {
               <p>Aponte a câmera para um código da etiqueta.</p>
               <button type="button" onClick={encerrarScanner}>Cancelar</button>
             </div>
+          )}
+
+          {feedbackAdicao && (
+            <p className={`${styles.feedback} ${styles[`feedback${feedbackAdicao.tipo}`]}`} role="status">
+              {feedbackAdicao.texto}
+            </p>
           )}
 
           {(ordenamento.objetos?.length ?? 0) > 0 ? (
@@ -506,6 +521,24 @@ function mensagemCodigoLido(codigo) {
     return 'Código de rastreio lido. Informe ou complemente o endereço antes de adicionar.'
   }
   return 'Código lido. Confira ou complemente o endereço antes de adicionar.'
+}
+
+function feedbackDaAdicao(objeto, origem, entrada) {
+  if (objeto?.status_resolucao === 'identificado') {
+    return {
+      tipo: 'Sucesso',
+      texto: `✓ ${objeto.nome_rua}${objeto.cep ? ` · CEP ${objeto.cep}` : ''} adicionado ao ordenamento.`,
+    }
+  }
+  if (origem === 'scanner' && /^\d{5}-?\d{3}$/.test(entrada)) {
+    if (objeto?.motivo_pendencia === 'rua_ambigua') {
+      return { tipo: 'Aviso', texto: 'CEP lido. Escolha a rua correspondente nas opções abaixo.' }
+    }
+    if (objeto?.motivo_pendencia === 'cep_nao_encontrado') {
+      return { tipo: 'Aviso', texto: 'CEP lido, mas ele não foi encontrado no cadastro desta unidade.' }
+    }
+  }
+  return { tipo: 'Aviso', texto: 'Encomenda adicionada para revisão. Confira o motivo indicado abaixo.' }
 }
 
 function rotuloCoordenada(rua) {
