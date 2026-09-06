@@ -8,6 +8,7 @@ import {
   limparOrdenamento,
   selecionarRua,
 } from '../../api/ordenamentos.js'
+import { useReconhecimentoDeVoz } from '../../hooks/useReconhecimentoDeVoz.js'
 import styles from './OrdenamentoPanel.module.css'
 
 export default function OrdenamentoPanel() {
@@ -16,6 +17,7 @@ export default function OrdenamentoPanel() {
   const [criando, setCriando] = useState(false)
   const [digitando, setDigitando] = useState(false)
   const [entrada, setEntrada] = useState('')
+  const [origemEntrada, setOrigemEntrada] = useState('manual')
   const [salvando, setSalvando] = useState(false)
   const [excluindoId, setExcluindoId] = useState(null)
   const [limpando, setLimpando] = useState(false)
@@ -23,6 +25,18 @@ export default function OrdenamentoPanel() {
   const [resolvendoId, setResolvendoId] = useState(null)
   const [erro, setErro] = useState('')
   const campoEntradaRef = useRef(null)
+  const { ouvindo, ouvirVoz } = useReconhecimentoDeVoz((textoTranscrito) => {
+    setEntrada(textoTranscrito)
+    setOrigemEntrada('voz')
+    setDigitando(true)
+    setErro('')
+  })
+
+  function iniciarEntradaPorVoz() {
+    setOrigemEntrada('voz')
+    setDigitando(true)
+    ouvirVoz()
+  }
 
   useEffect(() => {
     buscarOrdenamentoAtivo()
@@ -64,8 +78,9 @@ export default function OrdenamentoPanel() {
     setSalvando(true)
     setErro('')
     try {
-      setOrdenamento(await adicionarObjeto(ordenamento.id, texto))
+      setOrdenamento(await adicionarObjeto(ordenamento.id, texto, origemEntrada))
       setEntrada('')
+      setOrigemEntrada('manual')
       requestAnimationFrame(() => campoEntradaRef.current?.focus())
     } catch (e) {
       setErro(e.message)
@@ -125,6 +140,7 @@ export default function OrdenamentoPanel() {
     try {
       setOrdenamento(await limparOrdenamento(ordenamento.id))
       setEntrada('')
+      setOrigemEntrada('manual')
       setDigitando(false)
     } catch (e) {
       setErro(e.message)
@@ -200,13 +216,22 @@ export default function OrdenamentoPanel() {
             <button type="button" disabled title="Disponível em breve">
               <span aria-hidden="true">▣</span> Escanear <small>Em breve</small>
             </button>
-            <button type="button" disabled title="Disponível em breve">
-              <span aria-hidden="true">●</span> Falar <small>Em breve</small>
+            <button
+              type="button"
+              className={ouvindo ? styles.modoAtivo : ''}
+              onClick={iniciarEntradaPorVoz}
+              disabled={salvando}
+              aria-pressed={ouvindo}
+            >
+              <span aria-hidden="true">●</span> {ouvindo ? 'Ouvindo…' : 'Falar'}
             </button>
             <button
               type="button"
               className={digitando ? styles.modoAtivo : ''}
-              onClick={() => setDigitando(true)}
+              onClick={() => {
+                setOrigemEntrada('manual')
+                setDigitando(true)
+              }}
             >
               <span aria-hidden="true">⌨</span> Digitar
             </button>
