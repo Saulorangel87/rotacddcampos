@@ -144,6 +144,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, jwtSecret string, jwtHoras int, ze
 		ordenamentos.Get("/ativo", ordenamentoHandler.GetAtivo)
 		ordenamentos.Post("/", ordenamentoHandler.Criar)
 		ordenamentos.Post("/:id/objetos", ordenamentoHandler.AdicionarObjeto)
+		ordenamentos.Delete("/:id/objetos", ordenamentoHandler.Limpar)
 		ordenamentos.Delete("/:id/objetos/:objetoId", ordenamentoHandler.ExcluirObjeto)
 		ordenamentos.Post("/:id/gerar-ordem", ordenamentoHandler.GerarOrdem)
 	}

@@ -13,6 +13,7 @@ type OrdenamentoRepository interface {
 	ListObjetos(ctx context.Context, ordenamentoID uint) ([]models.ObjetoOrdenamento, error)
 	CreateObjeto(ctx context.Context, objeto *models.ObjetoOrdenamento) error
 	DeleteObjeto(ctx context.Context, ordenamentoID, objetoID uint) (bool, error)
+	LimparConteudo(ctx context.Context, ordenamentoID uint) error
 }
 
 type ordenamentoRepository struct {
@@ -60,4 +61,15 @@ func (r *ordenamentoRepository) DeleteObjeto(ctx context.Context, ordenamentoID,
 		Where("id = ? AND ordenamento_id = ?", objetoID, ordenamentoID).
 		Delete(&models.ObjetoOrdenamento{})
 	return resultado.RowsAffected > 0, resultado.Error
+}
+
+// LimparConteudo apaga somente os dados operacionais de uma lista: objetos e
+// paradas sugeridas. O ordenamento continua ativo para receber uma nova carga.
+func (r *ordenamentoRepository) LimparConteudo(ctx context.Context, ordenamentoID uint) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("ordenamento_id = ?", ordenamentoID).Delete(&models.ParadaOrdenamento{}).Error; err != nil {
+			return err
+		}
+		return tx.Where("ordenamento_id = ?", ordenamentoID).Delete(&models.ObjetoOrdenamento{}).Error
+	})
 }

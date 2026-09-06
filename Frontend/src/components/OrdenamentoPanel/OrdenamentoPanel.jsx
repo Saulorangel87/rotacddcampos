@@ -5,6 +5,7 @@ import {
   criarOrdenamento,
   excluirObjeto,
   gerarOrdem,
+  limparOrdenamento,
 } from '../../api/ordenamentos.js'
 import styles from './OrdenamentoPanel.module.css'
 
@@ -16,6 +17,7 @@ export default function OrdenamentoPanel() {
   const [entrada, setEntrada] = useState('')
   const [salvando, setSalvando] = useState(false)
   const [excluindoId, setExcluindoId] = useState(null)
+  const [limpando, setLimpando] = useState(false)
   const [gerando, setGerando] = useState(false)
   const [erro, setErro] = useState('')
   const campoEntradaRef = useRef(null)
@@ -96,6 +98,26 @@ export default function OrdenamentoPanel() {
     }
   }
 
+  async function limparLista() {
+    if (!ordenamento || limpando || (ordenamento.total_objetos ?? 0) === 0) return
+    const confirmado = window.confirm(
+      'Limpar esta lista? As encomendas adicionadas e a ordem sugerida serão removidas. O cadastro geral de ruas não será alterado.',
+    )
+    if (!confirmado) return
+
+    setLimpando(true)
+    setErro('')
+    try {
+      setOrdenamento(await limparOrdenamento(ordenamento.id))
+      setEntrada('')
+      setDigitando(false)
+    } catch (e) {
+      setErro(e.message)
+    } finally {
+      setLimpando(false)
+    }
+  }
+
   const motivoBloqueio = mensagemBloqueio(ordenamento)
 
   return (
@@ -127,7 +149,14 @@ export default function OrdenamentoPanel() {
               <span className={styles.rotulo}>Em andamento</span>
               <h2>Novo ordenamento</h2>
             </div>
-            <span className={styles.data}>Iniciado {formatarData(ordenamento.created_at)}</span>
+            <div className={styles.andamentoAcoes}>
+              <span className={styles.data}>Iniciado {formatarData(ordenamento.created_at)}</span>
+              {(ordenamento.total_objetos ?? 0) > 0 && (
+                <button type="button" className={styles.limparLista} onClick={limparLista} disabled={limpando}>
+                  {limpando ? 'Limpando…' : 'Limpar lista'}
+                </button>
+              )}
+            </div>
           </div>
 
           <div className={styles.contadores} aria-label="Resumo do ordenamento">

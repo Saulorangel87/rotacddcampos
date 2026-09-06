@@ -39,6 +39,11 @@ func (s *ordenamentoServiceFake) ExcluirObjeto(_ context.Context, usuarioID, _, 
 	return &services.OrdenamentoDetalhe{ID: 1}, nil
 }
 
+func (s *ordenamentoServiceFake) Limpar(_ context.Context, usuarioID, _ uint) (*services.OrdenamentoDetalhe, error) {
+	s.usuarioIDRecebido = usuarioID
+	return &services.OrdenamentoDetalhe{ID: 1}, nil
+}
+
 func (s *ordenamentoServiceFake) GerarOrdem(_ context.Context, usuarioID, _ uint) (*services.OrdenamentoDetalhe, error) {
 	s.usuarioIDRecebido = usuarioID
 	return &services.OrdenamentoDetalhe{ID: 1}, nil
@@ -54,6 +59,7 @@ func TestOrdenamentoExigeAutenticacao(t *testing.T) {
 		{metodo: "POST", caminho: "/ordenamentos"},
 		{metodo: "POST", caminho: "/ordenamentos/1/objetos", corpo: `{"entrada":"Pelinca 520"}`},
 		{metodo: "DELETE", caminho: "/ordenamentos/1/objetos/2"},
+		{metodo: "DELETE", caminho: "/ordenamentos/1/objetos"},
 		{metodo: "POST", caminho: "/ordenamentos/1/gerar-ordem"},
 	} {
 		t.Run(caso.metodo+caso.caminho, func(t *testing.T) {
@@ -82,6 +88,7 @@ func TestOrdenamentoPermiteColaboradorEAdmin(t *testing.T) {
 			{metodo: "POST", caminho: "/ordenamentos", statusEsperado: fiber.StatusCreated},
 			{metodo: "POST", caminho: "/ordenamentos/1/objetos", statusEsperado: fiber.StatusCreated},
 			{metodo: "DELETE", caminho: "/ordenamentos/1/objetos/2", statusEsperado: fiber.StatusOK},
+			{metodo: "DELETE", caminho: "/ordenamentos/1/objetos", statusEsperado: fiber.StatusOK},
 			{metodo: "POST", caminho: "/ordenamentos/1/gerar-ordem", statusEsperado: fiber.StatusOK},
 		} {
 			t.Run(papel+"_"+caso.metodo, func(t *testing.T) {
@@ -116,6 +123,7 @@ func novoAppOrdenamentoTeste(t *testing.T) (*fiber.App, *ordenamentoServiceFake)
 	app.Get("/ordenamentos/ativo", middlewares.ExigirAutenticacao("segredo-teste"), handler.GetAtivo)
 	app.Post("/ordenamentos", middlewares.ExigirAutenticacao("segredo-teste"), handler.Criar)
 	app.Post("/ordenamentos/:id/objetos", middlewares.ExigirAutenticacao("segredo-teste"), handler.AdicionarObjeto)
+	app.Delete("/ordenamentos/:id/objetos", middlewares.ExigirAutenticacao("segredo-teste"), handler.Limpar)
 	app.Delete("/ordenamentos/:id/objetos/:objetoId", middlewares.ExigirAutenticacao("segredo-teste"), handler.ExcluirObjeto)
 	app.Post("/ordenamentos/:id/gerar-ordem", middlewares.ExigirAutenticacao("segredo-teste"), handler.GerarOrdem)
 	return app, service

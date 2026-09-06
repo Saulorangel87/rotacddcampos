@@ -48,6 +48,11 @@ func (r *ordenamentoRepoFake) DeleteObjeto(_ context.Context, ordenamentoID, obj
 	return false, nil
 }
 
+func (r *ordenamentoRepoFake) LimparConteudo(_ context.Context, _ uint) error {
+	r.objetos = nil
+	return nil
+}
+
 type enderecoResolverFake struct {
 	resolucao ResolucaoEndereco
 }
@@ -174,6 +179,22 @@ func TestOrdenamentoServiceGuardaCoordenadaDoObjeto(t *testing.T) {
 	}
 	if detalhe.TotalSemCoordenadas != 0 || detalhe.Ruas[0].FonteCoordenada != models.FonteCoordenadaGeometria {
 		t.Fatalf("resumo de coordenadas inesperado: %+v", detalhe)
+	}
+}
+
+func TestOrdenamentoServiceLimparMantemOrdenamentoAberto(t *testing.T) {
+	repo := &ordenamentoRepoFake{
+		ativo:   &models.Ordenamento{ID: 7, UsuarioID: 42, Status: models.StatusOrdenamentoEmAndamento},
+		objetos: []models.ObjetoOrdenamento{{ID: 1, OrdenamentoID: 7, TextoEntrada: "Rua A", StatusResolucao: models.StatusResolucaoPendente}},
+	}
+	service := NewOrdenamentoService(repo, enderecoResolverFake{}, nil, nil, nil)
+
+	detalhe, err := service.Limpar(context.Background(), 42, 7)
+	if err != nil {
+		t.Fatalf("Limpar() erro inesperado: %v", err)
+	}
+	if detalhe.Status != models.StatusOrdenamentoEmAndamento || detalhe.TotalObjetos != 0 || detalhe.TotalRuas != 0 {
+		t.Fatalf("ordenamento após limpeza inesperado: %+v", detalhe)
 	}
 }
 

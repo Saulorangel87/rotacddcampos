@@ -55,6 +55,7 @@ type OrdenamentoService interface {
 	Criar(ctx context.Context, usuarioID uint) (*OrdenamentoDetalhe, error)
 	AdicionarObjeto(ctx context.Context, usuarioID, ordenamentoID uint, dto AdicionarObjetoDTO) (*OrdenamentoDetalhe, error)
 	ExcluirObjeto(ctx context.Context, usuarioID, ordenamentoID, objetoID uint) (*OrdenamentoDetalhe, error)
+	Limpar(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error)
 	GerarOrdem(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error)
 }
 
@@ -164,6 +165,19 @@ func (s *ordenamentoService) ExcluirObjeto(ctx context.Context, usuarioID, orden
 		return nil, ErrObjetoNaoEncontrado
 	}
 	if err := s.limparOrdemSugerida(ctx, ordenamento.ID); err != nil {
+		return nil, err
+	}
+	return s.montarDetalhe(ctx, ordenamento)
+}
+
+// Limpar remove os objetos e a ordem gerada, mantendo o ordenamento aberto
+// para que o colaborador possa registrar uma nova lista de encomendas.
+func (s *ordenamentoService) Limpar(ctx context.Context, usuarioID, ordenamentoID uint) (*OrdenamentoDetalhe, error) {
+	ordenamento, err := s.validarOrdenamentoAtivo(ctx, usuarioID, ordenamentoID)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.repo.LimparConteudo(ctx, ordenamento.ID); err != nil {
 		return nil, err
 	}
 	return s.montarDetalhe(ctx, ordenamento)

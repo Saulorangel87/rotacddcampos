@@ -138,6 +138,35 @@
   font-size: 0.82rem;
 }
 
+.andamentoAcoes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.limparLista {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid #d8a7a7;
+  border-radius: 7px;
+  background: #fff;
+  color: #9a3030;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.limparLista:hover:not(:disabled) {
+  border-color: #b84444;
+  background: #fff5f5;
+}
+
+.limparLista:disabled {
+  cursor: default;
+  opacity: 0.58;
+}
+
 .contadores {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
@@ -525,6 +554,11 @@
   .andamentoTopo {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .andamentoAcoes {
+    align-items: stretch;
+    justify-content: space-between;
   }
 
   .estadoInicial button {
