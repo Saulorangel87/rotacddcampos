@@ -85,7 +85,7 @@ export default function OrdenamentoPanel() {
           setEntrada(codigo)
           setOrigemEntrada('scanner')
           setDigitando(true)
-          setAvisoScanner('Código lido. Confira ou complemente com o endereço antes de adicionar.')
+          setAvisoScanner(mensagemCodigoLido(codigo))
           setErro('')
         },
       )
@@ -494,7 +494,18 @@ export default function OrdenamentoPanel() {
 
 function mensagemPendencia(motivo) {
   if (motivo === 'rua_ambigua') return 'Precisa de revisão · Há mais de uma rua possível'
+  if (motivo === 'cep_nao_encontrado') return 'Precisa de revisão · CEP não encontrado no cadastro'
   return 'Precisa de revisão · Rua não encontrada no cadastro'
+}
+
+function mensagemCodigoLido(codigo) {
+  if (/^\d{5}-?\d{3}$/.test(codigo)) {
+    return 'CEP lido. Confira o endereço encontrado e adicione a encomenda.'
+  }
+  if (/^[A-Z]{2}\d{9}[A-Z]{2}$/i.test(codigo)) {
+    return 'Código de rastreio lido. Informe ou complemente o endereço antes de adicionar.'
+  }
+  return 'Código lido. Confira ou complemente o endereço antes de adicionar.'
 }
 
 function rotuloCoordenada(rua) {

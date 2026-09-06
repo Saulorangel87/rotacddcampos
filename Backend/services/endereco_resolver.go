@@ -15,6 +15,7 @@ import (
 const (
 	MotivoRuaNaoEncontrada = "rua_nao_encontrada"
 	MotivoRuaAmbigua       = "rua_ambigua"
+	MotivoCEPNaoEncontrado = "cep_nao_encontrado"
 )
 
 var (
@@ -24,6 +25,7 @@ var (
 	reSufixoSegmento   = regexp.MustCompile(`(?i)\s+-\s+(AT[ÉE]|DE|LADO)\s+.*$`)
 	reFaixaAte         = regexp.MustCompile(`\bATE\s+(\d+)`)
 	reFaixaDe          = regexp.MustCompile(`\bDE\s+(\d+)\s+(?:A|AO)\s+(\d+|FIM)\b`)
+	reCEP              = regexp.MustCompile(`^\d{5}-?\d{3}$`)
 	prefixosLogradouro = map[string]bool{
 		"RUA": true, "R": true, "AVENIDA": true, "AV": true,
 		"TRAVESSA": true, "TV": true, "PRACA": true, "PCA": true, "ESTRADA": true,
@@ -75,6 +77,14 @@ func (r *enderecoResolver) Resolver(ctx context.Context, entrada string) (Resolu
 		return pendencia(MotivoRuaNaoEncontrada, ""), nil
 	}
 
+	// Etiquetas padronizadas podem trazer um código de barras linear com o
+	// CEP de destino. Quando o scanner (ou a digitação) devolver oito dígitos,
+	// resolvemos diretamente no cadastro interno antes de tentar tratá-los como
+	// nome de rua.
+	if resolucao, reconhecido, err := r.resolverCEP(ctx, entrada); err != nil || reconhecido {
+		return resolucao, err
+	}
+
 	// Primeiro preserva números que realmente fazem parte do nome, como "Rua 13".
 	if resolucao, encontrou, err := r.resolverTermo(ctx, entrada, ""); err != nil || encontrou {
 		return resolucao, err
@@ -92,6 +102,52 @@ func (r *enderecoResolver) Resolver(ctx context.Context, entrada string) (Resolu
 		return pendencia(MotivoRuaNaoEncontrada, numero), nil
 	}
 	return resolucao, nil
+}
+
+func (r *enderecoResolver) resolverCEP(ctx context.Context, entrada string) (ResolucaoEndereco, bool, error) {
+	cep := normalizarCEP(entrada)
+	if cep == "" {
+		return ResolucaoEndereco{}, false, nil
+	}
+
+	candidatas, err := r.ruas.FindAll(ctx, map[string]string{"cep": cep})
+	if err != nil {
+		return ResolucaoEndereco{}, true, err
+	}
+
+	// O repositório faz uma busca parcial para a tela de ruas. Aqui filtramos
+	// novamente por igualdade para que um CEP de oito dígitos nunca aceite um
+	// registro apenas parecido.
+	filtradas := make([]models.Rua, 0, len(candidatas))
+	vistas := make(map[uint]bool)
+	for _, rua := range candidatas {
+		if normalizarCEP(rua.CEP) != cep || vistas[rua.ID] {
+			continue
+		}
+		vistas[rua.ID] = true
+		filtradas = append(filtradas, rua)
+	}
+	if len(filtradas) == 0 {
+		return pendencia(MotivoCEPNaoEncontrado, ""), true, nil
+	}
+	if len(filtradas) > 1 {
+		grupos := make(map[string][]models.Rua)
+		for _, rua := range filtradas {
+			base := normalizarNomeBase(rua.NomeRua)
+			grupos[base] = append(grupos[base], rua)
+		}
+		return pendenciaComOpcoes(MotivoRuaAmbigua, "", grupos), true, nil
+	}
+
+	selecionada := filtradas[0]
+	id := selecionada.ID
+	return ResolucaoEndereco{
+		RuaID:            &id,
+		NomeRua:          nomeBaseExibicao(selecionada.NomeRua),
+		ChaveAgrupamento: "rua:" + strconv.FormatUint(uint64(id), 10),
+		CEP:              selecionada.CEP,
+		Status:           models.StatusResolucaoIdentificado,
+	}, true, nil
 }
 
 func (r *enderecoResolver) resolverTermo(ctx context.Context, termo, numero string) (ResolucaoEndereco, bool, error) {
@@ -194,6 +250,27 @@ func (r *enderecoResolver) Selecionar(ctx context.Context, entrada string, ruaID
 	entrada = strings.TrimSpace(entrada)
 	if entrada == "" || ruaID == 0 {
 		return pendencia(MotivoRuaNaoEncontrada, ""), nil
+	}
+
+	if cep := normalizarCEP(entrada); cep != "" {
+		candidatas, err := r.ruas.FindAll(ctx, map[string]string{"cep": cep})
+		if err != nil {
+			return ResolucaoEndereco{}, err
+		}
+		for _, rua := range candidatas {
+			if rua.ID != ruaID || normalizarCEP(rua.CEP) != cep {
+				continue
+			}
+			id := rua.ID
+			return ResolucaoEndereco{
+				RuaID:            &id,
+				NomeRua:          nomeBaseExibicao(rua.NomeRua),
+				ChaveAgrupamento: "rua:" + strconv.FormatUint(uint64(id), 10),
+				CEP:              rua.CEP,
+				Status:           models.StatusResolucaoIdentificado,
+			}, nil
+		}
+		return pendencia(MotivoCEPNaoEncontrado, ""), nil
 	}
 
 	for _, tentativa := range []struct {
@@ -471,6 +548,14 @@ func normalizarTexto(texto string) string {
 	}, decomposto)
 	texto = reNaoAlfanumerico.ReplaceAllString(texto, " ")
 	return strings.TrimSpace(reEspacos.ReplaceAllString(texto, " "))
+}
+
+func normalizarCEP(texto string) string {
+	texto = strings.TrimSpace(texto)
+	if !reCEP.MatchString(texto) {
+		return ""
+	}
+	return strings.ReplaceAll(texto, "-", "")
 }
 
 func melhorTokenBusca(normalizado string) string {

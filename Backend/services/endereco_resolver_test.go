@@ -206,3 +206,59 @@ func TestEnderecoResolverConfirmaOpcaoDeCorrespondenciaParcial(t *testing.T) {
 		t.Fatalf("seleção parcial inesperada: %+v", confirmada)
 	}
 }
+
+func TestEnderecoResolverIdentificaRuaPorCEP(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 75, NomeRua: "AVENIDA SETE DE SETEMBRO - DE 230 AO 490 - LADO PAR", Distrito: "614", CEP: "28010562"},
+		{ID: 76, NomeRua: "RUA OUTRA", Distrito: "614", CEP: "28010561"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "28010-562")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoIdentificado || resultado.RuaID == nil || *resultado.RuaID != 75 {
+		t.Fatalf("resolução por CEP inesperada: %+v", resultado)
+	}
+	if resultado.NomeRua != "AVENIDA SETE DE SETEMBRO" || resultado.CEP != "28010562" {
+		t.Fatalf("rua identificada por CEP inesperada: %+v", resultado)
+	}
+}
+
+func TestEnderecoResolverDeixaCEPNaoCadastradoPendente(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 1, NomeRua: "RUA TESTE", CEP: "28010000"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "99999-999")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoPendente || resultado.MotivoPendencia != MotivoCEPNaoEncontrado {
+		t.Fatalf("pendência de CEP inesperada: %+v", resultado)
+	}
+}
+
+func TestEnderecoResolverExpõeOpcoesParaCEPAmbiguo(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 10, NomeRua: "RUA SÃO GONÇALO", Distrito: "604", CEP: "28023592"},
+		{ID: 11, NomeRua: "RUA SÃO GONÇALO", Distrito: "620", CEP: "28023592"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "28023592")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoPendente || resultado.MotivoPendencia != MotivoRuaAmbigua || len(resultado.Opcoes) != 2 {
+		t.Fatalf("opções de CEP ambíguo inesperadas: %+v", resultado)
+	}
+
+	selecionavel := resolver.(EnderecoResolverSelecionavel)
+	confirmada, err := selecionavel.Selecionar(context.Background(), "28023592", 11)
+	if err != nil {
+		t.Fatalf("Selecionar() erro inesperado: %v", err)
+	}
+	if confirmada.Status != models.StatusResolucaoIdentificado || confirmada.RuaID == nil || *confirmada.RuaID != 11 {
+		t.Fatalf("seleção por CEP inesperada: %+v", confirmada)
+	}
+}
