@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão de duplicidades — CDD Campos</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root { --azul:#003d73; --azul-escuro:#002d55; --azul-claro:#eaf2fb; --amarelo:#ffd400; --cinza-050:#f8fafc; --cinza-100:#f1f4f7; --cinza-200:#dce3ea; --cinza-500:#657487; --verde:#1e7e34; --laranja:#a85a00; --vermelho:#b3261e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: #162235; font-family: Segoe UI, Roboto, Arial, sans-serif; background: #eef2f5; }
+  button, input { font: inherit; }
+  button { cursor: pointer; }
+  .topo { min-height: 64px; padding: 10px 18px; color: #fff; background: var(--azul); display: flex; align-items: center; gap: 18px; }
+  .topo h1 { margin: 0; font-size: 1.05rem; }
+  .topo p { margin: 3px 0 0; color: #d9e8f7; font-size: .78rem; }
+  .progresso { margin-left: auto; padding: 7px 11px; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; font-size: .82rem; white-space: nowrap; }
+  .layout { display: grid; grid-template-columns: 430px minmax(0, 1fr); height: calc(100vh - 64px); }
+  .painel { padding: 14px; overflow-y: auto; background: #fff; border-right: 1px solid var(--cinza-200); }
+  #mapa { min-height: 520px; background: #dce5eb; }
+  .card { margin-bottom: 12px; padding: 13px; background: var(--cinza-050); border: 1px solid var(--cinza-200); border-radius: 10px; }
+  .rotulo { display: block; margin-bottom: 5px; color: var(--cinza-500); font-size: .69rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+  input[type=text], input[type=file] { width: 100%; margin-top: 5px; padding: 9px 10px; color: #162235; background: #fff; border: 1px solid #bccbd9; border-radius: 7px; font-size: .84rem; }
+  input[type=file] { padding: 7px; }
+  button { min-height: 36px; padding: 7px 10px; border-radius: 7px; font-size: .8rem; font-weight: 750; text-align: center; }
+  button:disabled { cursor: wait; opacity: .58; }
+  .btn-primario { width: 100%; color: #fff; background: var(--azul); border: 1px solid var(--azul); }
+  .btn-primario:hover { background: var(--azul-escuro); }
+  .btn-secundario { color: var(--azul); background: #fff; border: 1px solid #abc3da; }
+  .btn-secundario:hover { background: var(--azul-claro); }
+  .btn-perigo { color: var(--vermelho); background: #fff; border: 1px solid #e2aaa6; }
+  .linha-botoes { display: flex; gap: 7px; margin-top: 8px; }
+  .linha-botoes > * { flex: 1; }
+  .ajuda { color: #526276; font-size: .77rem; line-height: 1.45; }
+  .ajuda strong { color: #253b56; }
+  #lista-grupos { max-height: 300px; overflow-y: auto; border: 1px solid var(--cinza-200); border-radius: 8px; background: #fff; }
+  .grupo { padding: 9px; border-bottom: 1px solid #edf1f4; cursor: pointer; }
+  .grupo:last-child { border-bottom: 0; }
+  .grupo:hover, .grupo.atual { background: var(--azul-claro); }
+  .grupo.atual { box-shadow: inset 3px 0 0 var(--azul); }
+  .grupo strong { display: block; color: #233f60; font-size: .8rem; }
+  .grupo small { display: block; margin-top: 3px; color: var(--cinza-500); font-size: .7rem; }
+  .lista-cabecalho { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0 7px; }
+  .lista-cabecalho small { color: var(--cinza-500); }
+  .cadastro { margin-top: 8px; padding: 9px; background: #fff; border: 1px solid var(--cinza-200); border-radius: 8px; }
+  .cadastro.decidido { background: #f6fff8; border-color: #9ed3aa; }
+  .cadastro.ativo { border-color: #0b72ce; box-shadow: 0 0 0 2px #cfe5fb; }
+  .cadastro strong { display: block; color: #1c426b; font-size: .82rem; }
+  .cadastro small { display: block; margin-top: 4px; color: #526276; font-size: .72rem; line-height: 1.35; }
+  .cadastro-acoes { display: flex; justify-content: flex-end; margin-top: 7px; }
+  .btn-limpar-escolha { min-height: 28px; padding: 4px 8px; color: var(--vermelho); background: #fff; border: 1px solid #e2aaa6; font-size: .7rem; }
+  .btn-limpar-escolha:hover { color: #fff; background: var(--vermelho); }
+  .badge { display: inline-block; margin-top: 5px; padding: 2px 6px; border-radius: 999px; color: #5d3a00; background: #fff0c9; font-size: .68rem; font-weight: 750; }
+  .badge.ok { color: #155d26; background: #dcf3e1; }
+  .componentes { display: grid; gap: 7px; margin-top: 9px; }
+  .componente { width: 100%; color: #29435f; background: #fff; border: 1px solid #c4d5e5; text-align: left; }
+  .componente:hover, .componente.selecionado { color: #07365e; background: var(--azul-claro); border-color: #0b72ce; }
+  .componente span { display: block; margin-top: 3px; color: var(--cinza-500); font-size: .7rem; font-weight: 500; }
+  .status { margin-top: 8px; padding: 8px 9px; color: var(--laranja); background: #fff5e4; border: 1px solid #f0d49c; border-radius: 7px; font-size: .77rem; line-height: 1.35; }
+  .status.ok { color: var(--verde); background: #effaf1; border-color: #b9dfc0; }
+  .vazio { padding: 12px; color: var(--cinza-500); font-size: .78rem; text-align: center; }
+  .legenda { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; color: #526276; font-size: .72rem; }
+  .cor { display: inline-block; width: 12px; height: 4px; margin-right: 4px; vertical-align: middle; border-radius: 2px; }
+  @media (max-width: 850px) { .layout { display: flex; height: auto; min-height: calc(100vh - 64px); flex-direction: column-reverse; } #mapa { height: 55vh; min-height: 380px; } .painel { overflow: visible; } .progresso { margin-left: 0; } }
+</style>
+</head>
+<body>
+<header class="topo">
+  <div><h1>Revisão de duplicidades de ruas</h1><p>Selecione o componente geográfico correto antes de corrigir o cadastro.</p></div>
+  <div class="progresso" id="progresso">0 / 0 decisões</div>
+</header>
+<div class="layout">
+  <aside class="painel">
+    <section class="card">
+      <label class="rotulo" for="arquivo">1. Carregar relatório por cadastro</label>
+      <input type="file" id="arquivo" accept=".csv,text/csv">
+      <p class="ajuda">Use <strong>relatorio_duplicidades_geometrias.csv</strong>. O arquivo é lido somente neste navegador.</p>
+    </section>
+    <section class="card">
+      <label class="rotulo" for="filtro">2. Filtrar grupos</label>
+      <input type="text" id="filtro" placeholder="Nome, bairro, distrito ou CEP">
+      <div class="lista-cabecalho"><span class="rotulo" style="margin:0;">Nomes repetidos</span><small id="contador"></small></div>
+      <div id="lista-grupos"><div class="vazio">Carregue o relatório para começar.</div></div>
+    </section>
+    <section class="card">
+      <span class="rotulo">Grupo selecionado</span>
+      <strong id="nome-grupo">—</strong>
+      <div id="cadastros"></div>
+      <div class="linha-botoes"><button class="btn-secundario" id="buscar" disabled>Consultar OSM</button><button class="btn-secundario" id="limpar" disabled>Limpar mapa</button></div>
+      <div class="status" id="status">Carregue o relatório e escolha um grupo.</div>
+      <div class="legenda"><span><i class="cor" style="background:#0b72ce"></i>componente OSM</span><span><i class="cor" style="background:#e67e22"></i>selecionado no mapa</span></div>
+      <p class="ajuda">O mapa exibe o cadastro ativo. As escolhas anteriores continuam salvas nos cartões com fundo verde.</p>
+    </section>
+    <section class="card">
+      <span class="rotulo">3. Exportar decisões</span>
+      <p class="ajuda">A decisão é salva apenas no navegador. Revise o JSON antes de qualquer aplicação no banco.</p>
+      <button class="btn-primario" id="baixar" disabled>Baixar decisões JSON</button>
+      <div class="linha-botoes"><button class="btn-secundario" id="importar">Importar decisões</button><button class="btn-perigo" id="apagar">Apagar decisões</button></div>
+      <input type="file" id="arquivo-decisoes" accept="application/json,.json" hidden>
+    </section>
+    <p class="ajuda"><strong>Fluxo seguro:</strong> esta ferramenta consulta o OpenStreetMap e exporta escolhas. Ela não grava no banco. O aplicador exige o campo <code>componente</code> para nomes com mais de um grupo.</p>
+  </aside>
+  <main id="mapa" aria-label="Mapa dos componentes geográficos"></main>
+</div>
+<script>
+const CENTRO_CAMPOS = [-21.7545, -41.3244];
+const LIMIAR_CONEXAO_METROS = 80;
+const CORES = ['#0b72ce', '#8e44ad', '#16a085', '#d35400', '#c0392b', '#2c3e50', '#7f8c8d', '#27ae60'];
+const CHAVE_STORAGE = 'revisao_duplicidades_osm_v1';
+const mapa = L.map('mapa').setView(CENTRO_CAMPOS, 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', maxZoom: 19 }).addTo(mapa);
+let registros = [];
+let grupos = [];
+let grupoAtual = null;
+let componentesAtuais = [];
+let camadas = [];
+let decisoes = carregarDecisoes();
+
+function carregarDecisoes() { try { const valor = localStorage.getItem(CHAVE_STORAGE); return valor ? JSON.parse(valor) : {}; } catch (_) { return {}; } }
+function salvarDecisoes() { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(decisoes)); atualizarProgresso(); }
+function textoBusca(valor) { return String(valor || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase(); }
+function escaparRegex(valor) { return String(valor || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function distanciaMetros(a, b) { const raio = 6371000; const r = Math.PI / 180; const lat1 = a[1] * r, lat2 = b[1] * r; const dLat = (b[1] - a[1]) * r, dLon = (b[0] - a[0]) * r; const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2; return 2 * raio * Math.asin(Math.min(1, Math.sqrt(h))); }
+function uniao(parent, a, b) { const raiz = x => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; }; const ra = raiz(a), rb = raiz(b); if (ra !== rb) parent[rb] = ra; }
+function componentesConectados(ways) {
+  const parent = ways.map((_, indice) => indice);
+  ways.forEach((way, i) => ways.slice(i + 1).forEach((outro, j) => { const extremosA = [way.geometry[0], way.geometry[way.geometry.length - 1]]; const extremosB = [outro.geometry[0], outro.geometry[outro.geometry.length - 1]]; if (Math.min(...extremosA.flatMap(a => extremosB.map(b => distanciaMetros([a.lon, a.lat], [b.lon, b.lat])))) <= LIMIAR_CONEXAO_METROS) uniao(parent, i, i + 1 + j); }));
+  const mapaComponentes = new Map();
+  ways.forEach((way, i) => { let raiz = i; while (parent[raiz] !== raiz) { parent[raiz] = parent[parent[raiz]]; raiz = parent[raiz]; } if (!mapaComponentes.has(raiz)) mapaComponentes.set(raiz, []); mapaComponentes.get(raiz).push(way); });
+  return [...mapaComponentes.values()].sort((a, b) => Number(a[0].id) - Number(b[0].id));
+}
+function parseCsv(texto) {
+  const linhas = texto.replace(/^\uFEFF/, '').split(/\r?\n/).filter(linha => linha.trim());
+  if (linhas.length < 2) return [];
+  function separar(linha) { const saida = []; let atual = '', aspas = false; for (let i = 0; i < linha.length; i += 1) { const caractere = linha[i]; if (caractere === '"' && linha[i + 1] === '"' && aspas) { atual += '"'; i += 1; } else if (caractere === '"') aspas = !aspas; else if (caractere === ';' && !aspas) { saida.push(atual); atual = ''; } else atual += caractere; } saida.push(atual); return saida; }
+  const cabecalho = separar(linhas[0]); return linhas.slice(1).map(linha => { const valores = separar(linha); return Object.fromEntries(cabecalho.map((chave, indice) => [chave, valores[indice] || ''])); });
+}
+function agruparRegistros() {
+  const mapaGrupos = new Map();
+  registros.forEach(registro => { const chave = registro.ids_do_grupo || registro.nome_normalizado; if (!mapaGrupos.has(chave)) mapaGrupos.set(chave, []); mapaGrupos.get(chave).push(registro); });
+  grupos = [...mapaGrupos.values()].map(lista => ({ chave: lista[0].ids_do_grupo || lista[0].nome_normalizado, nome: lista[0].nome_rua, nomeBase: lista[0].nome_base_normalizado || lista[0].nome_normalizado, registros: lista.sort((a, b) => Number(a.rua_id) - Number(b.rua_id)) }));
+  grupos.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+}
+function gruposFiltrados() { const termo = textoBusca(document.getElementById('filtro').value); return grupos.filter(grupo => !termo || textoBusca(grupo.registros.map(item => [item.nome_rua, item.bairro, item.distrito, item.cep].join(' ')).join(' ')).includes(termo)); }
+function atualizarProgresso() { const total = grupos.reduce((soma, grupo) => soma + grupo.registros.length, 0); const feitos = Object.keys(decisoes).length; document.getElementById('progresso').textContent = `${feitos} / ${total} decisões`; document.getElementById('baixar').disabled = !feitos; }
+function renderizarGrupos() { const lista = document.getElementById('lista-grupos'); const filtrados = gruposFiltrados(); document.getElementById('contador').textContent = `${filtrados.length} de ${grupos.length}`; lista.innerHTML = ''; if (!filtrados.length) { lista.innerHTML = '<div class="vazio">Nenhum grupo encontrado.</div>'; return; } filtrados.forEach(grupo => { const item = document.createElement('div'); item.className = 'grupo' + (grupo === grupoAtual ? ' atual' : ''); const concluidos = grupo.registros.filter(registro => decisoes[registro.rua_id]).length; item.innerHTML = `<strong>${grupo.nome}</strong><small>${grupo.registros.length} cadastro(s) · ${concluidos} decisão(ões) · IDs ${grupo.registros.map(registro => registro.rua_id).join(', ')}</small>`; item.onclick = () => selecionarGrupo(grupo); lista.appendChild(item); }); atualizarProgresso(); }
+function limparCamadas() { camadas.forEach(camada => mapa.removeLayer(camada)); camadas = []; }
+function selecionarGrupo(grupo) { grupoAtual = grupo; componentesAtuais = []; limparCamadas(); document.getElementById('nome-grupo').textContent = grupo.nome; document.getElementById('buscar').disabled = false; document.getElementById('limpar').disabled = false; document.getElementById('status').className = 'status'; document.getElementById('status').textContent = 'Escolha um cadastro e consulte os componentes no OSM.'; renderizarCadastros(); renderizarGrupos(); }
+function renderizarCadastros() { const container = document.getElementById('cadastros'); container.innerHTML = ''; if (!grupoAtual) return; grupoAtual.registros.forEach(registro => { const card = document.createElement('div'); const decisao = decisoes[registro.rua_id]; const ativo = grupoAtual.registroAtual && Number(grupoAtual.registroAtual.rua_id) === Number(registro.rua_id); card.className = 'cadastro' + (decisao?.componente ? ' decidido' : '') + (ativo ? ' ativo' : ''); const estadoGeometria = registro.estado_geometria === 'valida' ? 'válida' : (registro.estado_geometria || 'não informada'); card.innerHTML = `<strong>${registro.nome_rua} · ID ${registro.rua_id}</strong><small>Bairro: ${registro.bairro || 'não informado'}<br>CEP: ${registro.cep || 'não informado'} · Distrito: ${registro.distrito || 'não informado'}<br>Geometria no banco: ${estadoGeometria}</small>${decisao?.componente ? `<span class="badge ok">Componente ${decisao.componente} escolhido</span><div class="cadastro-acoes"><button class="btn-limpar-escolha" type="button">Limpar escolha</button></div>` : '<span class="badge">Pendente de revisão</span>'}`; card.onclick = () => selecionarCadastro(registro, card); const limpar = card.querySelector('.btn-limpar-escolha'); if (limpar) limpar.onclick = evento => { evento.stopPropagation(); limparDecisao(registro); }; container.appendChild(card); }); }
+function selecionarCadastro(registro) { const temComponentes = componentesAtuais.length > 0; grupoAtual.registroAtual = registro; renderizarCadastros(); if (temComponentes) renderizarComponentes(); else limparCamadas(); document.getElementById('status').className = 'status'; document.getElementById('status').textContent = temComponentes ? `Cadastro ${registro.rua_id} selecionado. Escolha o componente correto.` : `Cadastro ${registro.rua_id} selecionado. Clique em “Consultar OSM”.`; }
+function consultaNome(grupo) { const bruto = grupo.nome || grupo.nomeBase || ''; return bruto.replace(/^(RUA|AVENIDA|AV|TRAVESSA|TV|PRA[CÇ]A|ESTRADA|RODOVIA|ALAMEDA|LARGO|BOULEVARD)\.?\s+/i, '').split(/\s*-\s*(ATÉ|ATE|DE|LADO)\b/i)[0].trim(); }
+function montarConsulta(nome) { const termo = escaparRegex(nome).replace(/\s+/g, '[ \\.-]*'); return `[out:json][timeout:60];area["name"="Campos dos Goytacazes"]["boundary"="administrative"]->.a;(way["highway"~"^(residential|primary|secondary|tertiary|unclassified|living_street|primary_link|secondary_link|tertiary_link)$"]["name"~"${termo}",i](area.a););out geom;`; }
+async function buscarOverpass(consulta) { const urls = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter']; let ultimoErro; for (const url of urls) { try { const resposta = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: 'data=' + encodeURIComponent(consulta) }); if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`); return await resposta.json(); } catch (erro) { ultimoErro = erro; } } throw ultimoErro || new Error('Overpass indisponível'); }
+async function consultarOsm() { if (!grupoAtual) return; const registro = grupoAtual.registroAtual || grupoAtual.registros[0]; const botao = document.getElementById('buscar'); botao.disabled = true; botao.textContent = 'Consultando…'; document.getElementById('status').className = 'status'; document.getElementById('status').textContent = `Consultando “${consultaNome(grupoAtual)}” no OpenStreetMap…`; try { const dados = await buscarOverpass(montarConsulta(consultaNome(grupoAtual))); const ways = (dados.elements || []).filter(elemento => elemento.type === 'way' && Array.isArray(elemento.geometry) && elemento.geometry.length >= 2); componentesAtuais = componentesConectados(ways); renderizarComponentes(); if (!componentesAtuais.length) { const estado = registro.estado_geometria === 'valida' ? ' O banco já possui uma geometria válida; o nome não foi localizado no OSM.' : ' Confira o estado da geometria exibido no cartão.'; document.getElementById('status').textContent = `Nenhum trecho encontrado no OSM para este nome.${estado}`; } else document.getElementById('status').textContent = `${componentesAtuais.length} componente(s) contínuo(s) encontrado(s). Escolha o que pertence ao cadastro ${registro.rua_id}.`; } catch (erro) { document.getElementById('status').textContent = `Consulta OSM indisponível: ${erro.message}. Tente novamente mais tarde.`; } finally { botao.disabled = false; botao.textContent = 'Consultar OSM'; } }
+function renderizarComponentes() { limparCamadas(); const container = document.getElementById('cadastros'); const registro = grupoAtual.registroAtual || grupoAtual.registros[0]; const componenteEscolhido = decisoes[registro.rua_id]?.componente; container.querySelector('.componentes')?.remove(); const area = document.createElement('div'); area.className = 'componentes'; componentesAtuais.forEach((componente, indice) => { const numero = indice + 1; const selecionado = componenteEscolhido === numero; const cor = selecionado ? '#e67e22' : CORES[indice % CORES.length]; const linhas = componente.map(way => way.geometry.map(ponto => [ponto.lat, ponto.lon])); linhas.forEach(linha => { const camada = L.polyline(linha, { color: cor, weight: selecionado ? 7 : 5, opacity: .85 }).addTo(mapa); camada.on('click', () => escolherComponente(registro, numero)); camadas.push(camada); }); const botao = document.createElement('button'); botao.className = 'componente' + (selecionado ? ' selecionado' : ''); botao.innerHTML = `Componente ${numero}<span>${componente.length} way(s) · OSM IDs: ${componente.map(way => way.id).join(', ')}</span>`; botao.onclick = () => escolherComponente(registro, numero); area.appendChild(botao); }); container.appendChild(area); if (camadas.length) mapa.fitBounds(L.featureGroup(camadas).getBounds().pad(.15)); }
+function escolherComponente(registro, numero) { decisoes[registro.rua_id] = { rua_id: Number(registro.rua_id), decisao: 'aceito', nome_osm: consultaNome(grupoAtual), componente: numero, bairro: registro.bairro, cep: registro.cep, distrito: registro.distrito }; salvarDecisoes(); renderizarCadastros(); renderizarComponentes(); document.getElementById('status').className = 'status ok'; document.getElementById('status').textContent = `Componente ${numero} escolhido para o cadastro ${registro.rua_id}.`; }
+function limparDecisao(registro) { if (!confirm(`Remover a escolha do cadastro ${registro.rua_id}?`)) return; delete decisoes[registro.rua_id]; salvarDecisoes(); renderizarCadastros(); if (componentesAtuais.length) renderizarComponentes(); document.getElementById('status').className = 'status'; document.getElementById('status').textContent = `Escolha do cadastro ${registro.rua_id} removida. Ele voltou para pendente de revisão.`; }
+function baixarDecisoes() { const saida = Object.values(decisoes).sort((a, b) => a.rua_id - b.rua_id); const blob = new Blob([JSON.stringify(saida, null, 2)], { type: 'application/json;charset=utf-8' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = 'decisoes_duplicidades_osm.json'; link.click(); URL.revokeObjectURL(url); }
+document.getElementById('arquivo').onchange = async evento => { const arquivo = evento.target.files?.[0]; if (!arquivo) return; try { registros = parseCsv(await arquivo.text()); if (!registros.length || !registros[0].rua_id) throw new Error('CSV incompatível'); agruparRegistros(); grupoAtual = null; componentesAtuais = []; limparCamadas(); document.getElementById('nome-grupo').textContent = '—'; document.getElementById('cadastros').innerHTML = ''; document.getElementById('buscar').disabled = true; document.getElementById('limpar').disabled = true; document.getElementById('status').textContent = `${registros.length} cadastros carregados. Escolha um grupo.`; renderizarGrupos(); } catch (erro) { alert('Não foi possível ler o relatório. Use relatorio_duplicidades_geometrias.csv.'); } finally { evento.target.value = ''; } };
+document.getElementById('filtro').oninput = renderizarGrupos;
+document.getElementById('buscar').onclick = consultarOsm;
+document.getElementById('limpar').onclick = () => { limparCamadas(); componentesAtuais = []; if (grupoAtual) document.getElementById('status').textContent = 'Mapa limpo. Consulte novamente quando precisar.'; };
+document.getElementById('baixar').onclick = baixarDecisoes;
+document.getElementById('importar').onclick = () => document.getElementById('arquivo-decisoes').click();
+document.getElementById('arquivo-decisoes').onchange = async evento => { const arquivo = evento.target.files?.[0]; if (!arquivo) return; try { const importadas = JSON.parse(await arquivo.text()); if (!Array.isArray(importadas)) throw new Error('formato'); importadas.forEach(decisao => { if (Number.isInteger(Number(decisao.rua_id)) && Number.isInteger(Number(decisao.componente)) && decisao.componente > 0) decisoes[decisao.rua_id] = decisao; }); salvarDecisoes(); if (grupoAtual) renderizarCadastros(); renderizarGrupos(); } catch (_) { alert('JSON de decisões inválido.'); } finally { evento.target.value = ''; } };
+document.getElementById('apagar').onclick = () => { if (confirm('Apagar as decisões salvas neste navegador?')) { decisoes = {}; salvarDecisoes(); if (grupoAtual) renderizarCadastros(); renderizarGrupos(); } };
+atualizarProgresso();
+</script>
+</body>
+</html>

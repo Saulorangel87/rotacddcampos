@@ -385,6 +385,7 @@ scripts/aplicar_geometria_manual.py
 scripts/desenhar-ruas-manual.html
 scripts/auditar_duplicidades_geometrias.py
 scripts/osm_agrupamento.py
+scripts/revisar-duplicidades.html
 ```
 
 Eles são executados localmente e geram resultados para revisão humana antes de
@@ -400,6 +401,19 @@ salvos em `scripts/revisao_matches_ambiguos.csv`. Ao aplicar uma revisão com
 `aplicar_revisao_osm.py`, decisões ambíguas precisam informar o campo
 `componente` (1, 2, ...). Isso evita juntar automaticamente trechos de bairros
 diferentes.
+
+Para revisar as duplicidades, abra `scripts/revisar-duplicidades.html` no
+navegador, carregue `scripts/relatorio_duplicidades_geometrias.csv`, selecione
+um cadastro e clique em **Consultar OSM**. A tela mostra os componentes
+contínuos encontrados, permite escolher o componente do bairro/CEP correto e
+exporta `decisoes_duplicidades_osm.json`. A ferramenta não grava no banco.
+Quando a revisão estiver concluída, o aplicador pode receber esse arquivo
+explicitamente com `python scripts/aplicar_revisao_osm.py --arquivo
+decisoes_duplicidades_osm.json`; ele lê as credenciais disponíveis no ambiente
+ou em `Backend/.env`.
+Se o componente OSM representar apenas o nome correto, mas um trecho maior que
+o cadastro postal, deixe a decisão pendente: essa situação exige revisão por
+segmento antes de aplicar qualquer geometria.
 
 O editor `scripts/desenhar-ruas-manual.html` incorpora as 73 pendências atuais
 do relatório e permite filtrar por nome, bairro, distrito ou CEP, localizar a

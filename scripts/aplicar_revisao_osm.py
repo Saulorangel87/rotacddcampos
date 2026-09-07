@@ -9,13 +9,17 @@ fica pendente e nenhuma coordenada é alterada.
 Como usar:
   1. Termine (ou pare quando quiser) a revisão na ferramenta HTML.
   2. Clique em "Baixar decisões (JSON)" — salva decisoes_revisao_osm.json.
-  3. Coloque esse arquivo na mesma pasta deste script (Backend/../scripts).
+  3. Coloque esse arquivo na mesma pasta deste script (Backend/../scripts) ou
+     informe outro caminho com --arquivo.
   4. Rode:
        python aplicar_revisao_osm.py
+     Para o revisor de duplicidades:
+       python aplicar_revisao_osm.py --arquivo decisoes_duplicidades_osm.json
 
 Requisitos: as mesmas do casar_ruas_osm.py (pip install requests psycopg2-binary).
 """
 
+import argparse
 import json
 import re
 import os
@@ -24,15 +28,35 @@ import unicodedata
 
 import requests
 import psycopg2
+from pathlib import Path
 
 from osm_agrupamento import agrupar_segmentos
 
-# ── Lê do ambiente — mesmo motivo do casar_ruas_osm.py ────────────────────
+ROOT = Path(__file__).resolve().parents[1]
+ENV_PATH = ROOT / "Backend" / ".env"
+
+
+def carregar_env() -> None:
+    """Carrega do Backend/.env somente as variáveis ainda ausentes."""
+
+    if not ENV_PATH.exists():
+        return
+    for linha in ENV_PATH.read_text(encoding="utf-8").splitlines():
+        linha = linha.strip()
+        if not linha or linha.startswith("#") or "=" not in linha:
+            continue
+        chave, valor = linha.split("=", 1)
+        chave = chave.strip()
+        if chave and chave not in os.environ:
+            os.environ[chave] = valor.strip().strip('"').strip("'")
+
+
+carregar_env()
 DB_HOST = os.environ.get("DB_HOST", "localhost")
 DB_PORT = int(os.environ.get("DB_PORT", "5432"))
 DB_NAME = os.environ.get("DB_NAME", "rotas_db")
 DB_USER = os.environ.get("DB_USER", "postgres")
-DB_PASSWORD = os.environ["DB_PASSWORD"]
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
 # ────────────────────────────────────────────────────────────────────────
 
 ARQUIVO_DECISOES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "decisoes_revisao_osm.json")
@@ -117,11 +141,20 @@ def buscar_ruas_osm() -> dict:
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Aplica decisões de componentes OSM ao banco.")
+    parser.add_argument(
+        "--arquivo",
+        default=ARQUIVO_DECISOES,
+        help="JSON exportado pelo revisor (padrão: decisoes_revisao_osm.json)",
+    )
+    args = parser.parse_args()
+
+    arquivo_decisoes = os.path.abspath(args.arquivo)
     try:
-        with open(ARQUIVO_DECISOES, encoding="utf-8") as f:
+        with open(arquivo_decisoes, encoding="utf-8") as f:
             decisoes = json.load(f)
     except FileNotFoundError:
-        print(f"Não achei {ARQUIVO_DECISOES} nesta pasta.")
+        print(f"Não achei {arquivo_decisoes}.")
         print("Baixe o JSON pela ferramenta de revisão e coloque ele aqui do lado do script.")
         return
 

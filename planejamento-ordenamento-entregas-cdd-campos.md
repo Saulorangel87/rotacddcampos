@@ -1601,3 +1601,26 @@ quando há um componente único; nomes com vários componentes ficam em
 `scripts/revisao_matches_ambiguos.csv`. O aplicador de revisões exige o índice
 `componente` para uma escolha ambígua. Nenhuma geometria do banco foi alterada
 por esta auditoria.
+
+### Revisor visual de duplicidades — 07/09/2026
+
+Foi criada a ferramenta local `scripts/revisar-duplicidades.html`. Ela carrega
+`scripts/relatorio_duplicidades_geometrias.csv`, agrupa os cadastros repetidos,
+consulta somente o nome selecionado no Overpass e separa os ways em
+componentes contínuos no navegador. O operador escolhe o componente que
+corresponde ao bairro/CEP do cadastro e exporta
+`decisoes_duplicidades_osm.json`.
+
+Quando a revisão estiver concluída, o aplicador recebe esse arquivo com
+`python scripts/aplicar_revisao_osm.py --arquivo decisoes_duplicidades_osm.json`.
+As credenciais são lidas do ambiente ou de `Backend/.env`.
+
+O revisor não grava no banco. O JSON exportado é compatível com
+`aplicar_revisao_osm.py`, que exige o campo `componente` para escolhas
+ambíguas. A consulta pode depender da disponibilidade do Overpass; falhas de
+timeout não alteram o relatório nem os dados locais.
+
+Pendência identificada: um componente OSM pode ter o nome correto, mas cobrir
+um trecho maior que o cadastro postal. Esses casos não devem ser aceitos como
+um todo; será necessário revisar e recortar a geometria por segmento antes da
+aplicação.

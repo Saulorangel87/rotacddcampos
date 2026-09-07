@@ -1,0 +1,731 @@
+[
+  {
+    "rua_id": 123,
+    "decisao": "aceito",
+    "nome_osm": "DOS GOYTACAZES",
+    "componente": 1,
+    "bairro": "Parque Turf Club",
+    "cep": "28027231",
+    "distrito": "603"
+  },
+  {
+    "rua_id": 262,
+    "decisao": "aceito",
+    "nome_osm": "CLÉRIO PINHEIRO",
+    "componente": 1,
+    "bairro": "Donana",
+    "cep": "28023393",
+    "distrito": "605"
+  },
+  {
+    "rua_id": 264,
+    "decisao": "aceito",
+    "nome_osm": "CLÉRIO PINHEIRO",
+    "componente": 1,
+    "bairro": "Goytacazes",
+    "cep": "28023451",
+    "distrito": "605"
+  },
+  {
+    "rua_id": 279,
+    "decisao": "aceito",
+    "nome_osm": "SANTO AMARO",
+    "componente": 2,
+    "bairro": "Goytacazes",
+    "cep": "28023471",
+    "distrito": "605"
+  },
+  {
+    "rua_id": 291,
+    "decisao": "aceito",
+    "nome_osm": "VEREADOR AMARO SOARES",
+    "componente": 1,
+    "bairro": "Goytacazes",
+    "cep": "28023568",
+    "distrito": "605"
+  },
+  {
+    "rua_id": 292,
+    "decisao": "aceito",
+    "nome_osm": "VEREADOR AMARO SOARES",
+    "componente": 2,
+    "bairro": "Goytacazes",
+    "cep": "28023569",
+    "distrito": "605"
+  },
+  {
+    "rua_id": 305,
+    "decisao": "aceito",
+    "nome_osm": "ALECRIM",
+    "componente": 2,
+    "bairro": "Goytacazes",
+    "cep": "28023588",
+    "distrito": "605"
+  },
+  {
+    "rua_id": 310,
+    "decisao": "aceito",
+    "nome_osm": "SIQUEIRA E SILVA",
+    "componente": 1,
+    "bairro": "Centro",
+    "cep": "28013013",
+    "distrito": "606"
+  },
+  {
+    "rua_id": 326,
+    "decisao": "aceito",
+    "nome_osm": "IDOLINO NUNES BRASILEIRO",
+    "componente": 1,
+    "bairro": "Parque Califórnia",
+    "cep": "28015130",
+    "distrito": "606"
+  },
+  {
+    "rua_id": 332,
+    "decisao": "aceito",
+    "nome_osm": "IDOLINO NUNES BRASILEIRO",
+    "componente": 1,
+    "bairro": "Parque Salo Brand",
+    "cep": "28015380",
+    "distrito": "606"
+  },
+  {
+    "rua_id": 416,
+    "decisao": "aceito",
+    "nome_osm": "NOVA",
+    "componente": 3,
+    "bairro": "Goytacazes",
+    "cep": "28023693",
+    "distrito": "607"
+  },
+  {
+    "rua_id": 424,
+    "decisao": "aceito",
+    "nome_osm": "MARIA TAVARES DE ALVARENGA",
+    "componente": 1,
+    "bairro": "Goytacazes",
+    "cep": "28023706",
+    "distrito": "607"
+  },
+  {
+    "rua_id": 425,
+    "decisao": "aceito",
+    "nome_osm": "MARIA TAVARES DE ALVARENGA",
+    "componente": 1,
+    "bairro": "Goytacazes",
+    "cep": "28023707",
+    "distrito": "607"
+  },
+  {
+    "rua_id": 429,
+    "decisao": "aceito",
+    "nome_osm": "JOCA CASTRO",
+    "componente": 1,
+    "bairro": "Goytacazes",
+    "cep": "28023713",
+    "distrito": "607"
+  },
+  {
+    "rua_id": 444,
+    "decisao": "aceito",
+    "nome_osm": "SÃO CLEMENTE",
+    "componente": 1,
+    "bairro": "Goytacazes",
+    "cep": "28023734",
+    "distrito": "607"
+  },
+  {
+    "rua_id": 493,
+    "decisao": "aceito",
+    "nome_osm": "CURIÓ",
+    "componente": 1,
+    "bairro": "Goytacazes",
+    "cep": "28023760",
+    "distrito": "607"
+  },
+  {
+    "rua_id": 526,
+    "decisao": "aceito",
+    "nome_osm": "AUGUSTO DOS ANJOS",
+    "componente": 1,
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020831",
+    "distrito": "608"
+  },
+  {
+    "rua_id": 532,
+    "decisao": "aceito",
+    "nome_osm": "MARANHÃO",
+    "componente": 1,
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020837",
+    "distrito": "608"
+  },
+  {
+    "rua_id": 538,
+    "decisao": "aceito",
+    "nome_osm": "CAMBUCI",
+    "componente": 1,
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020843",
+    "distrito": "608"
+  },
+  {
+    "rua_id": 554,
+    "decisao": "aceito",
+    "nome_osm": "DAS ACÁCIAS",
+    "componente": 2,
+    "bairro": "Parque Tarcisio Miranda",
+    "cep": "28020197",
+    "distrito": "608"
+  },
+  {
+    "rua_id": 568,
+    "decisao": "aceito",
+    "nome_osm": "DAS ACÁCIAS",
+    "componente": 2,
+    "bairro": "Fazenda Santo Antônio",
+    "cep": "28023009",
+    "distrito": "608"
+  },
+  {
+    "rua_id": 655,
+    "decisao": "aceito",
+    "nome_osm": "LOUVIVAL MARTINS BEDA",
+    "componente": 1,
+    "bairro": "Fazenda Santo Antônio",
+    "cep": "28023135",
+    "distrito": "609"
+  },
+  {
+    "rua_id": 739,
+    "decisao": "aceito",
+    "nome_osm": "NOSSA SENHORA DO CARMO",
+    "componente": 1,
+    "bairro": "Parque São Benedito",
+    "cep": "28024167",
+    "distrito": "610"
+  },
+  {
+    "rua_id": 740,
+    "decisao": "aceito",
+    "nome_osm": "NOSSA SENHORA DO CARMO",
+    "componente": 1,
+    "bairro": "Parque São Benedito",
+    "cep": "28024168",
+    "distrito": "610"
+  },
+  {
+    "rua_id": 762,
+    "decisao": "aceito",
+    "nome_osm": "SERVIDÃO VIEIRA DA SILVA",
+    "componente": 1,
+    "bairro": "Parque Aurora",
+    "cep": "28025470",
+    "distrito": "610"
+  },
+  {
+    "rua_id": 763,
+    "decisao": "aceito",
+    "nome_osm": "NOSSA SENHORA DO CARMO",
+    "componente": 1,
+    "bairro": "Parque Rui Barbosa",
+    "cep": "28025486",
+    "distrito": "610"
+  },
+  {
+    "rua_id": 764,
+    "decisao": "aceito",
+    "nome_osm": "NOSSA SENHORA DO CARMO",
+    "componente": 1,
+    "bairro": "Parque Rui Barbosa",
+    "cep": "28025487",
+    "distrito": "610"
+  },
+  {
+    "rua_id": 777,
+    "decisao": "aceito",
+    "nome_osm": "SERVIDÃO VIEIRA DA SILVA",
+    "componente": 1,
+    "bairro": "Parque Aurora",
+    "cep": "28025840",
+    "distrito": "610"
+  },
+  {
+    "rua_id": 796,
+    "decisao": "aceito",
+    "nome_osm": "JOCA CASTRO",
+    "componente": 2,
+    "bairro": "Parque Penha",
+    "cep": "28021070",
+    "distrito": "611"
+  },
+  {
+    "rua_id": 804,
+    "decisao": "aceito",
+    "nome_osm": "NOSSA SENHORA DA PENHA",
+    "componente": 2,
+    "bairro": "Parque Penha",
+    "cep": "28021220",
+    "distrito": "611"
+  },
+  {
+    "rua_id": 809,
+    "decisao": "aceito",
+    "nome_osm": "MANOEL VIRGÍLIO",
+    "componente": 1,
+    "bairro": "Parque Penha",
+    "cep": "28021250",
+    "distrito": "611"
+  },
+  {
+    "rua_id": 852,
+    "decisao": "aceito",
+    "nome_osm": "NOSSA SENHORA DA PENHA",
+    "componente": 3,
+    "bairro": "Parque Penha",
+    "cep": "28021470",
+    "distrito": "611"
+  },
+  {
+    "rua_id": 859,
+    "decisao": "aceito",
+    "nome_osm": "BEIRA VALÃO",
+    "componente": 1,
+    "bairro": "Parque Penha",
+    "cep": "28022240",
+    "distrito": "611"
+  },
+  {
+    "rua_id": 950,
+    "decisao": "aceito",
+    "nome_osm": "SÃO CLEMENTE",
+    "componente": 2,
+    "bairro": "Parque Maciel",
+    "cep": "28025560",
+    "distrito": "612"
+  },
+  {
+    "rua_id": 969,
+    "decisao": "aceito",
+    "nome_osm": "MELVIN JONES",
+    "componente": 1,
+    "bairro": "Parque Rosário",
+    "cep": "28027340",
+    "distrito": "612"
+  },
+  {
+    "rua_id": 974,
+    "decisao": "aceito",
+    "nome_osm": "MELVIN JONES",
+    "componente": 1,
+    "bairro": "Parque Rosário",
+    "cep": "28027535",
+    "distrito": "612"
+  },
+  {
+    "rua_id": 1004,
+    "decisao": "aceito",
+    "nome_osm": "ALECRIM",
+    "componente": 1,
+    "bairro": "Parque Tarcisio Miranda",
+    "cep": "28022020",
+    "distrito": "613"
+  },
+  {
+    "rua_id": 1012,
+    "decisao": "aceito",
+    "nome_osm": "SANTO ANTÔNIO",
+    "componente": 5,
+    "bairro": "Parque Jóquei Club",
+    "cep": "28022085",
+    "distrito": "613"
+  },
+  {
+    "rua_id": 1017,
+    "decisao": "aceito",
+    "nome_osm": "DAS ACÁCIAS",
+    "componente": 1,
+    "bairro": "Parque Penha",
+    "cep": "28022140",
+    "distrito": "613"
+  },
+  {
+    "rua_id": 1044,
+    "decisao": "aceito",
+    "nome_osm": "DOS GOYTACAZES",
+    "componente": 1,
+    "bairro": "Parque Turf Club",
+    "cep": "28027231",
+    "distrito": "613"
+  },
+  {
+    "rua_id": 1047,
+    "decisao": "aceito",
+    "nome_osm": "NOSSA SENHORA DA CONCEIÇÃO",
+    "componente": 1,
+    "bairro": "Parque Turf Club",
+    "cep": "28027260",
+    "distrito": "613"
+  },
+  {
+    "rua_id": 1453,
+    "decisao": "aceito",
+    "nome_osm": "DEPUTADO BARTOLOMEU LIZANDRO",
+    "componente": 1,
+    "bairro": "Parque Jardim Carioca",
+    "cep": "28080390",
+    "distrito": "617"
+  },
+  {
+    "rua_id": 1454,
+    "decisao": "aceito",
+    "nome_osm": "DOUTOR PEDRO BARROSO",
+    "componente": 1,
+    "bairro": "Parque Vicente Gonçalves Dias",
+    "cep": "28083300",
+    "distrito": "617"
+  },
+  {
+    "rua_id": 1455,
+    "decisao": "aceito",
+    "nome_osm": "DEPUTADO BARTOLOMEU LIZANDRO",
+    "componente": 1,
+    "bairro": "Parque Vicente Gonçalves Dias",
+    "cep": "28080267",
+    "distrito": "617"
+  },
+  {
+    "rua_id": 1457,
+    "decisao": "aceito",
+    "nome_osm": "DEPUTADO BARTOLOMEU LIZANDRO",
+    "componente": 1,
+    "bairro": "Parque Santo Antônio",
+    "cep": "28080547",
+    "distrito": "617"
+  },
+  {
+    "rua_id": 1459,
+    "decisao": "aceito",
+    "nome_osm": "SANTO ANTÔNIO",
+    "componente": 1,
+    "bairro": "Parque Santo Antônio",
+    "cep": "28080515",
+    "distrito": "617"
+  },
+  {
+    "rua_id": 1474,
+    "decisao": "aceito",
+    "nome_osm": "CASIMIRO DE ABREU",
+    "componente": 1,
+    "bairro": "Parque Vicente Gonçalves Dias",
+    "cep": "28080240",
+    "distrito": "617"
+  },
+  {
+    "rua_id": 1501,
+    "decisao": "aceito",
+    "nome_osm": "SANTO ANTÔNIO",
+    "componente": 1,
+    "bairro": "Parque Santo Antônio",
+    "cep": "28080525",
+    "distrito": "617"
+  },
+  {
+    "rua_id": 1510,
+    "decisao": "aceito",
+    "nome_osm": "FRANCISCO LAMEGO",
+    "componente": 1,
+    "bairro": "Parque Vicente Gonçalves Dias",
+    "cep": "28080810",
+    "distrito": "617"
+  },
+  {
+    "rua_id": 1520,
+    "decisao": "aceito",
+    "nome_osm": "DEPUTADO BARTOLOMEU LIZANDRO",
+    "componente": 1,
+    "bairro": "Parque Fundão",
+    "cep": "28060223",
+    "distrito": "618"
+  },
+  {
+    "rua_id": 1522,
+    "decisao": "aceito",
+    "nome_osm": "DEPUTADO BARTOLOMEU LIZANDRO",
+    "componente": 1,
+    "bairro": "Parque Vera Cruz",
+    "cep": "28060210",
+    "distrito": "618"
+  },
+  {
+    "rua_id": 1537,
+    "decisao": "aceito",
+    "nome_osm": "CALIFÓRNIA",
+    "componente": 1,
+    "bairro": "Parque Santa Rosa",
+    "cep": "28085390",
+    "distrito": "618"
+  },
+  {
+    "rua_id": 1538,
+    "decisao": "aceito",
+    "nome_osm": "BARTOLOMEU LIZANDRO",
+    "componente": 2,
+    "bairro": "Parque São Mateus",
+    "cep": "28060216",
+    "distrito": "618"
+  },
+  {
+    "rua_id": 1618,
+    "decisao": "aceito",
+    "nome_osm": "WILSON BATISTA",
+    "componente": 3,
+    "bairro": "Parque Aldeia",
+    "cep": "28060560",
+    "distrito": "619"
+  },
+  {
+    "rua_id": 1644,
+    "decisao": "aceito",
+    "nome_osm": "FORTALEZA",
+    "componente": 1,
+    "bairro": "Parque Cidade Luz",
+    "cep": "28060810",
+    "distrito": "619"
+  },
+  {
+    "rua_id": 1714,
+    "decisao": "aceito",
+    "nome_osm": "WILSON BATISTA",
+    "componente": 2,
+    "bairro": "Parque Aldeia",
+    "cep": "28060555",
+    "distrito": "619"
+  },
+  {
+    "rua_id": 1783,
+    "decisao": "aceito",
+    "nome_osm": "MUSSUREPE",
+    "componente": 1,
+    "bairro": "Parque Visconde de Ururaí",
+    "cep": "28070385",
+    "distrito": "620"
+  },
+  {
+    "rua_id": 1803,
+    "decisao": "aceito",
+    "nome_osm": "SANTO AMARO",
+    "componente": 4,
+    "bairro": "Parque Visconde de Ururaí",
+    "cep": "28070326",
+    "distrito": "620"
+  },
+  {
+    "rua_id": 1805,
+    "decisao": "aceito",
+    "nome_osm": "SANTO EDUARDO",
+    "componente": 1,
+    "bairro": "Parque Visconde de Ururaí",
+    "cep": "28070246",
+    "distrito": "620"
+  },
+  {
+    "rua_id": 1809,
+    "decisao": "aceito",
+    "nome_osm": "SÃO GONÇALO",
+    "componente": 2,
+    "bairro": "Parque Guarus",
+    "cep": "28070216",
+    "distrito": "620"
+  },
+  {
+    "rua_id": 1812,
+    "decisao": "aceito",
+    "nome_osm": "SAPUCAINHA",
+    "componente": 1,
+    "bairro": "Vila Industrial",
+    "cep": "28090012",
+    "distrito": "620"
+  },
+  {
+    "rua_id": 1820,
+    "decisao": "aceito",
+    "nome_osm": "SANTO AMARO",
+    "componente": 5,
+    "bairro": "Vila Industrial",
+    "cep": "28090017",
+    "distrito": "620"
+  },
+  {
+    "rua_id": 1822,
+    "decisao": "aceito",
+    "nome_osm": "SAPUCAINHA",
+    "componente": 1,
+    "bairro": "Parque São Silvestre",
+    "cep": "28090525",
+    "distrito": "620"
+  },
+  {
+    "rua_id": 1829,
+    "decisao": "aceito",
+    "nome_osm": "SANTA ROSA",
+    "componente": 1,
+    "bairro": "Custodópolis",
+    "cep": "28085030",
+    "distrito": "621"
+  },
+  {
+    "rua_id": 1831,
+    "decisao": "aceito",
+    "nome_osm": "SANTA ROSA",
+    "componente": 1,
+    "bairro": "Parque Santa Clara",
+    "cep": "28085500",
+    "distrito": "621"
+  },
+  {
+    "rua_id": 1860,
+    "decisao": "aceito",
+    "nome_osm": "ANGRA DOS REIS",
+    "componente": 1,
+    "bairro": "Parque Guarus",
+    "cep": "28073050",
+    "distrito": "621"
+  },
+  {
+    "rua_id": 1866,
+    "decisao": "aceito",
+    "nome_osm": "CAMBUCI",
+    "componente": 2,
+    "bairro": "Parque Guarus",
+    "cep": "28073070",
+    "distrito": "621"
+  },
+  {
+    "rua_id": 1872,
+    "decisao": "aceito",
+    "nome_osm": "CASIMIRO DE ABREU",
+    "componente": 2,
+    "bairro": "Parque Guarus",
+    "cep": "28070550",
+    "distrito": "621"
+  },
+  {
+    "rua_id": 1900,
+    "decisao": "aceito",
+    "nome_osm": "MARQUÊS DE VALENÇA",
+    "componente": 1,
+    "bairro": "Parque São Mateus",
+    "cep": "28073185",
+    "distrito": "621"
+  },
+  {
+    "rua_id": 1902,
+    "decisao": "aceito",
+    "nome_osm": "MARQUÊS DE VALENÇA",
+    "componente": 1,
+    "bairro": "Parque Guarus",
+    "cep": "28073120",
+    "distrito": "621"
+  },
+  {
+    "rua_id": 1924,
+    "decisao": "aceito",
+    "nome_osm": "SÃO GONÇALO",
+    "componente": 3,
+    "bairro": "Parque São Mateus",
+    "cep": "28073225",
+    "distrito": "621"
+  },
+  {
+    "rua_id": 1934,
+    "decisao": "aceito",
+    "nome_osm": "BARTOLOMEU LIZANDRO",
+    "componente": 2,
+    "bairro": "Parque São Mateus",
+    "cep": "28073165",
+    "distrito": "621"
+  },
+  {
+    "rua_id": 1953,
+    "decisao": "aceito",
+    "nome_osm": "ZUZA MOTA",
+    "componente": 1,
+    "bairro": "Parque Calabouço",
+    "cep": "28083000",
+    "distrito": "622"
+  },
+  {
+    "rua_id": 1955,
+    "decisao": "aceito",
+    "nome_osm": "ZUZA MOTA",
+    "componente": 1,
+    "bairro": "Parque Presidente Vargas",
+    "cep": "28083461",
+    "distrito": "622"
+  },
+  {
+    "rua_id": 1957,
+    "decisao": "aceito",
+    "nome_osm": "ZUZA MOTA",
+    "componente": 1,
+    "bairro": "Parque Alvorada",
+    "cep": "28083735",
+    "distrito": "622"
+  },
+  {
+    "rua_id": 2061,
+    "decisao": "aceito",
+    "nome_osm": "NOSSA SENHORA DA PENHA",
+    "componente": 5,
+    "bairro": "Parque Calabouço",
+    "cep": "28080783",
+    "distrito": "622"
+  },
+  {
+    "rua_id": 2065,
+    "decisao": "aceito",
+    "nome_osm": "DOIS",
+    "componente": 4,
+    "bairro": "Parque Aeroporto",
+    "cep": "28093130",
+    "distrito": "623"
+  },
+  {
+    "rua_id": 2068,
+    "decisao": "aceito",
+    "nome_osm": "MURILO PEIXOTO",
+    "componente": 1,
+    "bairro": "Parque São Silvestre",
+    "cep": "28090200",
+    "distrito": "623"
+  },
+  {
+    "rua_id": 2072,
+    "decisao": "aceito",
+    "nome_osm": "UM",
+    "componente": 6,
+    "bairro": "Parque Aeroporto",
+    "cep": "28093530",
+    "distrito": "623"
+  },
+  {
+    "rua_id": 2080,
+    "decisao": "aceito",
+    "nome_osm": "MURILO PEIXOTO",
+    "componente": 2,
+    "bairro": "Parque Eldorado",
+    "cep": "28090510",
+    "distrito": "623"
+  },
+  {
+    "rua_id": 2201,
+    "decisao": "aceito",
+    "nome_osm": "SARDINHA",
+    "componente": 5,
+    "bairro": "Parque Bonsucesso",
+    "cep": "28085125",
+    "distrito": "624"
+  }
+]

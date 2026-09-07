@@ -228,6 +228,20 @@ para `scripts/revisao_matches_ambiguos.csv`. O aplicador de revisão exige
 `componente` quando a escolha tiver mais de um grupo. Nenhum banco foi alterado
 nesta etapa.
 
+Também foi criado `scripts/revisar-duplicidades.html`. O operador carrega o
+relatório, seleciona um cadastro, consulta os ways daquele nome no Overpass e
+escolhe visualmente o componente contínuo correspondente ao bairro/CEP. As
+decisões são salvas no navegador e exportadas em
+`decisoes_duplicidades_osm.json`; a ferramenta não grava no banco. O aplicador
+continua exigindo o campo `componente` para impedir uma associação ambígua.
+Quando a revisão estiver concluída, use
+`python scripts/aplicar_revisao_osm.py --arquivo decisoes_duplicidades_osm.json`;
+as credenciais são lidas do ambiente ou de `Backend/.env`.
+Durante a revisão foi identificado que um componente OSM pode ter o nome
+correto, mas representar um trecho maior que o cadastro postal. Esses casos
+ficam pendentes e deverão ser recortados por segmento antes de qualquer
+aplicação.
+
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
 - `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real
