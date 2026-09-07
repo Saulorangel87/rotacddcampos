@@ -1489,3 +1489,35 @@ O objetivo é:
 **reduzir o tempo de preparação e ordenamento das encomendas.**
 
 Se essa hipótese funcionar bem no uso real, evoluiremos a precisão depois.
+
+---
+
+# 43. COBERTURA DE COORDENADAS — ATUALIZAÇÃO DE 07/09/2026
+
+A planilha operacional ficou pendente e não é necessária para iniciar a
+correção da cobertura geográfica. A base local foi auditada antes de qualquer
+alteração e apresentou:
+
+- 305 ruas ativas sem geometria utilizável, considerando `NULL` e texto vazio;
+- 83 geometrias desenhadas manualmente já gravadas no banco local;
+- 31 decisões OSM aceitas já gravadas no banco local;
+- 21 ruas que nunca apareceram em uma leva de correspondência OSM e precisam
+  de nova busca contextualizada ou desenho manual;
+- 2 resultados positivos e 4 negativos no cache externo de geocodificação.
+
+Os scripts de casamento e de inventário agora usam a mesma definição de
+pendência (`geometria IS NULL OR btrim(geometria) = ''`). A ferramenta de
+desenho manual foi sincronizada com as 21 pendências atuais, evitando que ruas
+já corrigidas sejam desenhadas novamente.
+
+O próximo lote deve ser revisado antes de gravar: primeiro tentar uma
+correspondência exata no OpenStreetMap com município e distrito; depois usar o
+desenho manual para os casos sem correspondência. CEP ou ponto aproximado só
+deve ser aceito quando a relação com a rua for inequívoca e precisa ficar
+identificado como coordenada aproximada. Nenhuma rua deve receber o centro do
+distrito ou do CDD como substituto.
+
+Cada lote aplicado deve ser validado por limites geográficos, geometria não
+degenerada e comparação de um mesmo ordenamento antes e depois. A planilha
+operacional continua reservada para a etapa posterior de calibração da
+sequência, não para preencher coordenadas.

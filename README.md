@@ -326,16 +326,19 @@ Foram utilizados:
 
 Parte das ruas foi automaticamente associada a geometrias reais.
 
-O snapshot local consultado em 06/09/2026 tem **305 ruas sem geometria**, que
-precisam ser desenhadas manualmente. A contagem pode mudar quando a base for
-sincronizada novamente; o registro anterior de 303 ruas era de outro snapshot.
+O snapshot local consultado em 07/09/2026 tem **305 ruas sem geometria**. A
+contagem considera tanto `NULL` quanto texto vazio no campo `geometria`; o
+registro anterior de 303 ruas ignorava duas linhas vazias. Dessas pendências,
+**21 nunca tiveram uma correspondência apresentada pelo OSM** e formam a lista
+atual para revisão/desenho manual em `scripts/ruas_sem_nenhum_match.csv`.
 
 Resultados automáticos de baixa confiança foram descartados para evitar associação de ruas incorretas.
 
 ## Pendências conhecidas
 
-- **305 ruas sem geometria real no snapshot local de 06/09/2026** — desenho
-  manual em andamento; conferir novamente após sincronizar a base.
+- **305 ruas sem geometria real no snapshot local de 07/09/2026** — 21 não
+  tiveram correspondência no OSM e estão na lista da ferramenta de desenho
+  manual; conferir novamente após sincronizar a base.
 - **Fluxo de aumento do Redistritamento** — estrutura do banco pronta; faltam lógica de negócio e interface.
 - **Ordenamento por rua** — futura tabela com sequência real de entrega (`rua_id`, `ordem`, `numero`).
 - **Precisão do ordenamento** — as geometrias existentes foram auditadas e estão
@@ -351,15 +354,21 @@ Resultados automáticos de baixa confiança foram descartados para evitar associ
 
 ## Scripts auxiliares
 
-Scripts Python utilizados para geometria:
+Scripts e ferramentas utilizados para geometria:
 
 ```text
-preencher_geometria_nominatim.py
-upgradar_tracado_nominatim.py
-casar_ruas_overpass.py
+scripts/listar_ruas_sem_match.py
+scripts/casar_ruas_osm.py
+scripts/aplicar_revisao_osm.py
+scripts/aplicar_geometria_manual.py
+scripts/desenhar-ruas-manual.html
 ```
 
-Eles são executados localmente e geram resultados para revisão humana antes de alterações no banco de produção.
+Eles são executados localmente e geram resultados para revisão humana antes de
+alterações no banco de produção. Os scripts consideram rua sem geometria tanto
+quando o campo está `NULL` quanto quando está vazio, e a ferramenta manual é
+atualizada a partir da lista atual de pendências para não reabrir ruas já
+corrigidas.
 
 Também existe:
 

@@ -137,7 +137,13 @@ def main():
         host=DB_HOST, port=DB_PORT, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD,
     )
     cursor = conexao.cursor()
-    cursor.execute("SELECT id, nome_rua FROM ruas WHERE ativo = true AND geometria IS NULL")
+    cursor.execute(
+        """
+        SELECT id, nome_rua
+        FROM ruas
+        WHERE ativo = true AND (geometria IS NULL OR btrim(geometria) = '')
+        """
+    )
     ruas_banco = cursor.fetchall()
     print(f"{len(ruas_banco)} ruas ativas no banco pra tentar casar.")
 

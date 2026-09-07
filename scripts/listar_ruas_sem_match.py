@@ -6,7 +6,7 @@ provavelmente não estão mapeadas no OSM com esse nome, ou não estão
 mapeadas de jeito nenhum — candidatas a desenho manual.
 
 Cruza:
-  1. Todas as ruas ativas com geometria IS NULL no banco (produção).
+  1. Todas as ruas ativas sem geometria no banco (NULL ou texto vazio).
   2. Todos os rua_id que já apareceram em algum revisao_matches_baixos.csv
      gerado até agora (aceitos ou rejeitados — já foram vistos por um
      humano, não interessa aqui).
@@ -55,7 +55,12 @@ def main():
     )
     cursor = conexao.cursor()
     cursor.execute(
-        "SELECT id, nome_rua, distrito FROM ruas WHERE ativo = true AND geometria IS NULL ORDER BY nome_rua"
+        """
+        SELECT id, nome_rua, distrito
+        FROM ruas
+        WHERE ativo = true AND (geometria IS NULL OR btrim(geometria) = '')
+        ORDER BY nome_rua
+        """
     )
     todas_sem_geometria = cursor.fetchall()
     conexao.close()
