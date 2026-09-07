@@ -198,8 +198,8 @@ posição do cadastro. Nenhuma coordenada foi modificada.
 
 ## Pendências conhecidas / combinadas pra próxima sessão
 
-- **305 ruas sem geometria no snapshot local de 06/09/2026** — desenho manual,
-  ritmo próprio, sem mais
+- **301 ruas sem geometria após a aplicação auditada de quatro desenhos em
+  07/09/2026** — desenho manual, ritmo próprio, sem mais
   atalho automático gratuito disponível
 - **Fluxo de AUMENTO do Redistritamento** — banco já preparado, falta
   lógica de negócio (service/handler) e tela
@@ -235,7 +235,7 @@ Publicar (agora via CI/CD, não é mais automático nem manual na VPS):
 
 Se precisar rodar algo direto na VPS (scripts SQL avulsos, backup manual):
 ```bash
-ssh -i "C:\Users\saulo\Documents\Chave VM 12RAM\ssh-key-2026-06-23.key" ubuntu@157.151.24.49
+ssh -o KexAlgorithms=curve25519-sha256 -i "C:\Users\saulo\Documents\Chave VM 12RAM\ssh-key-2026-06-23.key" ubuntu@100.67.151.30
 ```
 
 ## Comandos únicos disponíveis (`Backend/cmd/`)

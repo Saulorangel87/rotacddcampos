@@ -1498,17 +1498,23 @@ A planilha operacional ficou pendente e não é necessária para iniciar a
 correção da cobertura geográfica. A base local foi auditada antes de qualquer
 alteração e apresentou:
 
-- 305 ruas ativas sem geometria utilizável, considerando `NULL` e texto vazio;
+- 301 ruas ativas sem geometria utilizável, considerando `NULL` e texto vazio;
 - 83 geometrias desenhadas manualmente já gravadas no banco local;
 - 31 decisões OSM aceitas já gravadas no banco local;
-- 21 ruas que nunca apareceram em uma leva de correspondência OSM e precisam
+- 17 ruas que nunca apareceram em uma leva de correspondência OSM e precisam
   de nova busca contextualizada ou desenho manual;
 - 2 resultados positivos e 4 negativos no cache externo de geocodificação.
 
 Os scripts de casamento e de inventário agora usam a mesma definição de
 pendência (`geometria IS NULL OR btrim(geometria) = ''`). A ferramenta de
-desenho manual foi sincronizada com as 21 pendências atuais, evitando que ruas
+desenho manual foi sincronizada com as 17 pendências atuais, evitando que ruas
 já corrigidas sejam desenhadas novamente.
+
+Quatro geometrias manuais foram aplicadas primeiro no banco local. A auditoria
+comparou o cadastro local e a produção pela chave dos registros e pelo hash
+canônico JSONB das geometrias; ambos os bancos ficaram com 2.115 ruas e 301
+pendências, com hashes iguais após a aplicação na VPS. O relatório completo
+das pendências está em `scripts/relatorio_ruas_sem_geometria.csv`.
 
 O próximo lote deve ser revisado antes de gravar: primeiro tentar uma
 correspondência exata no OpenStreetMap com município e distrito; depois usar o
@@ -1521,3 +1527,16 @@ Cada lote aplicado deve ser validado por limites geográficos, geometria não
 degenerada e comparação de um mesmo ordenamento antes e depois. A planilha
 operacional continua reservada para a etapa posterior de calibração da
 sequência, não para preencher coordenadas.
+
+## Ferramenta manual
+
+O arquivo `scripts/desenhar-ruas-manual.html` agora funciona como editor local
+das 301 pendências. Ele incorpora os dados do relatório, permite filtrar por
+nome/bairro/distrito/CEP, consultar até cinco resultados do OpenStreetMap,
+desenhar múltiplos segmentos, mostrar a coordenada representativa e retomar o
+progresso salvo no navegador. O JSON exportado continua compatível com
+`scripts/aplicar_geometria_manual.py`.
+
+O aplicador valida limites geográficos e a estrutura `MultiLineString`, ignora
+duplicidades e registros inexistentes e só preenche ruas cujo campo ainda está
+vazio. Geometrias existentes nunca são sobrescritas automaticamente.

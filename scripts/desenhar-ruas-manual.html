@@ -1,305 +1,207 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Desenho manual de ruas — CDD Campos</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<title>Editor manual de ruas — CDD Campos</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-  :root {
-    --azul: #003d73;
-    --azul-claro: #eaf2fb;
-    --amarelo: #ffd400;
-    --cinza-100: #f4f5f7;
-    --cinza-300: #d7dbe0;
-    --cinza-600: #5b6472;
-    --verde: #1e7e34;
-    --vermelho: #b3261e;
-  }
+  :root { --azul:#003d73; --azul-escuro:#002d55; --azul-claro:#eaf2fb; --amarelo:#ffd400; --cinza-050:#f8fafc; --cinza-100:#f1f4f7; --cinza-200:#dce3ea; --cinza-500:#657487; --verde:#1e7e34; --laranja:#a85a00; --vermelho:#b3261e; }
   * { box-sizing: border-box; }
-  body { margin: 0; font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #1a1f28; }
-  #topo {
-    background: var(--azul); color: #fff; padding: 10px 16px;
-    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  }
-  #topo h1 { font-size: 0.95rem; margin: 0; font-weight: 800; }
-  #progresso { font-size: 0.8rem; opacity: 0.9; margin-left: auto; }
-  #layout { display: flex; height: calc(100vh - 48px); }
-  #painel {
-    width: 340px; flex-shrink: 0; padding: 14px; overflow-y: auto;
-    background: #fff; border-right: 1px solid var(--cinza-300);
-    display: flex; flex-direction: column; gap: 12px;
-  }
-  #mapa { flex: 1; }
-  .card {
-    background: var(--cinza-100); border-radius: 10px; padding: 12px;
-  }
-  .rotulo { font-size: 0.68rem; text-transform: uppercase; font-weight: 700; color: var(--cinza-600); letter-spacing: .03em; }
-  .nome-rua { font-size: 1.05rem; font-weight: 800; margin: 4px 0; line-height: 1.25; }
-  .distrito-selo {
-    display: inline-block; background: var(--amarelo); color: #1a1f28;
-    font-weight: 800; font-size: 0.72rem; padding: 2px 8px; border-radius: 999px;
-  }
-  input[type=text] {
-    width: 100%; padding: 8px 10px; border: 1px solid var(--cinza-300);
-    border-radius: 8px; font-size: 0.85rem; margin-top: 6px;
-  }
-  button {
-    border: none; border-radius: 8px; padding: 9px 12px; font-weight: 700;
-    font-size: 0.82rem; cursor: pointer; width: 100%;
-  }
-  .btn-azul { background: var(--azul); color: #fff; }
-  .btn-azul:hover { background: #002e57; }
-  .btn-secundario { background: #fff; color: var(--azul); border: 1px solid var(--azul); }
-  .btn-secundario:hover { background: var(--azul-claro); }
-  .btn-linha { display: flex; gap: 8px; }
-  .btn-linha button { flex: 1; }
-  .btn-perigo { background: #fff; color: var(--vermelho); border: 1px solid var(--vermelho); }
-  #status-pontos { font-size: 0.78rem; color: var(--cinza-600); margin-top: 4px; }
-  #lista-ruas { max-height: 260px; overflow-y: auto; border: 1px solid var(--cinza-300); border-radius: 8px; }
-  .item-lista {
-    padding: 7px 10px; font-size: 0.78rem; cursor: pointer;
-    border-bottom: 1px solid var(--cinza-100); display: flex; justify-content: space-between; gap: 6px;
-  }
-  .item-lista:hover { background: var(--azul-claro); }
-  .item-lista.atual { background: var(--azul-claro); font-weight: 700; }
-  .marca-feito { color: var(--verde); font-weight: 800; flex-shrink: 0; }
-  .instrucoes { font-size: 0.76rem; color: var(--cinza-600); line-height: 1.5; }
-  .instrucoes b { color: #1a1f28; }
-  #baixar-json { margin-top: auto; }
-  a.link-google { display: block; text-align: center; font-size: 0.78rem; color: var(--azul); margin-top: 6px; }
+  body { margin: 0; color: #162235; font-family: Segoe UI, Roboto, Arial, sans-serif; background: #eef2f5; }
+  button, input { font: inherit; }
+  .topo { min-height: 64px; padding: 10px 18px; color: #fff; background: var(--azul); display: flex; align-items: center; gap: 18px; }
+  .topo h1 { margin: 0; font-size: 1.05rem; }
+  .topo .subtitulo { margin: 2px 0 0; color: #d9e8f7; font-size: .78rem; }
+  .progresso { margin-left: auto; padding: 7px 11px; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; font-size: .82rem; white-space: nowrap; }
+  .layout { display: grid; grid-template-columns: 390px minmax(0, 1fr); height: calc(100vh - 64px); }
+  .painel { padding: 14px; overflow-y: auto; background: #fff; border-right: 1px solid var(--cinza-200); }
+  #mapa { min-height: 520px; background: #dce5eb; }
+  .card { margin-bottom: 12px; padding: 13px; background: var(--cinza-050); border: 1px solid var(--cinza-200); border-radius: 10px; }
+  .rotulo { display: block; margin-bottom: 5px; color: var(--cinza-500); font-size: .69rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+  .nome-rua { margin: 2px 0 5px; font-size: 1.04rem; line-height: 1.28; }
+  .selo { display: inline-block; padding: 3px 8px; color: #162235; background: var(--amarelo); border-radius: 999px; font-size: .72rem; font-weight: 800; }
+  .metadados { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 12px; margin: 9px 0; color: #526276; font-size: .78rem; }
+  .metadados strong { color: #243b57; }
+  .status { margin: 8px 0 0; padding: 7px 9px; color: var(--laranja); background: #fff5e4; border: 1px solid #f0d49c; border-radius: 7px; font-size: .77rem; line-height: 1.35; }
+  label { display: block; color: #33465d; font-size: .77rem; font-weight: 700; }
+  input[type=text], input[type=file] { width: 100%; margin-top: 5px; padding: 9px 10px; color: #162235; background: #fff; border: 1px solid #bccbd9; border-radius: 7px; font-size: .84rem; }
+  input[type=file] { padding: 7px; }
+  button, .link-botao { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 8px 11px; border-radius: 7px; font-size: .82rem; font-weight: 750; cursor: pointer; text-align: center; text-decoration: none; }
+  button:disabled { cursor: wait; opacity: .58; }
+  .btn-primario { width: 100%; color: #fff; background: var(--azul); border: 1px solid var(--azul); }
+  .btn-primario:hover { background: var(--azul-escuro); }
+  .btn-secundario, .link-botao { color: var(--azul); background: #fff; border: 1px solid #abc3da; }
+  .btn-secundario:hover, .link-botao:hover { color: var(--azul-escuro); background: var(--azul-claro); }
+  .btn-perigo { color: var(--vermelho); background: #fff; border: 1px solid #e2aaa6; }
+  .btn-perigo:hover { background: #fff0ef; }
+  .linha-botoes { display: flex; gap: 7px; margin-top: 8px; }
+  .linha-botoes > * { flex: 1; }
+  .link-referencia { display: block; margin-top: 8px; color: var(--azul); font-size: .78rem; text-align: center; }
+  .ajuda { margin: 8px 2px 14px; color: #526276; font-size: .77rem; line-height: 1.45; }
+  .ajuda strong { color: #253b56; }
+  .lista-cabecalho { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+  .lista-cabecalho small { color: var(--cinza-500); }
+  #lista-ruas { max-height: 330px; overflow-y: auto; border: 1px solid var(--cinza-200); border-radius: 8px; background: #fff; }
+  .item-lista { display: flex; align-items: center; gap: 8px; padding: 8px 9px; border-bottom: 1px solid #edf1f4; cursor: pointer; }
+  .item-lista:last-child { border-bottom: 0; }
+  .item-lista:hover, .item-lista.atual { background: var(--azul-claro); }
+  .item-lista.atual { box-shadow: inset 3px 0 0 var(--azul); }
+  .item-lista .texto { min-width: 0; flex: 1; }
+  .item-lista .nome { overflow: hidden; color: #233f60; font-size: .78rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+  .item-lista .detalhe { margin-top: 2px; color: var(--cinza-500); font-size: .7rem; }
+  .marca-feito { color: var(--verde); font-size: .78rem; font-weight: 800; }
+  .coordenadas { margin-top: 8px; padding: 8px; color: #33465d; background: #fff; border: 1px solid var(--cinza-200); border-radius: 7px; font-family: Consolas, monospace; font-size: .74rem; line-height: 1.45; }
+  .coordenadas strong { color: var(--azul); }
+  .busca-resultados { display: grid; gap: 5px; margin-top: 8px; }
+  .resultado { width: 100%; padding: 7px 9px; color: #29435f; background: #fff; border: 1px solid #c4d5e5; border-radius: 7px; font-size: .74rem; text-align: left; }
+  .resultado:hover { background: var(--azul-claro); }
+  .vazio { padding: 12px; color: var(--cinza-500); font-size: .78rem; text-align: center; }
+  .rodape-acoes { display: grid; gap: 7px; }
+  @media (max-width: 850px) { .layout { display: flex; height: auto; min-height: calc(100vh - 64px); flex-direction: column-reverse; } #mapa { height: 55vh; min-height: 380px; } .painel { overflow: visible; border-right: 0; } .progresso { margin-left: 0; } }
 </style>
 </head>
 <body>
-
-<div id="topo">
-  <h1>✏️ Desenho manual de ruas — CDD Campos</h1>
-  <div id="progresso">0 / 0 concluídas</div>
+<header class="topo">
+  <div><h1>Editor manual de geometrias</h1><p class="subtitulo">CDD Campos dos Goytacazes · coordenadas para o ordenamento</p></div>
+  <div class="progresso" id="progresso">0 / 0 ruas concluídas</div>
+</header>
+<div class="layout">
+  <aside class="painel">
+    <section class="card">
+      <label for="filtro">Filtrar pendências</label>
+      <input type="text" id="filtro" placeholder="Nome, bairro, distrito ou CEP">
+      <div class="lista-cabecalho" style="margin-top:10px;"><span class="rotulo" style="margin:0;">Ruas sem geometria</span><small id="contador-filtro"></small></div>
+      <div id="lista-ruas"></div>
+    </section>
+    <section class="card">
+      <span class="rotulo">Rua selecionada</span>
+      <span class="selo" id="distrito-atual">—</span>
+      <h2 class="nome-rua" id="nome-atual">Selecione uma rua</h2>
+      <div class="metadados"><div><strong>Bairro:</strong> <span id="bairro-atual">—</span></div><div><strong>CEP:</strong> <span id="cep-atual">—</span></div></div>
+      <div class="status" id="status-rua">—</div>
+      <label for="campo-busca" style="margin-top:10px;">Localizar no mapa</label>
+      <input type="text" id="campo-busca" placeholder="Rua, bairro ou ponto de referência">
+      <button class="btn-secundario" id="btn-buscar" style="width:100%;margin-top:7px;">Buscar no OpenStreetMap</button>
+      <a class="link-referencia" id="link-google" href="#" target="_blank" rel="noopener">Abrir referência no Google Maps</a>
+      <div class="busca-resultados" id="busca-resultados"></div>
+    </section>
+    <section class="card">
+      <span class="rotulo">Desenho da rua</span>
+      <div id="status-pontos" style="color:#526276;font-size:.78rem;">Nenhum ponto marcado.</div>
+      <div class="coordenadas" id="coordenadas">Coordenada representativa: —<br>Último ponto: —</div>
+      <div class="linha-botoes"><button class="btn-secundario" id="btn-desfazer">Desfazer ponto</button><button class="btn-secundario" id="btn-segmento">Novo segmento</button></div>
+      <div class="linha-botoes"><button class="btn-perigo" id="btn-limpar">Limpar rua</button><button class="btn-secundario" id="btn-centralizar">Centralizar CDD</button></div>
+      <button class="btn-primario" id="btn-salvar" style="margin-top:8px;">Salvar geometria</button>
+      <div class="linha-botoes"><button class="btn-secundario" id="btn-anterior">Rua anterior</button><button class="btn-secundario" id="btn-proxima">Próxima rua</button></div>
+    </section>
+    <section class="card rodape-acoes">
+      <span class="rotulo">Continuar ou exportar</span>
+      <label for="importar-json">Importar JSON anterior</label>
+      <input type="file" id="importar-json" accept="application/json,.json">
+      <button class="btn-secundario" id="baixar-json">Baixar geometrias desenhadas</button>
+      <button class="btn-perigo" id="limpar-progresso">Apagar progresso deste navegador</button>
+    </section>
+    <p class="ajuda"><strong>Como usar:</strong> localize a rua, confirme o bairro no mapa e clique no traçado da via em sequência. Use “Novo segmento” quando a rua tiver trechos separados. A coordenada representativa é calculada a partir dos pontos desenhados. O arquivo exportado deve ser revisado antes de aplicar no banco.</p>
+  </aside>
+  <main id="mapa" aria-label="Mapa para desenho das ruas"></main>
 </div>
-
-<div id="layout">
-  <div id="painel">
-
-    <div class="card">
-      <span class="rotulo">Rua atual</span>
-      <div class="distrito-selo" id="distrito-atual">—</div>
-      <div class="nome-rua" id="nome-atual">Carregando…</div>
-      <input type="text" id="campo-busca" placeholder="Termo de busca no mapa">
-      <button class="btn-secundario" id="btn-buscar" style="margin-top:8px;">🔍 Buscar no mapa</button>
-      <a class="link-google" id="link-google" href="#" target="_blank" rel="noopener">Abrir no Google Maps (referência)</a>
-    </div>
-
-    <div class="card">
-      <span class="rotulo">Desenho</span>
-      <div id="status-pontos">0 pontos marcados</div>
-      <div class="btn-linha" style="margin-top:8px;">
-        <button class="btn-secundario" id="btn-desfazer">↩ Desfazer ponto</button>
-        <button class="btn-perigo" id="btn-limpar">🗑 Limpar</button>
-      </div>
-      <button class="btn-azul" id="btn-salvar" style="margin-top:8px;">✔ Salvar e ir pra próxima</button>
-      <div class="btn-linha" style="margin-top:8px;">
-        <button class="btn-secundario" id="btn-anterior">◀ Anterior</button>
-        <button class="btn-secundario" id="btn-proxima">Pular ▶</button>
-      </div>
-    </div>
-
-    <div class="instrucoes">
-      <b>Como usar:</b> clique em "Buscar no mapa" pra tentar localizar a rua. Se não achar, procure visualmente pelo bairro/distrito. Clique nos pontos do mapa, em sequência, seguindo o traçado da rua — cada clique adiciona um ponto na linha. Quando terminar, clique em "Salvar e ir pra próxima". Dá pra desfazer o último ponto ou limpar tudo e recomeçar.
-    </div>
-
-    <div class="card" style="flex:1; min-height:0; display:flex; flex-direction:column;">
-      <span class="rotulo">Todas as ruas (21)</span>
-      <div id="lista-ruas" style="margin-top:8px;"></div>
-    </div>
-
-    <button class="btn-azul" id="baixar-json">⬇ Baixar JSON com tudo que foi desenhado</button>
-  </div>
-
-  <div id="mapa"></div>
-</div>
-
 <script>
-const DADOS = [{"ruaId": 1445, "nome": "JANETE CRUZ SIQUEIRA ( PQ RES PRIMAVERA)", "distrito": "616"}, {"ruaId": 2064, "nome": "PRAÇA DURVAL LIMA", "distrito": "623"}, {"ruaId": 2085, "nome": "PRAÇA ROCKEFELLER FELISBERTO DE LIMA -  TRAVESSÃO", "distrito": "623"}, {"ruaId": 2206, "nome": "RUA AMARO SALES PINTO - TRAVESSÃO", "distrito": "624"}, {"ruaId": 2173, "nome": "RUA B (FAROFA)", "distrito": "624"}, {"ruaId": 1879, "nome": "RUA B (RES LAPA I)", "distrito": "621"}, {"ruaId": 2103, "nome": "RUA CÂNDIDO DUTRA -  TRAVESSÃO", "distrito": "623"}, {"ruaId": 2101, "nome": "RUA CARLOS DE JESUS - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2110, "nome": "RUA EDMUNDO LINS - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2098, "nome": "RUA ETELVINO NOGUEIRA - TRAVESSÃO", "distrito": "623"}, {"ruaId": 1654, "nome": "RUA H (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 1549, "nome": "RUA H (PRQ PLANÍCIE)", "distrito": "618"}, {"ruaId": 1670, "nome": "RUA L (FAZ ALDEIA)", "distrito": "619"}, {"ruaId": 687, "nome": "RUA LÚCIO LOPES (ESTÂNCIA DA PENHA)", "distrito": "610"}, {"ruaId": 2125, "nome": "RUA MONTE SIÃO - TRAVESSÃO", "distrito": "623"}, {"ruaId": 2236, "nome": "RUA QUINZE - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 688, "nome": "RUA ROSANA MARCONDE (ESTÂNCIA DA PENHA)", "distrito": "610"}, {"ruaId": 2250, "nome": "RUA TRINTA E NOVE - NOVA CANAÃ", "distrito": "624"}, {"ruaId": 704, "nome": "RUA VALMOR BARBOSA (VILA MENEZES)", "distrito": "610"}, {"ruaId": 694, "nome": "TRAVESSA EDITE DE SOUZA LICASALIO (VILA MANHÃES)", "distrito": "610"}, {"ruaId": 1613, "nome": "VILA CUSTÓDIO", "distrito": "618"}];
-const CHAVE_STORAGE = "geometrias_manuais_v1";
+const DADOS = [{"ruaId":25,"nome":"PRAÇA ALBERTO SAMPAIO","bairro":"Centro","cep":"28010500","distrito":"601","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":24,"nome":"RUA DOUTOR CELSO TINOCO","bairro":"Centro","cep":"28010483","distrito":"601","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":26,"nome":"RUA QUARTA DA JORNADA","bairro":"Centro","cep":"28010510","distrito":"601","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":90,"nome":"RUA MARIA IGNÊS DOS SANTOS","bairro":"Parque Aurora","cep":"28026115","distrito":"602","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":103,"nome":"RUA PROJETADA C (PRQ S LINO)","bairro":"Parque Aurora","cep":"28026725","distrito":"602","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":80,"nome":"TRAVESSA ANTÔNIO AMARO DE SOUZA","bairro":"Parque São Benedito","cep":"28025240","distrito":"602","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":104,"nome":"TRAVESSA OSIEL SILVA DOS SANTOS","bairro":"Parque Aurora","cep":"28026760","distrito":"602","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":137,"nome":"AVENIDA PASSOS","bairro":"Centro","cep":"28013370","distrito":"603","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":108,"nome":"LARGO DA IMPRENSA","bairro":"Centro","cep":"28010010","distrito":"603","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":125,"nome":"RUA CRUZ PEIXOTO","bairro":"Centro","cep":"28010490","distrito":"603","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":163,"nome":"RUA DOUTOR PENALVA","bairro":"Parque Turf Club","cep":"28027410","distrito":"603","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":145,"nome":"RUA MOACIR MACHADO","bairro":"Centro","cep":"28013590","distrito":"603","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":131,"nome":"TRAVESSA ZEQUINHA FIGUEIREDO","bairro":"Centro","cep":"28013038","distrito":"603","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":181,"nome":"PRAÇA BARÃO DE ITAÓCA","bairro":"Parque Turf Club","cep":"28013170","distrito":"604","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":183,"nome":"TRAVESSA MANOEL MODESTO","bairro":"Parque Turf Club","cep":"28013220","distrito":"604","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":186,"nome":"TRAVESSA PETRUCCI","bairro":"Centro","cep":"28013250","distrito":"604","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":185,"nome":"TRAVESSA QUINTINO DIAS","bairro":"Centro","cep":"28013240","distrito":"604","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":241,"nome":"RUA ADÃO PEREIRA NUNES - ATÉ 1169 - LADO ÍMPAR","bairro":"Parque Maciel","cep":"28013472","distrito":"605","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":242,"nome":"RUA ADÃO PEREIRA NUNES - ATÉ 490 - LADO PAR","bairro":"Parque Maciel","cep":"28013473","distrito":"605","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":247,"nome":"RUA LUMINATA FREITAS","bairro":"Parque Califórnia","cep":"28013698","distrito":"605","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":307,"nome":"RUA NÉDIO RIBEIRO DOS SANTOS DIAS","bairro":"Goytacazes","cep":"28023590","distrito":"605","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":306,"nome":"RUA PEDREVAL DA SILVA TAVARES","bairro":"Goytacazes","cep":"28023589","distrito":"605","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":299,"nome":"RUA RUBENS BARCELOS","bairro":"Goytacazes","cep":"28023581","distrito":"605","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":273,"nome":"SERVIDÃO LUIZA SOARES","bairro":"Goytacazes","cep":"28023464","distrito":"605","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":274,"nome":"TRAVESSA SERAFIM PEREIRA NETO","bairro":"Goytacazes","cep":"28023466","distrito":"605","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":392,"nome":"ESTRADA ANTÔNIO MOACIR BATISTA","bairro":"Donana","cep":"28023375","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":366,"nome":"RUA ALBERTO JOBIM","bairro":"Donana","cep":"28023335","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":341,"nome":"RUA ANCHIETA","bairro":"Horto","cep":"28015554","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":367,"nome":"RUA ANTÔNIO PINHEIRO","bairro":"Donana","cep":"28023336","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":379,"nome":"RUA ARIEL XAVIER","bairro":"Donana","cep":"28023351","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":356,"nome":"RUA CARLOS FRANCISCO DE SOUSA","bairro":"Donana","cep":"28023252","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":388,"nome":"RUA CECÍLIA RAMOS","bairro":"Donana","cep":"28023363","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":386,"nome":"RUA CIBELE SAMPAIO","bairro":"Donana","cep":"28023361","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":387,"nome":"RUA CRISTINA JUNQUEIRA","bairro":"Donana","cep":"28023362","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":407,"nome":"RUA DUARTE FERNANDES","bairro":"Donana","cep":"28023390","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":378,"nome":"RUA EDSON SEABRA","bairro":"Donana","cep":"28023350","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":381,"nome":"RUA EDUARDO CHAVES","bairro":"Donana","cep":"28023355","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":400,"nome":"RUA ENEDINA FARIA","bairro":"Donana","cep":"28023354","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":357,"nome":"RUA FRANCISCO PEREIRA DE MIRANDA PINTO","bairro":"Donana","cep":"28023255","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":375,"nome":"RUA HENRIQUE ROSÁRIO","bairro":"Donana","cep":"28023344","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":373,"nome":"RUA JUSSARA GOMES","bairro":"Donana","cep":"28023342","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":372,"nome":"RUA LUIZA PINTO","bairro":"Donana","cep":"28023341","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":369,"nome":"RUA MOZART MESQUITA","bairro":"Donana","cep":"28023338","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":385,"nome":"RUA NUNO PAIVA","bairro":"Donana","cep":"28023360","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":371,"nome":"RUA ODENI GOMES","bairro":"Donana","cep":"28023340","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":383,"nome":"RUA OLINDA FROTA","bairro":"Donana","cep":"28023358","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":380,"nome":"RUA ORNELA SOARES","bairro":"Donana","cep":"28023353","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":358,"nome":"RUA PAULO DE MIRANDA CARNEIRO","bairro":"Donana","cep":"28023256","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":368,"nome":"RUA ROBSON DOS SANTOS","bairro":"Donana","cep":"28023337","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":359,"nome":"RUA SÃO PEDRO DO SUL","bairro":"Donana","cep":"28023259","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":370,"nome":"RUA SILAS MATTOS","bairro":"Donana","cep":"28023339","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":325,"nome":"TRAVESSA OLÍMPIO PEREIRA NUNES","bairro":"Parque Califórnia","cep":"28015075","distrito":"606","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":484,"nome":"ADAO ANANIAS, RUA","bairro":"GOYTACAZES","cep":"28145647","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":498,"nome":"AMARO JOSÉ PEIXOTO, RUA","bairro":"GOYTACAZES","cep":"28110009","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":411,"nome":"PRAÇA NILO RIBEIRO DE ALVARENGA","bairro":"Parque Califórnia","cep":"28013053","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":494,"nome":"RUA ÁGUIA","bairro":"Goytacazes","cep":"28023761","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":457,"nome":"RUA BENEDITO MARQUES DOS SANTOS FILHO","bairro":"Parque São Benedito","cep":"28025623","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":486,"nome":"RUA JORGE PEIXOTO GOMES","bairro":"Goytacazes","cep":"28023752","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":410,"nome":"SERVIDÃO ITABORAÍ","bairro":"Parque Rosário","cep":"28027455","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":489,"nome":"TRAVESSA ADÃO ANANIAS","bairro":"Goytacazes","cep":"28023755","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":496,"nome":"TRAVESSA AMARO JOSÉ PEIXOTO","bairro":"Goytacazes","cep":"28023768","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":477,"nome":"TRAVESSA OLIDIA LEAL","bairro":"Parque Rosário","cep":"28027153","distrito":"607","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":570,"nome":"RUA ALCINA MORAES","bairro":"Fazenda Santo Antônio","cep":"28023011","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":600,"nome":"RUA ALFREDA PEDRA","bairro":"Fazenda Santo Antônio","cep":"28023119","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":567,"nome":"RUA ALICE MACIEL DE MIRANDA","bairro":"Fazenda Santo Antônio","cep":"28023008","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":601,"nome":"RUA ARLETE PEREIRA","bairro":"Fazenda Santo Antônio","cep":"28023123","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":576,"nome":"RUA ARLINDO SALES","bairro":"Fazenda Santo Antônio","cep":"28023017","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":587,"nome":"RUA ARMANDO CHAVES","bairro":"Fazenda Santo Antônio","cep":"28023031","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":583,"nome":"RUA CARLOS CÉSAR MENDONÇA OLIVEIRA","bairro":"Fazenda Santo Antônio","cep":"28023027","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":572,"nome":"RUA CÉLIA SANTOS","bairro":"Fazenda Santo Antônio","cep":"28023013","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":573,"nome":"RUA DIANE GARCIA","bairro":"Fazenda Santo Antônio","cep":"28023014","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":579,"nome":"RUA EDGAR GONÇALVES DE MELLO","bairro":"Fazenda Santo Antônio","cep":"28023020","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":592,"nome":"RUA EDINA GOMES","bairro":"Fazenda Santo Antônio","cep":"28023049","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":558,"nome":"RUA EDVALDO RODRIGUES MANHÃES","bairro":"Parque Imperial","cep":"28022270","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":574,"nome":"RUA EMILIA COSTA","bairro":"Fazenda Santo Antônio","cep":"28023015","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":593,"nome":"RUA ENILTON MENDES ALVES","bairro":"Fazenda Santo Antônio","cep":"28023101","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":594,"nome":"RUA ENOS CORDEIRO RANGEL","bairro":"Fazenda Santo Antônio","cep":"28023104","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":598,"nome":"RUA EUGÊNIA PINTO","bairro":"Fazenda Santo Antônio","cep":"28023116","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":577,"nome":"RUA GENI DE SOUZA SALES","bairro":"Fazenda Santo Antônio","cep":"28023018","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":575,"nome":"RUA GERALDO SALLES","bairro":"Fazenda Santo Antônio","cep":"28023016","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":566,"nome":"RUA GERSON MACIEL MIRANDA","bairro":"Fazenda Santo Antônio","cep":"28023007","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":584,"nome":"RUA ILMA RANGEL VIANA","bairro":"Fazenda Santo Antônio","cep":"28023028","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":571,"nome":"RUA INARO PINTO","bairro":"Fazenda Santo Antônio","cep":"28023012","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":581,"nome":"RUA JACY NICÁCIO DA SILVA","bairro":"Fazenda Santo Antônio","cep":"28023022","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":599,"nome":"RUA JOANA FARIA","bairro":"Fazenda Santo Antônio","cep":"28023118","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":590,"nome":"RUA LÚCIO MENDONCA","bairro":"Fazenda Santo Antônio","cep":"28023047","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":603,"nome":"RUA LUIZ CÉSAR PÓVOA","bairro":"Fazenda Santo Antônio","cep":"28023127","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":569,"nome":"RUA LUZIANA OLIVEIRA","bairro":"Fazenda Santo Antônio","cep":"28023010","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":595,"nome":"RUA MARIA CLARA RANGEL PIMENTA","bairro":"Fazenda Santo Antônio","cep":"28023105","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":578,"nome":"RUA MARIA DA PENHA FERNANDES","bairro":"Fazenda Santo Antônio","cep":"28023019","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":585,"nome":"RUA MARIA DO CARMO FERREIRA","bairro":"Fazenda Santo Antônio","cep":"28023029","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":596,"nome":"RUA MICHAEL BARCELOS PEREIRA","bairro":"Fazenda Santo Antônio","cep":"28023106","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":602,"nome":"RUA NÉLIO ALVES","bairro":"Fazenda Santo Antônio","cep":"28023125","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":586,"nome":"RUA NILTON HERNANDES DOS SANTOS","bairro":"Fazenda Santo Antônio","cep":"28023030","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":580,"nome":"RUA PAULO CÉSAR PAES FERNANDES","bairro":"Fazenda Santo Antônio","cep":"28023021","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":597,"nome":"RUA RONALDO CHAVES","bairro":"Fazenda Santo Antônio","cep":"28023115","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":582,"nome":"RUA ZULEIKA LEITE DE OLIVEIRA","bairro":"Fazenda Santo Antônio","cep":"28023026","distrito":"608","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":633,"nome":"ESTRADA DO AÇÚCAR","bairro":"Parque Penha","cep":"28022560","distrito":"609","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":628,"nome":"RUA CARLOS AMÉRICO DA SILVA ALVES","bairro":"Parque Flamboyant","cep":"28020273","distrito":"609","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":649,"nome":"RUA INÁCIA FERREIRA GONÇALVES","bairro":"Parque Varanda do Visconde","cep":"28022805","distrito":"609","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":648,"nome":"RUA JAIME FERREIRA LADIM","bairro":"Parque Varanda do Visconde","cep":"28022800","distrito":"609","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":651,"nome":"RUA MERY FERNANDES DE SALES","bairro":"Parque Varanda do Visconde","cep":"28022812","distrito":"609","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":608,"nome":"SERVIDÃO LEURIPES G DA SILVA","bairro":"Donana","cep":"28023269","distrito":"609","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":677,"nome":"RUA ALCIONE","bairro":"Parque Novo Jockey","cep":"28020865","distrito":"610","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":772,"nome":"RUA ANA SOARES BENSI","bairro":"Parque Aurora","cep":"28025650","distrito":"610","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":691,"nome":"RUA ARTUR PINHEIRO","bairro":"Parque Penha","cep":"28021101","distrito":"610","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":673,"nome":"RUA CASTORINA DO ESPÍRITO SANTO","bairro":"Parque Novo Jockey","cep":"28020859","distrito":"610","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":687,"nome":"RUA LÚCIO LOPES (ESTÂNCIA DA PENHA)","bairro":"Parque Penha","cep":"28021065","distrito":"610","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":737,"nome":"RUA PROFESSOR JOADELIO DOS SANTOS","bairro":"Parque Aurora","cep":"28025830","distrito":"610","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":688,"nome":"RUA ROSANA MARCONDE (ESTÂNCIA DA PENHA)","bairro":"Parque Penha","cep":"28021072","distrito":"610","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":721,"nome":"RUA TRÊS/ANTÔNIO CASTRO MAYER","bairro":"Parque Penha","cep":"28021580","distrito":"610","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":704,"nome":"RUA VALMOR BARBOSA (VILA MENEZES)","bairro":"Parque Penha","cep":"28021129","distrito":"610","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":694,"nome":"TRAVESSA EDITE DE SOUZA LICASALIO (VILA MANHÃES)","bairro":"Parque Penha","cep":"28021113","distrito":"610","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":695,"nome":"TRAVESSA SANTO AMARO (VILA MANHÃES)","bairro":"Parque Penha","cep":"28021114","distrito":"610","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":779,"nome":"TRAVESSA ZENILDO RIBEIRO","bairro":"Parque São Benedito","cep":"28026260","distrito":"610","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":841,"nome":"AVENIDA DINO ALENCAR","bairro":"Vivendas do Coqueiro IV","cep":"28021391","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":863,"nome":"PRAÇA MONSENHOR SEVERINO","bairro":"Parque Turf Club","cep":"28024080","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":846,"nome":"RUA ADEMAR SANTANA","bairro":"Vivendas do Coqueiro IV","cep":"28021397","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":845,"nome":"RUA AGEU RIBEIRO","bairro":"Vivendas do Coqueiro IV","cep":"28021396","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":877,"nome":"RUA ALBERTINA PINTO","bairro":"Alphaville","cep":"28024707","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":869,"nome":"RUA B (RES JOÃO MARIA)","bairro":"Parque João Maria","cep":"28024419","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":844,"nome":"RUA BONIFÁCIO OLIVEIRA","bairro":"Vivendas do Coqueiro IV","cep":"28021395","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":826,"nome":"RUA CAMILO CASTELO BRANCO","bairro":"Vivendas do Coqueiro II","cep":"28021374","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":839,"nome":"RUA CESÁRIO VERDE","bairro":"Vivendas do Coqueiro III","cep":"28021387","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":840,"nome":"RUA CIRILO ANTUNES","bairro":"Vivendas do Coqueiro IV","cep":"28021390","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":843,"nome":"RUA CLEMENTINO GARCIA","bairro":"Vivendas do Coqueiro IV","cep":"28021394","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":860,"nome":"RUA CRUZ DAS ALMAS","bairro":"Parque Penha","cep":"28022570","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":847,"nome":"RUA DÁCIO SAMPAIO","bairro":"Vivendas do Coqueiro IV","cep":"28021398","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":842,"nome":"RUA DONATO CASTRO","bairro":"Vivendas do Coqueiro IV","cep":"28021393","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":837,"nome":"RUA FERREIRA DE CASTRO","bairro":"Vivendas do Coqueiro III","cep":"28021385","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":880,"nome":"RUA FRANSCISCO DE ASSIS NEVES","bairro":"Alphaville","cep":"28024716","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":867,"nome":"RUA G (RES JOÃO MARIA)","bairro":"Parque João Maria","cep":"28024417","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":834,"nome":"RUA GUERRA JUNQUEIRO","bairro":"Vivendas do Coqueiro III","cep":"28021382","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":868,"nome":"RUA H (RES JOÃO MARIA)","bairro":"Parque João Maria","cep":"28024418","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":829,"nome":"RUA IRENE LISBOA","bairro":"Vivendas do Coqueiro III","cep":"28021377","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":830,"nome":"RUA JOÃO AGUIAR","bairro":"Vivendas do Coqueiro III","cep":"28021378","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":836,"nome":"RUA JORGE DE SENA","bairro":"Vivendas do Coqueiro III","cep":"28021384","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":828,"nome":"RUA MÁRIO DE SÁ CARNEIRO","bairro":"Vivendas do Coqueiro III","cep":"28021376","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":885,"nome":"RUA MERCEDES BAPTISTA","bairro":"Alphaville","cep":"28024724","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":818,"nome":"RUA OLDEMÁRIO TOGUINHÓ","bairro":"Vivendas do Coqueiro II","cep":"28021366","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":832,"nome":"RUA OSCAR LOPES","bairro":"Vivendas do Coqueiro III","cep":"28021380","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":831,"nome":"RUA RICARDO REIS","bairro":"Vivendas do Coqueiro III","cep":"28021379","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":793,"nome":"RUA SÃO ROBERTO BELARMINO","bairro":"Parque Penha","cep":"28021030","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":864,"nome":"RUA VILSON PINHEIRO","bairro":"Parque João Maria","cep":"28024414","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":855,"nome":"TRAVESSA WILSON ONOFRIO GOMES","bairro":"Parque Penha","cep":"28021510","distrito":"611","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":928,"nome":"RUA ALEXANDRE HERCULANO","bairro":"Parque Jóquei Club","cep":"28020415","distrito":"612","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":965,"nome":"RUA DOUTOR HUGO DE CAMPOS","bairro":"Ips","cep":"28026815","distrito":"612","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":966,"nome":"RUA DOUTOR WALTER DIAS","bairro":"Ips","cep":"28026825","distrito":"612","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":964,"nome":"RUA NOÊMIA DE BARROS FERNANDES","bairro":"Parque Maciel","cep":"28026810","distrito":"612","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":910,"nome":"RUA TANCREDO NEVES / PROJETADA B","bairro":"Parque Jóquei Club","cep":"28020298","distrito":"612","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":911,"nome":"RUA VITÓRIA DA CONQUISTA","bairro":"Parque Jóquei Club","cep":"28020299","distrito":"612","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":958,"nome":"RUA WALTER DIAS TERRA","bairro":"Ips","cep":"28026570","distrito":"612","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1003,"nome":"RUA AMARO DA SILVA SANTOS","bairro":"Parque Penha","cep":"28021560","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":990,"nome":"RUA AMÉRICO DINIZ","bairro":"Jardim das Acácias","cep":"28021283","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":985,"nome":"RUA ANTÔNIO PEREIRA CABRAL","bairro":"Parque Santo Antônio","cep":"28020750","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":996,"nome":"RUA JOSÉ ÁLVARO DA ROCHA WAGNER","bairro":"Vivendas do Coqueiro I","cep":"28021302","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":994,"nome":"RUA MOACIR JOSÉ FILHO","bairro":"Jardim das Acácias","cep":"28021289","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":998,"nome":"RUA PAULO EDUARDO PEDROSO DE SOUZA","bairro":"Vivendas do Coqueiro I","cep":"28021304","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1019,"nome":"RUA PROFESSOR ANTÔNIO SARLO","bairro":"Parque Penha","cep":"28022160","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1034,"nome":"TRAVESSA BACU","bairro":"Parque Santo Antônio","cep":"28022350","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1051,"nome":"TRAVESSA ERCELINO SALES FILHO","bairro":"Parque João Maria","cep":"28027291","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1056,"nome":"TRAVESSA FLORENTINO LUIZ ALMEIDA","bairro":"Parque João Maria","cep":"28027313","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1010,"nome":"VILA HÍPICA","bairro":"Parque Jóquei Club","cep":"28022080","distrito":"613","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1113,"nome":"ATHAÍDE BARBOSA,  PÇA","bairro":"Tócos","cep":"28148045","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1118,"nome":"CECÍLIA, RUA SANTA","bairro":"Tócos","cep":"28148050","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1122,"nome":"FALCÃO, RUA","bairro":"Tócos","cep":"28148055","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1109,"nome":"GONÇALO, TV.SÃO","bairro":"Tócos","cep":"28148038","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1123,"nome":"INÁCIO,  RUA SANTO","bairro":"Tócos","cep":"28148058","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1085,"nome":"JOSÉ PEREIRA ABREU, RUA","bairro":"Tócos","cep":"28148001","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1089,"nome":"MANOEL, RUA SÃO","bairro":"Tócos","cep":"28148006","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1101,"nome":"MATIAS, RUA SÃO","bairro":"Tócos","cep":"28148022","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1096,"nome":"OITO DE MARÇO, TV.","bairro":"Tócos","cep":"28148015","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1102,"nome":"PEDRO, RUA SÃO","bairro":"Tócos","cep":"28148023","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1097,"nome":"ROSA, TV. SANTA","bairro":"Tócos","cep":"28148016","distrito":"614","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1149,"nome":"ALONSO ROSA, RUA","bairro":"BAIXA GRANDE","cep":"28142013","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1151,"nome":"APRÍGIO BARCELOS, RUA","bairro":"BAIXA GRANDE","cep":"28142018","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1136,"nome":"BENJAMIM F DE AZEVEDO, RUA","bairro":"BAIXA GRANDE","cep":"28140063","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1158,"nome":"CARAMURU, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28142040","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1148,"nome":"EDWIRGES, RUA SANTA","bairro":"BAIXA GRANDE","cep":"28142012","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1130,"nome":"HELENA, RUA SANTA","bairro":"BAIXA GRANDE","cep":"28140006","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1181,"nome":"MANOEL CIRILO ONÇA, RUA","bairro":"BAIXA GRANDE","cep":"28145628","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1172,"nome":"MANOEL CORREIA, RUA CAP.","bairro":"FAROL DE SÃO TOMÉ","cep":"28142056","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1150,"nome":"MANOEL FERREIRA DE LIMA, RUA","bairro":"BAIXA GRANDE","cep":"28142016","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1183,"nome":"MEIO, RUA DO","bairro":"BAIXA GRANDE","cep":"28145632","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1176,"nome":"RONDON, RUA MAL.","bairro":"FAROL DE SÃO TOMÉ","cep":"28142060","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1189,"nome":"RUA ERNESTO MOREIRA DA SILVA","bairro":"Parque Tarcisio Miranda","cep":"28020206","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1188,"nome":"RUA FRANCISCO MANHÃES DA SILVA","bairro":"Parque Tarcisio Miranda","cep":"28020195","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1203,"nome":"RUA NILO CHAGAS DE SOUZA","bairro":"Fazenda Santo Antônio","cep":"28023001","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1205,"nome":"RUA PROFESSORA ODETE LEÃO HIGINO","bairro":"Fazenda Santo Antônio","cep":"28023121","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1186,"nome":"RUA VICENTE FERRAIOULE","bairro":"Parque Tarcisio Miranda","cep":"28020175","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1185,"nome":"SALVADOR ROCHA, TV.","bairro":"BAIXA GRANDE","cep":"28145640","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1133,"nome":"SÉRVULO GONÇALVES, RUA","bairro":"BAIXA GRANDE","cep":"28140022","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1140,"nome":"TEREZINHA, RUA SANTA","bairro":"BAIXA GRANDE","cep":"28140087","distrito":"615","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1406,"nome":"ALAIR FERREIRA,RUA","bairro":"BAIXA GRANDE","cep":"28140042","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1415,"nome":"BARRA ALEGRE, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28140057","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1416,"nome":"BARRA BONITA, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28140058","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1362,"nome":"CUSTÓDIO G DA SILVA, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28140110","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1433,"nome":"DIREMA QUINTANILHA, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28140099","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1436,"nome":"JOÃO A FILHO, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28140103","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1437,"nome":"MANOEL GONÇALVES, RUA CAP.","bairro":"FAROL DE SÃO TOMÉ","cep":"28140104","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1268,"nome":"MANOEL P. BARBOSA, RUA","bairro":"nan","cep":"28145907","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1393,"nome":"PIAU, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28140014","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1394,"nome":"PRUDÊNCIO DA SILVA RANGEL, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28140016","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1399,"nome":"TATUÍ, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28140025","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1400,"nome":"VINTE E SETE DO JULHO, RUA","bairro":"FAROL DE SÃO TOMÉ","cep":"28140026","distrito":"616","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1460,"nome":"AVENIDA PROFESSORA ANITA TERRA","bairro":"Parque Jardim Carioca","cep":"28080400","distrito":"617","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1475,"nome":"RUA DOUTOR ANDRÉ LUIZ","bairro":"Parque Jardim Carioca","cep":"28080460","distrito":"617","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1489,"nome":"RUA MANOEL DE SOUZA","bairro":"Jardim Carioca","cep":"28080800","distrito":"617","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1492,"nome":"RUA MARIA DA PENHA TAVARES","bairro":"Parque Vicente Gonçalves Dias","cep":"28080199","distrito":"617","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1511,"nome":"TRAVESSA MANOEL DE SOUZA","bairro":"Parque Jardim Carioca","cep":"28080320","distrito":"617","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1516,"nome":"TRAVESSA MANOEL SOUZA","bairro":"Jardim Carioca","cep":"28080685","distrito":"617","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1517,"nome":"TRAVESSA MARIA DA PENHA TAVARES","bairro":"Parque Vicente Gonçalves Dias","cep":"28080785","distrito":"617","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1518,"nome":"TRAVESSA TEIXEIRA DIAS","bairro":"Parque Jardim Carioca","cep":"28080310","distrito":"617","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1521,"nome":"RUA A (D RODRIGO)","bairro":"Parque Santa Rosa","cep":"28085375","distrito":"618","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1527,"nome":"RUA B (D RODRIGO)","bairro":"Parque Santa Rosa","cep":"28085376","distrito":"618","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1535,"nome":"RUA C (D RODRIGO)","bairro":"Parque Santa Rosa","cep":"28085377","distrito":"618","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1545,"nome":"RUA CONDE DE IRAJÁ","bairro":"Parque Santa Rosa","cep":"28085330","distrito":"618","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1556,"nome":"RUA DOUTOR CARLOS ANTÔNIO RIBEIRO","bairro":"Parque Santa Helena","cep":"28060100","distrito":"618","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1549,"nome":"RUA H (PRQ PLANÍCIE)","bairro":"Parque Santa Rosa","cep":"28085255","distrito":"618","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":1572,"nome":"RUA JOÃO PEÇANHA DE CARVALHO","bairro":"Parque Guarus","cep":"28060710","distrito":"618","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1588,"nome":"RUA PALESTRA","bairro":"Parque Santa Helena","cep":"28060115","distrito":"618","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1573,"nome":"RUA VINTE E CINCO DE FEVEREIRO","bairro":"Parque Santa Rosa","cep":"28085425","distrito":"618","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1609,"nome":"TRAVESSA NELY","bairro":"Parque Vera Cruz","cep":"28060385","distrito":"618","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1613,"nome":"VILA CUSTÓDIO","bairro":"Parque Fundão","cep":"28060225","distrito":"618","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":1622,"nome":"RUA A (FAZ ALDEIA)","bairro":"Parque Aldeia","cep":"28060532","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1705,"nome":"RUA ÂNGELA ZANELA","bairro":"Parque Cidade Luz","cep":"28060160","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1624,"nome":"RUA B (FAZ ALDEIA)","bairro":"Parque Aldeia","cep":"28060533","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1636,"nome":"RUA D (FAZ ALDEIA)","bairro":"Parque Aldeia","cep":"28060537","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1640,"nome":"RUA E (FAZ ALDEIA)","bairro":"Parque Aldeia","cep":"28060538","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1654,"nome":"RUA H (FAZ ALDEIA)","bairro":"Parque Aldeia","cep":"28060553","distrito":"619","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":1658,"nome":"RUA HUMBERTO DE QUEIROZ","bairro":"Parque Cidade Luz","cep":"28060790","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1668,"nome":"RUA JOÃO DAMASCENO ALVES","bairro":"Parque Aldeia","cep":"28060571","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1666,"nome":"RUA JOSÉ MARIA BARRETO","bairro":"Parque Guarus","cep":"28060696","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1670,"nome":"RUA L (FAZ ALDEIA)","bairro":"Parque Aldeia","cep":"28060558","distrito":"619","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":1667,"nome":"RUA MASCARENHAS DE MORAES","bairro":"Parque Vicente Gonçalves Dias","cep":"28080213","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1685,"nome":"RUA RUBENS CRETON","bairro":"Parque Vicente Gonçalves Dias","cep":"28080215","distrito":"619","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1723,"nome":"PRAÇA ABELARDO QUEIROZ","bairro":"Parque Visconde de Ururaí","cep":"28070220","distrito":"620","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1744,"nome":"RUA E (JD ELDORADO)","bairro":"Parque Eldorado","cep":"28090658","distrito":"620","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1764,"nome":"RUA JORGE CEDINHA","bairro":"Parque Eldorado","cep":"28090020","distrito":"620","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1763,"nome":"RUA JORNALISTA CARLOS FERREIRA DE ANDRADE","bairro":"Parque Guarus","cep":"28060730","distrito":"620","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1778,"nome":"RUA LUIZ DUMONT","bairro":"Vila Industrial","cep":"28090680","distrito":"620","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1782,"nome":"RUA MANOEL JOAQUIM DE MENDOÇA","bairro":"Vila Industrial","cep":"28090011","distrito":"620","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1787,"nome":"RUA NÉLIA CAMPOS DE OLIVEIRA","bairro":"Parque Guarus","cep":"28070770","distrito":"620","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1792,"nome":"RUA NILZA PAES DE FREITAS","bairro":"Codim","cep":"28090480","distrito":"620","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1827,"nome":"AVENIDA JARDINS DE CAMPOS","bairro":"Jardins de Campos","cep":"28085762","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1833,"nome":"PRAÇA JOSÉ DIAS NOGUEIRA","bairro":"Custodópolis","cep":"28085040","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1865,"nome":"RUA ABÍLIO BARRETO","bairro":"Jardins de Campos","cep":"28085772","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1869,"nome":"RUA ALEXANDRE DUMAS","bairro":"Jardins de Campos","cep":"28085784","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1871,"nome":"RUA ANITA GARIBALDI","bairro":"Jardins de Campos","cep":"28085781","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1899,"nome":"RUA DOUTOR CUSTÓDIO SIQUEIRA","bairro":"Custodópolis","cep":"28085060","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1911,"nome":"RUA JORGE DE LIMA","bairro":"Jardins de Campos","cep":"28085763","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1917,"nome":"RUA JÚLIO VERNE","bairro":"Jardins de Campos","cep":"28085766","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1921,"nome":"RUA MARIA ANTONIETA","bairro":"Jardins de Campos","cep":"28085778","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1923,"nome":"RUA MARQUESA DE SANTOS","bairro":"Jardins de Campos","cep":"28085777","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1904,"nome":"RUA OLÍVIO MAGALHÃES","bairro":"Parque São Mateus","cep":"28073210","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1931,"nome":"RUA PABLO NERUDA","bairro":"Jardins de Campos","cep":"28085776","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1942,"nome":"RUA UMBERTO ECO","bairro":"Jardins de Campos","cep":"28085786","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1943,"nome":"RUA VICENTE DE CARVALHO","bairro":"Jardins de Campos","cep":"28085760","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1944,"nome":"TRAVESSA ARISTIDES LEAL","bairro":"Parque Barão do Rio Branco","cep":"28083622","distrito":"621","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1959,"nome":"PRAÇA JOÃO BARRETO DA SILVA","bairro":"Parque Calabouço","cep":"28083060","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1976,"nome":"RODOVIA CAMPOS-VITÓRIA - LADO ÍMPAR","bairro":"Parque Santos Dumont","cep":"28073475","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1978,"nome":"RODOVIA CAMPOS-VITÓRIA - LADO ÍMPAR","bairro":"Parque Boa Vista","cep":"28073705","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1972,"nome":"RODOVIA CAMPOS-VITÓRIA - LADO PAR","bairro":"Parque Santos Dumont","cep":"28073476","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1974,"nome":"RODOVIA CAMPOS-VITÓRIA - LADO PAR","bairro":"Parque Boa Vista","cep":"28073706","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1982,"nome":"RUA ALINO TAVARES DE MIRANDA","bairro":"Parque Santos Dumont","cep":"28073676","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1965,"nome":"RUA ALTA DE SOUZA","bairro":"Parque Alvorada","cep":"28083730","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1983,"nome":"RUA DALTON CRESPO DE CASTRO","bairro":"Parque Zuza Mota","cep":"28083767","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":1987,"nome":"RUA DONA AMORITA OLIVEIRA MORALES","bairro":"Parque Presidente Vargas","cep":"28083310","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2002,"nome":"RUA EVALDO GABRIEL","bairro":"Parque Santos Dumont","cep":"28073410","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2042,"nome":"RUA TRÊS","bairro":"Parque Boa Vista","cep":"28073530","distrito":"622","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2083,"nome":"ESTRADA SANTA ANA - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145010","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2084,"nome":"PRAÇA NOSSA SENHORA DA CONCEIÇÃO - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145020","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2090,"nome":"RUA AMARO GALAXE -  TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145065","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2095,"nome":"RUA ARY BARRETO -  TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145125","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2096,"nome":"RUA AURÉLIO PINHEIRO - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145130","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2103,"nome":"RUA CÂNDIDO DUTRA -  TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145150","distrito":"623","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":2101,"nome":"RUA CARLOS DE JESUS - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145155","distrito":"623","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":2109,"nome":"RUA EDERVAL VENÂNCIO","bairro":"TRAVESSÃO","cep":"28145215","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2110,"nome":"RUA EDMUNDO LINS - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145220","distrito":"623","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":2098,"nome":"RUA ETELVINO NOGUEIRA - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145225","distrito":"623","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":2111,"nome":"RUA GREGÓRIO LOPES - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145235","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2115,"nome":"RUA JOSÉ RANGEL DE ALMEIDA -  TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145270","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2070,"nome":"RUA MANOEL LAURINDO","bairro":"Parque Eldorado","cep":"28090730","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2119,"nome":"RUA MANOEL TEIXEIRA - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145305","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2125,"nome":"RUA MONTE SIÃO - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145340","distrito":"623","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":2126,"nome":"RUA NILO DE SOUZA PINTO - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145355","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2130,"nome":"RUA QUATRO (SANTUÁRIO)","bairro":"TRAVESSÃO","cep":"28145415","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2133,"nome":"RUA SEBASTIÃO LACERDA - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145490","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2134,"nome":"RUA SERVIDÃO ELOAH MACHADO VASCONCELOS","bairro":"Parque São Silvestre","cep":"28090243","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2139,"nome":"TRAVESSA LUIZ VALADARES -  TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145570","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2142,"nome":"TRAVESSA SÃO FRANCISCO -  TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145600","distrito":"623","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2203,"nome":"RUA ALDEIR DOMINGUES - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145045","distrito":"624","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2206,"nome":"RUA AMARO SALES PINTO - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145070","distrito":"624","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":2173,"nome":"RUA B (FAROFA)","bairro":"Parque Presidente Vargas","cep":"28083327","distrito":"624","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":2150,"nome":"RUA CARLOS VAZ","bairro":"Parque Aeroporto","cep":"28093009","distrito":"624","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2179,"nome":"RUA DOUTOR TARSO DE ALVARENGA","bairro":"Parque Bonsucesso","cep":"28085080","distrito":"624","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2145,"nome":"RUA JOANITA","bairro":"Parque Aeroporto","cep":"28093120","distrito":"624","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2234,"nome":"RUA QUATORZE - NOVA CANAÃ","bairro":"NOVA CANAÃ","cep":"28145405","distrito":"624","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""},{"ruaId":2236,"nome":"RUA QUINZE - NOVA CANAÃ","bairro":"NOVA CANAÃ","cep":"28145420","distrito":"624","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":2250,"nome":"RUA TRINTA E NOVE - NOVA CANAÃ","bairro":"NOVA CANAÃ","cep":"28145525","distrito":"624","status":"nunca_revisada_osm","confianca":"","nomeOsmSugerido":""},{"ruaId":2255,"nome":"RUA VICENTE DE PAULA SIQUEIRA - TRAVESSÃO","bairro":"TRAVESSÃO","cep":"28145540","distrito":"624","status":"revisada_osm_rejeitada","confianca":"","nomeOsmSugerido":""}];
+const CHAVE_STORAGE = 'geometrias_manuais_v2';
 const CENTRO_CAMPOS = [-21.7545, -41.3244];
-
 let indiceAtual = 0;
-let pontosAtuais = []; // [[lat, lon], ...]
+let filtroAtual = '';
+let segmentosAtuais = [[]];
 let geometrias = carregarProgresso();
-
+let linhasMapa = [];
+let marcadoresPontos = [];
+let marcadorBusca = null;
 const mapa = L.map('mapa').setView(CENTRO_CAMPOS, 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors',
-  maxZoom: 19,
-}).addTo(mapa);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', maxZoom: 19 }).addTo(mapa);
 
-let linhaAtual = L.polyline([], { color: '#003d73', weight: 4 }).addTo(mapa);
-let marcadores = [];
-
-function carregarProgresso() {
-  try {
-    const bruto = localStorage.getItem(CHAVE_STORAGE);
-    return bruto ? JSON.parse(bruto) : {};
-  } catch (e) {
-    return {};
-  }
-}
-
-function salvarProgresso() {
-  try {
-    localStorage.setItem(CHAVE_STORAGE, JSON.stringify(geometrias));
-  } catch (e) {
-    console.warn("não consegui salvar no localStorage", e);
-  }
-}
-
-function atualizarProgresso() {
-  const feitas = Object.keys(geometrias).length;
-  document.getElementById('progresso').textContent = `${feitas} / ${DADOS.length} concluídas`;
-}
+function carregarProgresso() { try { const bruto = localStorage.getItem(CHAVE_STORAGE); return bruto ? JSON.parse(bruto) : {}; } catch (erro) { console.warn('Não foi possível ler o progresso local.', erro); return {}; } }
+function salvarProgresso() { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(geometrias)); }
+function textoBusca(valor) { return String(valor || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase(); }
+function ruasFiltradas() { const termo = textoBusca(filtroAtual.trim()); if (!termo) return DADOS; return DADOS.filter(item => textoBusca([item.nome, item.bairro, item.distrito, item.cep].join(' ')).includes(termo)); }
+function geometriaValida(geometria) { return Boolean(geometria && geometria.type === 'MultiLineString' && Array.isArray(geometria.coordinates) && geometria.coordinates.some(linha => Array.isArray(linha) && linha.length >= 2)); }
+function quantidadeConcluida() { return DADOS.filter(item => geometrias[item.ruaId] && geometriaValida(geometrias[item.ruaId])).length; }
+function atualizarProgresso() { document.getElementById('progresso').textContent = `${quantidadeConcluida()} / ${DADOS.length} ruas concluídas`; }
 
 function renderizarLista() {
-  const container = document.getElementById('lista-ruas');
-  container.innerHTML = '';
-  DADOS.forEach((item, i) => {
-    const div = document.createElement('div');
-    div.className = 'item-lista' + (i === indiceAtual ? ' atual' : '');
-    const feito = geometrias[item.ruaId] ? '<span class="marca-feito">✔</span>' : '';
-    div.innerHTML = `<span>${item.distrito} — ${item.nome}</span>${feito}`;
-    div.onclick = () => irPara(i);
-    container.appendChild(div);
+  const lista = document.getElementById('lista-ruas');
+  const filtradas = ruasFiltradas();
+  document.getElementById('contador-filtro').textContent = `${filtradas.length} de ${DADOS.length}`;
+  lista.innerHTML = '';
+  if (!filtradas.length) { lista.innerHTML = '<div class="vazio">Nenhuma pendência encontrada.</div>'; return; }
+  filtradas.forEach(item => {
+    const indice = DADOS.indexOf(item);
+    const div = document.createElement('div'); div.className = 'item-lista' + (indice === indiceAtual ? ' atual' : '');
+    const texto = document.createElement('div'); texto.className = 'texto';
+    const nome = document.createElement('div'); nome.className = 'nome'; nome.textContent = item.nome;
+    const detalhe = document.createElement('div'); detalhe.className = 'detalhe'; detalhe.textContent = `Distrito ${item.distrito} · CEP ${item.cep || 'não informado'}`;
+    texto.append(nome, detalhe); div.appendChild(texto);
+    if (geometrias[item.ruaId] && geometriaValida(geometrias[item.ruaId])) { const feito = document.createElement('span'); feito.className = 'marca-feito'; feito.textContent = 'OK'; div.appendChild(feito); }
+    div.onclick = () => irPara(indice); lista.appendChild(div);
   });
-  const atualEl = container.querySelector('.atual');
-  if (atualEl) atualEl.scrollIntoView({ block: 'nearest' });
 }
 
-function limparDesenho() {
-  pontosAtuais = [];
-  marcadores.forEach(m => mapa.removeLayer(m));
-  marcadores = [];
-  linhaAtual.setLatLngs([]);
-  document.getElementById('status-pontos').textContent = '0 pontos marcados';
+function limparCamadas() { linhasMapa.forEach(linha => mapa.removeLayer(linha)); marcadoresPontos.forEach(marcador => mapa.removeLayer(marcador)); linhasMapa = []; marcadoresPontos = []; }
+function pontosTodos() { return segmentosAtuais.flatMap(segmento => segmento); }
+function formatarCoordenada(lat, lon) { return `${Number(lat).toFixed(6)}, ${Number(lon).toFixed(6)}`; }
+function coordenadaRepresentativa() { const pontos = pontosTodos(); if (!pontos.length) return null; return [pontos.reduce((soma, ponto) => soma + ponto[0], 0) / pontos.length, pontos.reduce((soma, ponto) => soma + ponto[1], 0) / pontos.length]; }
+function atualizarLeituraCoordenadas() {
+  const pontos = pontosTodos(); const representativa = coordenadaRepresentativa(); const ultimo = pontos[pontos.length - 1];
+  document.getElementById('status-pontos').textContent = pontos.length ? `${pontos.length} ponto(s) em ${segmentosAtuais.filter(segmento => segmento.length).length} segmento(s).` : 'Nenhum ponto marcado.';
+  document.getElementById('coordenadas').innerHTML = representativa ? `<strong>Representativa:</strong> ${formatarCoordenada(representativa[0], representativa[1])}<br><strong>Último ponto:</strong> ${formatarCoordenada(ultimo[0], ultimo[1])}` : 'Coordenada representativa: —<br>Último ponto: —';
+}
+function renderizarDesenho(ajustarMapa = false) {
+  limparCamadas();
+  segmentosAtuais.forEach(segmento => {
+    if (segmento.length >= 2) linhasMapa.push(L.polyline(segmento, { color: '#003d73', weight: 5, opacity: .9 }).addTo(mapa));
+    segmento.forEach((ponto, indice) => { const marcador = L.circleMarker(ponto, { radius: 5, color: '#003d73', fillColor: '#ffd400', fillOpacity: 1, weight: 2 }).addTo(mapa); marcador.bindTooltip(`${indice + 1}: ${formatarCoordenada(ponto[0], ponto[1])}`, { direction: 'top' }); marcadoresPontos.push(marcador); });
+  });
+  atualizarLeituraCoordenadas();
+  if (ajustarMapa && linhasMapa.length) mapa.fitBounds(L.featureGroup(linhasMapa).getBounds().pad(.2), { maxZoom: 17 });
+}
+function geoParaSegmentos(geometria) { if (!geometriaValida(geometria)) return [[]]; return geometria.coordinates.map(linha => linha.map(([lon, lat]) => [lat, lon])); }
+function segmentosParaGeoJSON() { const linhas = segmentosAtuais.filter(segmento => segmento.length >= 2).map(segmento => segmento.map(([lat, lon]) => [lon, lat])); return linhas.length ? { type: 'MultiLineString', coordinates: linhas } : null; }
+function termoPadrao(item) { return `${item.nome}, ${item.bairro || ''}, Campos dos Goytacazes, RJ`.replace(/,\s*,/g, ','); }
+function carregarRua(indice, ajustarMapa = true) {
+  if (!DADOS[indice]) return; indiceAtual = indice; const item = DADOS[indice];
+  document.getElementById('nome-atual').textContent = item.nome; document.getElementById('distrito-atual').textContent = `Distrito ${item.distrito}`; document.getElementById('bairro-atual').textContent = item.bairro || 'não informado'; document.getElementById('cep-atual').textContent = item.cep || 'não informado';
+  document.getElementById('status-rua').textContent = item.status === 'nunca_revisada_osm' ? 'Sem correspondência anterior no OSM. Confirme a rua visualmente antes de desenhar.' : `A busca OSM anterior foi rejeitada. Sugestão anterior: ${item.nomeOsmSugerido || 'nenhuma'}.`;
+  document.getElementById('campo-busca').value = termoPadrao(item); document.getElementById('link-google').href = `https://www.google.com/maps/search/${encodeURIComponent(termoPadrao(item))}`; document.getElementById('busca-resultados').innerHTML = '';
+  segmentosAtuais = geoParaSegmentos(geometrias[item.ruaId]); renderizarDesenho(ajustarMapa); renderizarLista(); atualizarProgresso();
+}
+function irPara(indice) { if (indice >= 0 && indice < DADOS.length) carregarRua(indice); }
+function adicionarPonto(lat, lon) { const segmento = segmentosAtuais[segmentosAtuais.length - 1] || []; segmento.push([lat, lon]); segmentosAtuais[segmentosAtuais.length - 1] = segmento; renderizarDesenho(); }
+
+function mostrarResultados(resultados) {
+  const container = document.getElementById('busca-resultados'); container.innerHTML = '';
+  if (!resultados.length) { container.innerHTML = '<div class="vazio">Nenhum resultado encontrado. Use o mapa ou a referência do Google Maps.</div>'; return; }
+  resultados.forEach(resultado => { const lat = Number(resultado.lat); const lon = Number(resultado.lon); if (!Number.isFinite(lat) || !Number.isFinite(lon)) return; const botao = document.createElement('button'); botao.type = 'button'; botao.className = 'resultado'; botao.textContent = resultado.display_name || formatarCoordenada(lat, lon); botao.onclick = () => { mapa.setView([lat, lon], 17); if (marcadorBusca) mapa.removeLayer(marcadorBusca); marcadorBusca = L.marker([lat, lon]).addTo(mapa).bindPopup(resultado.display_name || formatarCoordenada(lat, lon)).openPopup(); document.getElementById('coordenadas').innerHTML = `<strong>Resultado selecionado:</strong> ${formatarCoordenada(lat, lon)}<br>Use os cliques para desenhar o traçado real.`; }; container.appendChild(botao); });
 }
 
-function carregarRua(i) {
-  const item = DADOS[i];
-  document.getElementById('nome-atual').textContent = item.nome;
-  document.getElementById('distrito-atual').textContent = 'Distrito ' + item.distrito;
-
-  const termoBusca = item.nome.replace(/\s*-\s*(ATÉ|TRAVESSÃO).*$/i, '').replace(/\/.*$/, '').trim();
-  document.getElementById('campo-busca').value = termoBusca + ', Campos dos Goytacazes, RJ';
-
-  const google = 'https://www.google.com/maps/search/' + encodeURIComponent(termoBusca + ' Campos dos Goytacazes RJ');
-  document.getElementById('link-google').href = google;
-
-  limparDesenho();
-
-  const salvo = geometrias[item.ruaId];
-  if (salvo) {
-    const coords = salvo.coordinates[0].map(c => [c[1], c[0]]); // volta lon,lat -> lat,lon
-    coords.forEach(latlon => adicionarPonto(latlon, false));
-    if (coords.length) mapa.fitBounds(linhaAtual.getBounds(), { maxZoom: 17 });
-  }
-
-  renderizarLista();
-}
-
-function irPara(i) {
-  if (i < 0 || i >= DADOS.length) return;
-  indiceAtual = i;
-  carregarRua(i);
-}
-
-function adicionarPonto(latlon, atualizarMapa = true) {
-  pontosAtuais.push(latlon);
-  const marcador = L.circleMarker(latlon, { radius: 5, color: '#003d73', fillColor: '#ffd400', fillOpacity: 1 }).addTo(mapa);
-  marcadores.push(marcador);
-  linhaAtual.setLatLngs(pontosAtuais);
-  document.getElementById('status-pontos').textContent = pontosAtuais.length + ' pontos marcados';
-}
-
-mapa.on('click', (e) => {
-  adicionarPonto([e.latlng.lat, e.latlng.lng]);
-});
-
-document.getElementById('btn-desfazer').onclick = () => {
-  if (!pontosAtuais.length) return;
-  pontosAtuais.pop();
-  const m = marcadores.pop();
-  if (m) mapa.removeLayer(m);
-  linhaAtual.setLatLngs(pontosAtuais);
-  document.getElementById('status-pontos').textContent = pontosAtuais.length + ' pontos marcados';
+document.getElementById('filtro').addEventListener('input', evento => { filtroAtual = evento.target.value; renderizarLista(); });
+document.getElementById('btn-buscar').onclick = async () => {
+  const termo = document.getElementById('campo-busca').value.trim(); const botao = document.getElementById('btn-buscar'); if (!termo) return; botao.disabled = true; botao.textContent = 'Consultando mapa…';
+  try { const url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&countrycodes=br&q=' + encodeURIComponent(termo); const resposta = await fetch(url, { headers: { 'Accept-Language': 'pt-BR' } }); if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`); mostrarResultados(await resposta.json()); } catch (erro) { mostrarResultados([]); console.warn('Busca geográfica falhou.', erro); } finally { botao.disabled = false; botao.textContent = 'Buscar no OpenStreetMap'; }
 };
-
-document.getElementById('btn-limpar').onclick = () => {
-  if (confirm('Limpar todos os pontos dessa rua?')) limparDesenho();
-};
-
-document.getElementById('btn-salvar').onclick = () => {
-  if (pontosAtuais.length < 2) {
-    alert('Marca pelo menos 2 pontos pra formar uma linha.');
-    return;
-  }
-  const item = DADOS[indiceAtual];
-  geometrias[item.ruaId] = {
-    type: "MultiLineString",
-    coordinates: [pontosAtuais.map(([lat, lon]) => [lon, lat])],
-  };
-  salvarProgresso();
-  atualizarProgresso();
-  renderizarLista();
-  if (indiceAtual < DADOS.length - 1) {
-    irPara(indiceAtual + 1);
-  } else {
-    alert('Essa era a última da lista! Pode baixar o JSON.');
-  }
-};
-
+mapa.on('click', evento => adicionarPonto(evento.latlng.lat, evento.latlng.lng));
+mapa.on('mousemove', evento => { if (!pontosTodos().length) document.getElementById('coordenadas').innerHTML = `<strong>Cursor:</strong> ${formatarCoordenada(evento.latlng.lat, evento.latlng.lng)}<br>Coordenada representativa: —`; });
+document.getElementById('btn-desfazer').onclick = () => { let segmento = segmentosAtuais[segmentosAtuais.length - 1]; if (!segmento.length && segmentosAtuais.length > 1) { segmentosAtuais.pop(); segmento = segmentosAtuais[segmentosAtuais.length - 1]; } if (segmento.length) segmento.pop(); renderizarDesenho(); };
+document.getElementById('btn-segmento').onclick = () => { if (segmentosAtuais[segmentosAtuais.length - 1].length) segmentosAtuais.push([]); atualizarLeituraCoordenadas(); };
+document.getElementById('btn-limpar').onclick = () => { if (confirm('Limpar o desenho desta rua? O banco não será alterado.')) { segmentosAtuais = [[]]; renderizarDesenho(); } };
+document.getElementById('btn-centralizar').onclick = () => mapa.setView(CENTRO_CAMPOS, 13);
 document.getElementById('btn-anterior').onclick = () => irPara(indiceAtual - 1);
 document.getElementById('btn-proxima').onclick = () => irPara(indiceAtual + 1);
-
-document.getElementById('btn-buscar').onclick = async () => {
-  const termo = document.getElementById('campo-busca').value.trim();
-  if (!termo) return;
-  const btn = document.getElementById('btn-buscar');
-  btn.textContent = 'Buscando…';
-  btn.disabled = true;
-  try {
-    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(termo);
-    const resp = await fetch(url, { headers: { 'Accept-Language': 'pt-BR' } });
-    const resultados = await resp.json();
-    if (resultados.length) {
-      const { lat, lon } = resultados[0];
-      mapa.setView([parseFloat(lat), parseFloat(lon)], 17);
-    } else {
-      alert('Não achei nada com esse termo no OpenStreetMap. Tenta ajustar o texto da busca, ou procura visualmente pelo bairro.');
-    }
-  } catch (e) {
-    alert('Busca falhou (sem internet ou serviço fora do ar). Procura visualmente no mapa.');
-  } finally {
-    btn.textContent = '🔍 Buscar no mapa';
-    btn.disabled = false;
-  }
-};
-
-document.getElementById('baixar-json').onclick = () => {
-  const saida = Object.entries(geometrias).map(([ruaId, geometria]) => ({
-    rua_id: parseInt(ruaId, 10),
-    geometria,
-  }));
-  const blob = new Blob([JSON.stringify(saida, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'geometrias_manuais.json';
-  a.click();
-  URL.revokeObjectURL(url);
-};
-
-atualizarProgresso();
-irPara(0);
+document.getElementById('btn-salvar').onclick = () => { const geometria = segmentosParaGeoJSON(); if (!geometria) { alert('Marque pelo menos dois pontos no mesmo segmento antes de salvar.'); return; } geometrias[DADOS[indiceAtual].ruaId] = geometria; salvarProgresso(); atualizarProgresso(); renderizarLista(); document.getElementById('status-rua').textContent = 'Geometria salva neste navegador. Exporte o JSON para revisão e aplicação no banco.'; };
+document.getElementById('importar-json').onchange = async evento => { const arquivo = evento.target.files && evento.target.files[0]; if (!arquivo) return; try { const importadas = JSON.parse(await arquivo.text()); if (!Array.isArray(importadas)) throw new Error('formato inválido'); let aceitas = 0; importadas.forEach(entrada => { if (Number.isInteger(Number(entrada.rua_id)) && geometriaValida(entrada.geometria)) { geometrias[Number(entrada.rua_id)] = entrada.geometria; aceitas += 1; } }); salvarProgresso(); carregarRua(indiceAtual, false); alert(`${aceitas} geometria(s) importada(s).`); } catch (erro) { alert('Não foi possível importar o JSON. Confira se ele foi exportado pela ferramenta.'); } finally { evento.target.value = ''; } };
+document.getElementById('baixar-json').onclick = () => { const saida = Object.entries(geometrias).filter(([, geometria]) => geometriaValida(geometria)).map(([ruaId, geometria]) => ({ rua_id: Number(ruaId), geometria })); const blob = new Blob([JSON.stringify(saida, null, 2)], { type: 'application/json;charset=utf-8' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = 'geometrias_manuais.json'; link.click(); URL.revokeObjectURL(url); };
+document.getElementById('limpar-progresso').onclick = () => { if (confirm('Apagar o progresso salvo neste navegador? O arquivo no banco não será alterado.')) { geometrias = {}; salvarProgresso(); carregarRua(indiceAtual, false); } };
+atualizarProgresso(); renderizarLista(); carregarRua(0);
 </script>
-
 </body>
 </html>

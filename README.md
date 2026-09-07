@@ -326,19 +326,20 @@ Foram utilizados:
 
 Parte das ruas foi automaticamente associada a geometrias reais.
 
-O snapshot local consultado em 07/09/2026 tem **305 ruas sem geometria**. A
-contagem considera tanto `NULL` quanto texto vazio no campo `geometria`; o
-registro anterior de 303 ruas ignorava duas linhas vazias. Dessas pendências,
-**21 nunca tiveram uma correspondência apresentada pelo OSM** e formam a lista
-atual para revisão/desenho manual em `scripts/ruas_sem_nenhum_match.csv`.
+Após a aplicação auditada de quatro geometrias em 07/09/2026, o snapshot local
+e a produção têm **301 ruas sem geometria**. A contagem considera tanto `NULL`
+quanto texto vazio no campo `geometria`. Dessas pendências, **17 nunca tiveram
+uma correspondência apresentada pelo OSM** e formam a lista atual para
+revisão/desenho manual em `scripts/ruas_sem_nenhum_match.csv`.
 
 Resultados automáticos de baixa confiança foram descartados para evitar associação de ruas incorretas.
 
 ## Pendências conhecidas
 
-- **305 ruas sem geometria real no snapshot local de 07/09/2026** — 21 não
+- **301 ruas sem geometria real no snapshot local e na produção** — 17 não
   tiveram correspondência no OSM e estão na lista da ferramenta de desenho
-  manual; conferir novamente após sincronizar a base.
+  manual. O detalhamento completo está em
+  `scripts/relatorio_ruas_sem_geometria.csv`.
 - **Fluxo de aumento do Redistritamento** — estrutura do banco pronta; faltam lógica de negócio e interface.
 - **Ordenamento por rua** — futura tabela com sequência real de entrega (`rua_id`, `ordem`, `numero`).
 - **Precisão do ordenamento** — as geometrias existentes foram auditadas e estão
@@ -369,6 +370,13 @@ alterações no banco de produção. Os scripts consideram rua sem geometria tan
 quando o campo está `NULL` quanto quando está vazio, e a ferramenta manual é
 atualizada a partir da lista atual de pendências para não reabrir ruas já
 corrigidas.
+
+O editor `scripts/desenhar-ruas-manual.html` incorpora as 301 pendências do
+relatório e permite filtrar por nome, bairro, distrito ou CEP, localizar a rua
+no mapa, desenhar um ou mais segmentos, visualizar a coordenada representativa
+e exportar/importar o JSON. O progresso fica salvo somente no navegador. O
+aplicador valida o GeoJSON, ignora IDs inválidos e não sobrescreve geometrias
+que já existam no banco.
 
 Também existe:
 
