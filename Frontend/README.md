@@ -51,7 +51,8 @@ src/
   já existe entre as candidatas, resultados que só repetem esse trecho dentro
   de uma palavra maior são descartados.
 - O ordenamento começa no CDD e escolhe a rua mais próxima da posição anterior
-  em cada passo, sem reordenação global posterior.
+  em cada passo, medindo a menor distância até os pontos reais do traçado
+  quando disponíveis, sem reordenação global posterior.
 - O cabeçalho usa escudo para administradores e identificação para
   colaboradores.
 - A área de instalação do PWA só aparece em layout móvel enquanto o app não
@@ -62,8 +63,8 @@ src/
 ## Próximos passos sugeridos
 
 1. Validar a busca com a lista operacional completa da unidade.
-2. Revisar as 305 ruas sem geometria do snapshot local e melhorar a precisão
-   das coordenadas.
+2. Revisar as 73 ruas sem geometria do snapshot local e as geometrias do OSM
+   que reúnem trechos desconectados antes de considerar a coordenada definitiva.
 3. Comparar a sequência sugerida com uma sequência operacional real; o cadastro
    atual não possui `rota` preenchida, então o ajuste do algoritmo depende dessa
    referência antes da publicação em produção. A planilha está pendente e será

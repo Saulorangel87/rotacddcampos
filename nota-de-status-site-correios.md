@@ -179,6 +179,34 @@ pontos mais próximos das geometrias. A sequência estrita atende essa
 proximidade. Alcides Vieira Maciel era a rua citada por engano e fica em outra
 posição do cadastro. Nenhuma coordenada foi modificada.
 
+### Auditoria do traçado usado no cálculo — 07/09/2026
+
+Uma nova inspeção separou a regra de ordenamento da qualidade da coordenada.
+O laço do motor já inicia no CDD e escolhe a menor distância disponível em cada
+transição. O problema encontrado estava na entrada: `coordenadaDasGeometrias`
+calculava um centro médio com todos os vértices. Como o importador do OSM reúne
+ways de um mesmo nome antes de gravar a rua, alguns registros têm trechos
+desconectados em bairros distintos; o centro médio pode ficar quilômetros fora
+de qualquer trecho real.
+
+O cálculo foi ajustado para preservar os vértices e, durante cada transição,
+medir a menor distância entre a posição atual e os pontos do traçado. A
+posição atual passa a ser o ponto escolhido do trecho, mantendo a regra de
+vizinho mais próximo e o ponto inicial fixo do CDD. Fallbacks externos que
+possuem apenas uma coordenada continuam funcionando como antes.
+
+No banco local foram auditadas 2.042 geometrias válidas no formato; 207 delas
+ficam a mais de 500 m do próprio centro médio e são candidatas a revisão de
+associação por distrito/CEP. Isso não é tratado como coordenada corrigida: o
+motor já deixa de depender da média, mas a confirmação da rua correta ainda
+deve ser feita com o cadastro operacional ou desenho manual. A comparação por
+ID dos hashes JSONB das 2.115 linhas ativas encontrou zero divergências entre o
+banco local e a produção; a produção também mantém 73 ruas sem geometria.
+
+Validação: `go test ./... -count=1` no backend, `git diff --check` e build do
+frontend após a atualização da versão. Nenhuma geometria ou tabela foi
+alterada nesta auditoria.
+
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
 - `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real

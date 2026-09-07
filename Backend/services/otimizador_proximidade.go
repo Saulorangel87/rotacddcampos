@@ -11,6 +11,10 @@ type ParadaParaOtimizar struct {
 	Latitude        float64
 	Longitude       float64
 	FonteCoordenada string
+	// Pontos contém vértices do traçado real da rua. Quando disponível, a
+	// distância usada pelo motor é a menor distância até esses pontos, em vez
+	// da distância até um centro médio que pode cair fora do traçado.
+	Pontos []PontoGeografico
 }
 
 type OtimizadorRota interface {
@@ -24,7 +28,7 @@ func NewOtimizadorProximidade() OtimizadorRota {
 }
 
 func (otimizadorProximidade) Otimizar(origem PontoGeografico, paradas []ParadaParaOtimizar) []ParadaParaOtimizar {
-	if len(paradas) < 2 {
+	if len(paradas) == 0 {
 		return append([]ParadaParaOtimizar(nil), paradas...)
 	}
 
@@ -37,17 +41,23 @@ func rotaVizinhoMaisProximo(origem PontoGeografico, paradas []ParadaParaOtimizar
 	atual := origem
 	for len(pendentes) > 0 {
 		indiceProxima := 0
-		menorDistancia := distanciaHaversine(atual, pontoDaParada(pendentes[0]))
+		_, menorDistancia := pontoMaisProximo(atual, pendentes[0])
 		for indice := 1; indice < len(pendentes); indice++ {
-			distancia := distanciaHaversine(atual, pontoDaParada(pendentes[indice]))
+			_, distancia := pontoMaisProximo(atual, pendentes[indice])
 			if distancia < menorDistancia || (distancia == menorDistancia && paradaVemAntes(pendentes[indice], pendentes[indiceProxima])) {
 				indiceProxima = indice
 				menorDistancia = distancia
 			}
 		}
 		proxima := pendentes[indiceProxima]
+		pontoEscolhido, _ := pontoMaisProximo(atual, proxima)
+		// A parada persistida continua tendo uma coordenada simples para a API
+		// e para a interface; ela representa o ponto do traçado usado nesta
+		// transição. Os Pontos permanecem disponíveis apenas durante o cálculo.
+		proxima.Latitude = pontoEscolhido.Latitude
+		proxima.Longitude = pontoEscolhido.Longitude
 		resultado = append(resultado, proxima)
-		atual = pontoDaParada(proxima)
+		atual = pontoEscolhido
 		pendentes = append(pendentes[:indiceProxima], pendentes[indiceProxima+1:]...)
 	}
 	return resultado
@@ -62,6 +72,32 @@ func paradaVemAntes(a, b ParadaParaOtimizar) bool {
 
 func pontoDaParada(parada ParadaParaOtimizar) PontoGeografico {
 	return PontoGeografico{Latitude: parada.Latitude, Longitude: parada.Longitude}
+}
+
+func pontoMaisProximo(origem PontoGeografico, parada ParadaParaOtimizar) (PontoGeografico, float64) {
+	pontos := parada.Pontos
+	if len(pontos) == 0 {
+		ponto := pontoDaParada(parada)
+		return ponto, distanciaHaversine(origem, ponto)
+	}
+
+	melhor := pontos[0]
+	menor := distanciaHaversine(origem, melhor)
+	for _, ponto := range pontos[1:] {
+		distancia := distanciaHaversine(origem, ponto)
+		if distancia < menor || (distancia == menor && pontoVemAntes(ponto, melhor)) {
+			melhor = ponto
+			menor = distancia
+		}
+	}
+	return melhor, menor
+}
+
+func pontoVemAntes(a, b PontoGeografico) bool {
+	if a.Latitude != b.Latitude {
+		return a.Latitude < b.Latitude
+	}
+	return a.Longitude < b.Longitude
 }
 
 // distanciaHaversine retorna a distância em quilômetros entre dois pontos.

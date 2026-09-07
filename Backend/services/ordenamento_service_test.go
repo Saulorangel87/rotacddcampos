@@ -81,6 +81,10 @@ type coordenadaResolverFake struct {
 	coordenada *CoordenadaReferencia
 }
 
+type coordenadaResolverPorChaveFake struct {
+	coordenadas map[string]*CoordenadaReferencia
+}
+
 type paradaOrdenamentoRepoFake struct {
 	paradas   []models.ParadaOrdenamento
 	historico []models.CorrecaoOrdenamento
@@ -172,6 +176,11 @@ func (r *paradaOrdenamentoRepoFake) DeleteByOrdenamento(_ context.Context, _ uin
 
 type otimizadorFake struct{}
 
+type otimizadorCapturaFake struct {
+	origem  PontoGeografico
+	paradas []ParadaParaOtimizar
+}
+
 func (otimizadorFake) Otimizar(_ PontoGeografico, paradas []ParadaParaOtimizar) []ParadaParaOtimizar {
 	resultado := append([]ParadaParaOtimizar(nil), paradas...)
 	for inicio, fim := 0, len(resultado)-1; inicio < fim; inicio, fim = inicio+1, fim-1 {
@@ -184,12 +193,22 @@ func (r coordenadaResolverFake) Resolver(_ context.Context, _ SolicitacaoCoorden
 	return r.coordenada, nil
 }
 
+func (r coordenadaResolverPorChaveFake) Resolver(_ context.Context, solicitacao SolicitacaoCoordenada) (*CoordenadaReferencia, error) {
+	return r.coordenadas[solicitacao.ChaveAgrupamento], nil
+}
+
 func (r enderecoResolverFake) Resolver(_ context.Context, _ string) (ResolucaoEndereco, error) {
 	return r.resolucao, nil
 }
 
 func (r enderecoResolverSelecionavelFake) Selecionar(_ context.Context, _ string, _ uint) (ResolucaoEndereco, error) {
 	return r.selecionada, nil
+}
+
+func (r *otimizadorCapturaFake) Otimizar(origem PontoGeografico, paradas []ParadaParaOtimizar) []ParadaParaOtimizar {
+	r.origem = origem
+	r.paradas = append([]ParadaParaOtimizar(nil), paradas...)
+	return paradas
 }
 
 func TestOrdenamentoServiceCriar(t *testing.T) {
@@ -315,6 +334,35 @@ func TestOrdenamentoServiceGeraOrdemSugerida(t *testing.T) {
 	}
 	if detalhe.OrdemSugerida[0].NomeRua != "RUA B" || detalhe.OrdemSugerida[0].OrdemSugerida != 1 {
 		t.Fatalf("primeira parada inesperada: %+v", detalhe.OrdemSugerida[0])
+	}
+}
+
+func TestOrdenamentoServiceAtualizaPontosDoTracadoAoGerar(t *testing.T) {
+	latitudeA, longitudeA := -21.75, -41.32
+	latitudeB, longitudeB := -21.76, -41.31
+	repo := &ordenamentoRepoFake{
+		ativo: &models.Ordenamento{ID: 7, UsuarioID: 42, Status: models.StatusOrdenamentoEmAndamento},
+		objetos: []models.ObjetoOrdenamento{
+			{ID: 1, OrdenamentoID: 7, NomeRua: "RUA A", ChaveAgrupamento: "rua:10", StatusResolucao: models.StatusResolucaoIdentificado, Latitude: &latitudeA, Longitude: &longitudeA},
+			{ID: 2, OrdenamentoID: 7, NomeRua: "RUA B", ChaveAgrupamento: "rua:20", StatusResolucao: models.StatusResolucaoIdentificado, Latitude: &latitudeB, Longitude: &longitudeB},
+		},
+	}
+	coordenadas := coordenadaResolverPorChaveFake{coordenadas: map[string]*CoordenadaReferencia{
+		"rua:10": {Latitude: latitudeA, Longitude: longitudeA, Pontos: []PontoGeografico{{Latitude: -21.75, Longitude: -41.32}, {Latitude: -21.754, Longitude: -41.324}}},
+		"rua:20": {Latitude: latitudeB, Longitude: longitudeB, Pontos: []PontoGeografico{{Latitude: -21.76, Longitude: -41.31}}},
+	}}
+	captura := &otimizadorCapturaFake{}
+	service := NewOrdenamentoService(repo, enderecoResolverFake{}, coordenadas, &paradaOrdenamentoRepoFake{}, captura)
+	if _, err := service.GerarOrdem(context.Background(), 42, 7, GerarOrdemDTO{SomenteAlgoritmo: true}); err != nil {
+		t.Fatalf("GerarOrdem() erro inesperado: %v", err)
+	}
+	if captura.origem != PontoPartidaCDD() {
+		t.Fatalf("origem inesperada: %+v", captura.origem)
+	}
+	for _, parada := range captura.paradas {
+		if len(parada.Pontos) == 0 {
+			t.Fatalf("o motor recebeu apenas o centro médio para %s", parada.Chave)
+		}
 	}
 }
 

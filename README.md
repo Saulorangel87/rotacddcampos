@@ -345,10 +345,19 @@ Resultados automáticos de baixa confiança foram descartados para evitar associ
 - **Fluxo de aumento do Redistritamento** — estrutura do banco pronta; faltam lógica de negócio e interface.
 - **Ordenamento por rua** — futura tabela com sequência real de entrega (`rua_id`, `ordem`, `numero`).
 - **Precisão do ordenamento** — as geometrias existentes foram auditadas e estão
-  válidas; a primeira parada é fixada pela proximidade do CDD, mas falta uma
-  lista operacional real para medir a sequência completa e orientar ajustes
-  adicionais antes da publicação. A planilha está pendente e deve ser obtida
-  nos próximos dois dias.
+  válidas no formato e a primeira parada é fixada pela proximidade do CDD. O
+  cálculo agora compara a menor distância até os pontos reais de cada traçado,
+  atualizando a posição a cada parada. A sequência operacional real ainda é
+  necessária para validar sentido de via e ordem dos números; a planilha está
+  pendente e deve ser obtida nos próximos dois dias.
+- **Auditoria de coordenadas — 07/09/2026** — no snapshot local há 2.042 ruas
+  com geometria sintaticamente válida e 73 sem geometria. A inspeção encontrou
+  geometrias do OSM com trechos do mesmo nome espalhados por bairros diferentes;
+  a média desses pontos pode cair fora da rua. O motor não usa mais essa média
+  para a distância: usa o vértice mais próximo do traçado e registra essa
+  posição na transição. Os traçados ambíguos ainda precisam de revisão por
+  distrito/CEP ou desenho manual antes de serem considerados referência
+  operacional.
 - **Zé Rota — próxima fase** — sugestão de rota para múltiplas encomendas, dependente do ordenamento das ruas.
 - **AGC (Agência Comunitária)** — áreas sem entrega domiciliária ainda não modeladas.
 - **Botão "Contribuir"** — planejado para alimentar o Zé Rota com características dos distritos.

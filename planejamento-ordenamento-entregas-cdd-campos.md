@@ -482,6 +482,11 @@ Fluxo:
 
 Para distância entre coordenadas, utilizar cálculo geográfico apropriado, como Haversine.
 
+Quando a rua possuir uma geometria com vários vértices, a distância da etapa
+é a menor Haversine entre a posição atual e os vértices disponíveis. Depois da
+escolha, a posição atual passa para o vértice que produziu essa menor distância;
+a coordenada média fica apenas como fallback para exibição.
+
 Nesta primeira versão, não aplicar 2-opt nem outra melhoria global. Essas
 técnicas podem trocar uma rua que é a mais próxima da posição atual por uma
 sequência globalmente menor, contrariando o critério operacional definido para
@@ -736,6 +741,36 @@ coloca Advaldo logo após Araújo quando as duas ruas estão na mesma carga. O
 caso anterior usava por engano `RUA ALCIDES VIEIRA MACIEL`, que pertence a outra
 posição do cadastro e fica aproximadamente 3,03 km de Araújo. Nenhuma
 coordenada foi alterada nesta etapa.
+
+### Evolução local — 07/09/2026: auditoria dos pontos usados na proximidade
+
+O laço do motor continua seguindo o contrato do MVP: começa no ponto fixo do
+CDD Campos dos Goytacazes e, a cada passo, escolhe a rua restante com menor
+distância Haversine à posição atual. A auditoria encontrou uma distorção na
+representação das ruas: o resolvedor calculava um centro médio com todos os
+vértices da geometria. O importador do OSM agrupa ways de um mesmo nome antes
+de gravá-los, então alguns registros carregam trechos desconectados em bairros
+distintos; nesses casos, o centro médio pode ficar fora do traçado.
+
+O resolvedor passou a preservar os vértices internos. O otimizador calcula a
+menor distância até qualquer ponto disponível da rua e atualiza a posição
+atual para o ponto escolhido antes de procurar o próximo vizinho. A coordenada
+média permanece somente como fallback de exibição e compatibilidade; uma
+coordenada externa sem traçado continua sendo tratada como um único ponto.
+
+No retrato local foram encontradas 2.042 geometrias válidas no formato, 73
+ruas sem geometria e 207 geometrias cujo centro médio fica a mais de 500 m de
+qualquer vértice. Essas 207 são candidatas a revisão do casamento OSM por
+distrito/CEP; não foram sobrescritas automaticamente. A alteração reduz o
+efeito dessa distorção no ordenamento, mas a confirmação operacional continua
+necessária para vias repetidas ou trechos de bairros diferentes. A comparação
+por ID dos hashes JSONB das 2.115 linhas ativas encontrou zero divergências
+entre o banco local e a produção; a produção também mantém 73 ruas sem
+geometria.
+
+Testes determinísticos verificam a origem no CDD, a menor distância em todas as
+transições e o uso de pontos reais quando o centro médio é enganoso. O backend
+foi validado com `go test ./... -count=1` e o frontend com `npm run build`.
 
 ### Evolução local — 06/09/2026: identidade visual, ciclo de carga e instalação
 

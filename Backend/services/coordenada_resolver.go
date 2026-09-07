@@ -36,6 +36,10 @@ type CoordenadaReferencia struct {
 	Latitude  float64
 	Longitude float64
 	Fonte     string
+	// Pontos são os vértices do traçado interno. A coordenada média continua
+	// disponível para exibição e compatibilidade, enquanto o otimizador usa os
+	// pontos para medir a menor distância até a rua.
+	Pontos []PontoGeografico
 }
 
 type CoordenadaResolver interface {
@@ -140,6 +144,7 @@ func (r *coordenadaResolver) ruasDaSolicitacao(ctx context.Context, solicitacao 
 func coordenadaDasGeometrias(ruas []models.Rua) *CoordenadaReferencia {
 	var somaLatitude, somaLongitude float64
 	var quantidade int
+	pontosGeograficos := make([]PontoGeografico, 0)
 	for _, rua := range ruas {
 		pontos, err := extrairPontosGeoJSON(rua.Geometria)
 		if err != nil {
@@ -149,6 +154,7 @@ func coordenadaDasGeometrias(ruas []models.Rua) *CoordenadaReferencia {
 			somaLongitude += ponto[0]
 			somaLatitude += ponto[1]
 			quantidade++
+			pontosGeograficos = append(pontosGeograficos, PontoGeografico{Latitude: ponto[1], Longitude: ponto[0]})
 		}
 	}
 	if quantidade == 0 {
@@ -158,6 +164,7 @@ func coordenadaDasGeometrias(ruas []models.Rua) *CoordenadaReferencia {
 		Latitude:  somaLatitude / float64(quantidade),
 		Longitude: somaLongitude / float64(quantidade),
 		Fonte:     models.FonteCoordenadaGeometria,
+		Pontos:    pontosGeograficos,
 	}
 }
 

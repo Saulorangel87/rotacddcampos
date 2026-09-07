@@ -72,6 +72,9 @@ func TestCoordenadaResolverUsaGeometriaInternaAntesDoFallback(t *testing.T) {
 	if resultado == nil || math.Abs(resultado.Latitude-(-21.7)) > 1e-9 || math.Abs(resultado.Longitude-(-41.3)) > 1e-9 {
 		t.Fatalf("coordenada inesperada: %+v", resultado)
 	}
+	if len(resultado.Pontos) != 2 || resultado.Pontos[0].Latitude != -21.8 || resultado.Pontos[1].Longitude != -41.2 {
+		t.Fatalf("pontos do traçado não foram preservados: %+v", resultado.Pontos)
+	}
 	if resultado.Fonte != models.FonteCoordenadaGeometria || geocodificador.chamadas != 0 {
 		t.Fatalf("fonte=%q chamadas externas=%d", resultado.Fonte, geocodificador.chamadas)
 	}
@@ -92,6 +95,9 @@ func TestCoordenadaResolverAgrupaGeometriasDosTrechos(t *testing.T) {
 	}
 	if math.Abs(resultado.Latitude-(-21.7)) > 1e-9 || math.Abs(resultado.Longitude-(-41.3)) > 1e-9 {
 		t.Fatalf("coordenada inesperada: %+v", resultado)
+	}
+	if len(resultado.Pontos) != 2 {
+		t.Fatalf("pontos dos trechos não foram preservados: %+v", resultado.Pontos)
 	}
 }
 

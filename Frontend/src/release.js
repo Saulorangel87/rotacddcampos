@@ -1,4 +1,4 @@
-export const APP_VERSION = '1.4.0'
+export const APP_VERSION = '1.5.0'
 
 export const UPDATE_NOTES = [
   {
@@ -39,7 +39,11 @@ export const UPDATE_NOTES = [
   },
   {
     title: 'Ordenamento passo a passo',
-    description: 'A sequência parte sempre do CDD e escolhe, a cada etapa, a rua restante mais próxima usando coordenadas disponíveis no cadastro e no cache.',
+    description: 'A sequência parte sempre do CDD e escolhe, a cada etapa, a rua restante mais próxima usando os pontos reais do traçado quando disponíveis.',
+  },
+  {
+    title: 'Proximidade pelo traçado real',
+    description: 'Quando uma rua possui vários pontos de geometria, o cálculo usa o ponto mais próximo da posição atual e atualiza a posição para essa transição, evitando que uma média distante distorça a rota.',
   },
   {
     title: 'Resultado determinístico',

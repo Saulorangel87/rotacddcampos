@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log/slog"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -266,8 +267,10 @@ func (s *ordenamentoService) Limpar(ctx context.Context, usuarioID, ordenamentoI
 }
 
 // GerarOrdem cria uma sequência por proximidade entre as ruas identificadas,
-// sempre partindo do CDD. A sequência é uma sugestão geográfica local e não
-// considera trânsito ou condições da malha viária.
+// sempre partindo do CDD. Quando o cadastro tem geometria, cada transição usa
+// o ponto mais próximo do traçado; caso contrário, usa a coordenada simples
+// disponível. A sequência é uma sugestão geográfica local e não considera
+// trânsito ou condições da malha viária.
 func (s *ordenamentoService) GerarOrdem(ctx context.Context, usuarioID, ordenamentoID uint, dto GerarOrdemDTO) (*OrdenamentoDetalhe, error) {
 	ordenamento, err := s.validarOrdenamentoAtivo(ctx, usuarioID, ordenamentoID)
 	if err != nil {
@@ -292,9 +295,24 @@ func (s *ordenamentoService) GerarOrdem(ctx context.Context, usuarioID, ordename
 
 	entrada := make([]ParadaParaOtimizar, 0, len(detalhe.Ruas))
 	for _, rua := range detalhe.Ruas {
+		pontos := []PontoGeografico{{Latitude: *rua.Latitude, Longitude: *rua.Longitude}}
+		if s.coordenadas != nil {
+			coordenada, erroCoordenada := s.coordenadas.Resolver(ctx, SolicitacaoCoordenada{
+				ChaveAgrupamento: rua.Chave,
+				NomeRua:          rua.NomeRua,
+				RuaID:            ruaIDDaChave(rua.Chave),
+				PermitirExterno:  false,
+			})
+			if erroCoordenada != nil {
+				slog.Warn("não foi possível atualizar os pontos do traçado para o ordenamento", "chave", rua.Chave, "error", erroCoordenada)
+			} else if coordenada != nil && len(coordenada.Pontos) > 0 {
+				pontos = coordenada.Pontos
+			}
+		}
 		entrada = append(entrada, ParadaParaOtimizar{
 			Chave: rua.Chave, NomeRua: rua.NomeRua, Quantidade: rua.Quantidade,
 			Latitude: *rua.Latitude, Longitude: *rua.Longitude, FonteCoordenada: rua.FonteCoordenada,
+			Pontos: pontos,
 		})
 	}
 	sugeridas := s.otimizador.Otimizar(PontoPartidaCDD(), entrada)
@@ -322,6 +340,18 @@ func (s *ordenamentoService) GerarOrdem(ctx context.Context, usuarioID, ordename
 		return nil, err
 	}
 	return s.montarDetalhe(ctx, ordenamento)
+}
+
+func ruaIDDaChave(chave string) *uint {
+	if !strings.HasPrefix(chave, "rua:") {
+		return nil
+	}
+	id, err := strconv.ParseUint(strings.TrimPrefix(chave, "rua:"), 10, 64)
+	if err != nil || id == 0 {
+		return nil
+	}
+	valor := uint(id)
+	return &valor
 }
 
 // SalvarOrdemFinal registra a sequência escolhida pelo carteiro, mantendo a
