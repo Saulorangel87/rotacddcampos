@@ -8,17 +8,26 @@ Como funciona:
   2. Normaliza os nomes dos dois lados (remove "RUA"/"AVENIDA", remove trechos
      tipo "- ATÉ 137 - LADO ÍMPAR", tira acento) pra comparar de forma justa.
   3. Pra cada rua do banco, acha o nome do OSM mais parecido.
-  4. Só grava automaticamente as que baterem com confiança alta (>= 85%).
-  5. As de confiança média (60-84%) NÃO são aplicadas — viram um CSV
-     (revisao_matches_baixos.csv) pra você olhar com calma depois.
+  4. Separa os ways do mesmo nome em grupos geograficamente contínuos.
+  5. Só grava automaticamente as que baterem com confiança alta (>= 85%) e
+     tiverem um único grupo contínuo.
+  6. As de confiança média ou com vários grupos NÃO são aplicadas — viram
+     CSVs pra você olhar com calma depois.
 
 Requisitos (instala uma vez):
     pip install requests psycopg2-binary
 
 Antes de rodar, ajusta os dados de conexão do banco logo abaixo
 (mesmos dados que estão no seu Backend/.env).
+
+Por segurança, a execução padrão apenas consulta o banco e gera os relatórios.
+Use `--aplicar` somente depois de revisar os resultados; mesmo nesse modo,
+apenas correspondências de alta confiança com um único componente contínuo são
+gravadas.
 """
 
+import argparse
+import csv
 import json
 import re
 import time
@@ -29,6 +38,8 @@ from difflib import SequenceMatcher
 import requests
 import psycopg2
 
+from osm_agrupamento import agrupar_segmentos
+
 # ── Lê do ambiente — passe via variáveis de ambiente na hora de rodar,
 # nunca deixe senha real gravada aqui no arquivo (esse script já vazou uma
 # vez sem querer; ver nota-de-status-site-correios.md).
@@ -36,7 +47,7 @@ DB_HOST = os.environ.get("DB_HOST", "localhost")
 DB_PORT = int(os.environ.get("DB_PORT", "5432"))
 DB_NAME = os.environ.get("DB_NAME", "rotas_db")
 DB_USER = os.environ.get("DB_USER", "postgres")
-DB_PASSWORD = os.environ["DB_PASSWORD"]
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
 # ────────────────────────────────────────────────────────────────────────
 
 OVERPASS_URLS = [
@@ -119,13 +130,26 @@ def buscar_ruas_osm() -> dict:
         nome_norm = normalizar(nome)
         coordenadas = [[ponto["lon"], ponto["lat"]] for ponto in geometria]
         ruas_osm.setdefault(nome_norm, {"nome_original": nome, "segmentos": []})
-        ruas_osm[nome_norm]["segmentos"].append(coordenadas)
+        ruas_osm[nome_norm]["segmentos"].append({"id": elemento.get("id", 0), "coordenadas": coordenadas})
+
+    for entrada in ruas_osm.values():
+        entrada["componentes"] = agrupar_segmentos(entrada["segmentos"])
 
     print(f"{len(ruas_osm)} nomes de rua distintos encontrados no OpenStreetMap.")
     return ruas_osm
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Audita e, opcionalmente, casa ruas sem geometria com trechos OSM contínuos."
+    )
+    parser.add_argument(
+        "--aplicar",
+        action="store_true",
+        help="grava no banco as correspondências de alta confiança com componente único",
+    )
+    args = parser.parse_args()
+
     ruas_osm = buscar_ruas_osm()
     nomes_osm = list(ruas_osm.keys())
 
@@ -139,7 +163,7 @@ def main():
     cursor = conexao.cursor()
     cursor.execute(
         """
-        SELECT id, nome_rua
+        SELECT id, nome_rua, bairro, cep, distrito
         FROM ruas
         WHERE ativo = true AND (geometria IS NULL OR btrim(geometria) = '')
         """
@@ -149,8 +173,9 @@ def main():
 
     matches_altos = []
     matches_baixos = []
+    matches_ambiguos = []
 
-    for rua_id, nome_rua in ruas_banco:
+    for rua_id, nome_rua, bairro, cep, distrito in ruas_banco:
         nome_norm = normalizar(nome_rua)
         melhor_nome, melhor_score = None, 0.0
         for nome_osm in nomes_osm:
@@ -158,26 +183,38 @@ def main():
             if score > melhor_score:
                 melhor_score, melhor_nome = score, nome_osm
 
-        if melhor_score >= 0.85:
-            matches_altos.append((rua_id, nome_rua, melhor_nome, melhor_score))
+        componentes = ruas_osm[melhor_nome]["componentes"] if melhor_nome else []
+        if melhor_score >= 0.85 and len(componentes) == 1:
+            matches_altos.append((rua_id, nome_rua, melhor_nome, melhor_score, componentes[0]))
+        elif melhor_score >= 0.85 and len(componentes) > 1:
+            descricao_componentes = "|".join(
+                f"{indice + 1}:{','.join(str(way_id) for way_id in componente['ids'])}"
+                for indice, componente in enumerate(componentes)
+            )
+            matches_ambiguos.append(
+                (rua_id, nome_rua, bairro, cep, distrito, melhor_nome, melhor_score, len(componentes), descricao_componentes)
+            )
         elif melhor_score >= 0.6:
             matches_baixos.append((rua_id, nome_rua, melhor_nome, melhor_score))
 
     print(f"{len(matches_altos)} correspondências de alta confiança (>=85%) — serão aplicadas.")
+    print(f"{len(matches_ambiguos)} correspondências de alta confiança com vários grupos geográficos — NÃO aplicadas.")
     print(f"{len(matches_baixos)} de confiança média (60-84%) — NÃO aplicadas, vão pro CSV de revisão.")
 
     aplicados = 0
-    for rua_id, nome_rua, nome_osm, score in matches_altos:
-        segmentos = ruas_osm[nome_osm]["segmentos"]
-        geometria_geojson = {"type": "MultiLineString", "coordinates": segmentos}
-        cursor.execute(
-            "UPDATE ruas SET geometria = %s, updated_at = now() WHERE id = %s",
-            (json.dumps(geometria_geojson, ensure_ascii=False), rua_id),
-        )
-        aplicados += 1
-
-    conexao.commit()
-    print(f"{aplicados} ruas atualizadas com geometria do OpenStreetMap.")
+    if args.aplicar:
+        for rua_id, nome_rua, nome_osm, score, componente in matches_altos:
+            segmentos = [segmento["coordenadas"] for segmento in componente["segmentos"]]
+            geometria_geojson = {"type": "MultiLineString", "coordinates": segmentos}
+            cursor.execute(
+                "UPDATE ruas SET geometria = %s, updated_at = now() WHERE id = %s",
+                (json.dumps(geometria_geojson, ensure_ascii=False), rua_id),
+            )
+            aplicados += 1
+        conexao.commit()
+        print(f"{aplicados} ruas atualizadas com geometria do OpenStreetMap.")
+    else:
+        print("Modo auditoria: nenhuma geometria foi alterada. Use --aplicar após revisar os CSVs.")
 
     caminho_csv = os.path.join(os.path.dirname(os.path.abspath(__file__)), "revisao_matches_baixos.csv")
     with open(caminho_csv, "w", encoding="utf-8") as arquivo:
@@ -186,6 +223,28 @@ def main():
             arquivo.write(f"{rua_id};{nome_rua};{nome_osm};{score:.2f}\n")
 
     print(f"Lista de revisão salva em {caminho_csv}")
+
+    caminho_ambiguos = os.path.join(os.path.dirname(os.path.abspath(__file__)), "revisao_matches_ambiguos.csv")
+    with open(caminho_ambiguos, "w", newline="", encoding="utf-8-sig") as arquivo:
+        escritor = csv.writer(arquivo, delimiter=";")
+        escritor.writerow(
+            [
+                "rua_id",
+                "nome_banco",
+                "bairro",
+                "cep",
+                "distrito",
+                "nome_osm_sugerido",
+                "confianca",
+                "grupos_geograficos",
+                "componentes_way_ids",
+            ]
+        )
+        escritor.writerows(
+            (rua_id, nome_rua, bairro, cep, distrito, nome_osm, f"{score:.2f}", quantidade, descricao)
+            for rua_id, nome_rua, bairro, cep, distrito, nome_osm, score, quantidade, descricao in matches_ambiguos
+        )
+    print(f"Lista de correspondências ambíguas salva em {caminho_ambiguos}")
 
     cursor.close()
     conexao.close()

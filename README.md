@@ -358,6 +358,15 @@ Resultados automáticos de baixa confiança foram descartados para evitar associ
   posição na transição. Os traçados ambíguos ainda precisam de revisão por
   distrito/CEP ou desenho manual antes de serem considerados referência
   operacional.
+- **Duplicidades de nome — 07/09/2026** — a auditoria encontrou 97 grupos de
+  nomes exatos repetidos (232 cadastros) e 127 chaves-base usadas pelo OSM com
+  contextos diferentes. O caso `NOSSA SENHORA DA PENHA` tem três cadastros,
+  dois bairros e três CEPs compartilhando a mesma geometria. O relatório está
+  em `scripts/relatorio_duplicidades_geometrias.csv`, com o resumo em
+  `scripts/relatorio_duplicidades_geometrias_grupos.csv` e as colisões da chave
+  usada pelo casamento em `scripts/relatorio_ambiguidades_casamento_osm.csv`.
+  O importador agora separa ways em grupos contínuos e só aplica uma
+  correspondência automática quando existe um único grupo geográfico.
 - **Zé Rota — próxima fase** — sugestão de rota para múltiplas encomendas, dependente do ordenamento das ruas.
 - **AGC (Agência Comunitária)** — áreas sem entrega domiciliária ainda não modeladas.
 - **Botão "Contribuir"** — planejado para alimentar o Zé Rota com características dos distritos.
@@ -374,6 +383,8 @@ scripts/casar_ruas_osm.py
 scripts/aplicar_revisao_osm.py
 scripts/aplicar_geometria_manual.py
 scripts/desenhar-ruas-manual.html
+scripts/auditar_duplicidades_geometrias.py
+scripts/osm_agrupamento.py
 ```
 
 Eles são executados localmente e geram resultados para revisão humana antes de
@@ -381,6 +392,14 @@ alterações no banco de produção. Os scripts consideram rua sem geometria tan
 quando o campo está `NULL` quanto quando está vazio, e a ferramenta manual é
 atualizada a partir da lista atual de pendências para não reabrir ruas já
 corrigidas.
+
+O casamento OSM usa `scripts/osm_agrupamento.py` para separar ways do mesmo
+nome em componentes contínuos. `casar_ruas_osm.py` não grava correspondências
+de alta confiança quando encontra mais de um componente; esses casos são
+salvos em `scripts/revisao_matches_ambiguos.csv`. Ao aplicar uma revisão com
+`aplicar_revisao_osm.py`, decisões ambíguas precisam informar o campo
+`componente` (1, 2, ...). Isso evita juntar automaticamente trechos de bairros
+diferentes.
 
 O editor `scripts/desenhar-ruas-manual.html` incorpora as 73 pendências atuais
 do relatório e permite filtrar por nome, bairro, distrito ou CEP, localizar a

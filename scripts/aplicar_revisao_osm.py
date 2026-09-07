@@ -1,9 +1,10 @@
 """
 Aplica as decisões tomadas na ferramenta de revisão (revisao-ruas-osm.html)
 direto no banco: pra cada rua marcada como "aceito", busca a geometria real
-dela no OpenStreetMap e grava em ruas.geometria — igual o casar_ruas_osm.py
-já faz pras de alta confiança, só que agora pra essas que você confirmou
-manualmente.
+dela no OpenStreetMap e grava em ruas.geometria. Ways com o mesmo nome são
+separados em grupos geograficamente contínuos; quando houver mais de um grupo,
+a decisão precisa informar ``componente`` (1, 2, ...). Sem isso, o cadastro
+fica pendente e nenhuma coordenada é alterada.
 
 Como usar:
   1. Termine (ou pare quando quiser) a revisão na ferramenta HTML.
@@ -23,6 +24,8 @@ import unicodedata
 
 import requests
 import psycopg2
+
+from osm_agrupamento import agrupar_segmentos
 
 # ── Lê do ambiente — mesmo motivo do casar_ruas_osm.py ────────────────────
 DB_HOST = os.environ.get("DB_HOST", "localhost")
@@ -104,7 +107,10 @@ def buscar_ruas_osm() -> dict:
         nome_norm = normalizar(nome)
         coordenadas = [[ponto["lon"], ponto["lat"]] for ponto in geometria]
         ruas_osm.setdefault(nome_norm, {"nome_original": nome, "segmentos": []})
-        ruas_osm[nome_norm]["segmentos"].append(coordenadas)
+        ruas_osm[nome_norm]["segmentos"].append({"id": elemento.get("id", 0), "coordenadas": coordenadas})
+
+    for entrada in ruas_osm.values():
+        entrada["componentes"] = agrupar_segmentos(entrada["segmentos"])
 
     print(f"{len(ruas_osm)} nomes de rua distintos encontrados no OpenStreetMap.")
     return ruas_osm
@@ -138,13 +144,31 @@ def main():
 
     aplicados = 0
     nao_encontrados = []
+    ambiguos = []
     for d in aceitos:
         nome_norm = normalizar(d["nome_osm"])
         entrada = ruas_osm.get(nome_norm)
         if not entrada:
             nao_encontrados.append(d)
             continue
-        geometria_geojson = {"type": "MultiLineString", "coordinates": entrada["segmentos"]}
+        componentes = entrada["componentes"]
+        if not componentes:
+            nao_encontrados.append(d)
+            continue
+        componente_numero = d.get("componente")
+        if len(componentes) > 1:
+            try:
+                indice = int(componente_numero) - 1
+            except (TypeError, ValueError):
+                ambiguos.append(d)
+                continue
+            if indice < 0 or indice >= len(componentes):
+                ambiguos.append(d)
+                continue
+        else:
+            indice = 0
+        segmentos = [segmento["coordenadas"] for segmento in componentes[indice]["segmentos"]]
+        geometria_geojson = {"type": "MultiLineString", "coordinates": segmentos}
         cursor.execute(
             "UPDATE ruas SET geometria = %s, updated_at = now() WHERE id = %s",
             (json.dumps(geometria_geojson, ensure_ascii=False), d["rua_id"]),
@@ -159,6 +183,13 @@ def main():
     if nao_encontrados:
         print(f"{len(nao_encontrados)} não foram encontradas no OSM nessa consulta (nome pode ter mudado lá) — ficaram sem geometria:")
         for d in nao_encontrados[:20]:
+            print(f"  - rua_id {d['rua_id']}: {d['nome_osm']}")
+    if ambiguos:
+        print(
+            f"{len(ambiguos)} aceitas ficaram pendentes porque o nome possui vários grupos geográficos. "
+            "Inclua 'componente' (1, 2, ...) na decisão depois da revisão no mapa."
+        )
+        for d in ambiguos[:20]:
             print(f"  - rua_id {d['rua_id']}: {d['nome_osm']}")
 
 

@@ -1577,3 +1577,27 @@ progresso salvo no navegador. O JSON exportado continua compatível com
 O aplicador valida limites geográficos e a estrutura `MultiLineString`, ignora
 duplicidades e registros inexistentes e só preenche ruas cujo campo ainda está
 vazio. Geometrias existentes nunca são sobrescritas automaticamente.
+
+## Revisão de duplicidades por nome — 07/09/2026
+
+Como Campos dos Goytacazes possui ruas com o mesmo nome em bairros diferentes,
+o casamento OSM somente por nome-base pode associar trechos de regiões distintas
+ao mesmo cadastro. A auditoria local encontrou 97 grupos de nomes exatos
+repetidos (232 cadastros) e 127 chaves-base com contextos diferentes. O caso
+`NOSSA SENHORA DA PENHA` reúne três cadastros, dois bairros e três CEPs com a
+mesma geometria gravada.
+
+Foi criado o relatório somente leitura
+`scripts/auditar_duplicidades_geometrias.py`. Ele registra bairro, distrito,
+CEP, hash da geometria, extensão do traçado e distância entre os centros para
+priorizar a revisão. Os resultados ficam em
+`scripts/relatorio_duplicidades_geometrias.csv`,
+`scripts/relatorio_duplicidades_geometrias_grupos.csv` e
+`scripts/relatorio_ambiguidades_casamento_osm.csv`.
+
+O importador OSM agora preserva cada way e separa os segmentos em componentes
+geograficamente contínuos. Correspondências com confiança alta só são gravadas
+quando há um componente único; nomes com vários componentes ficam em
+`scripts/revisao_matches_ambiguos.csv`. O aplicador de revisões exige o índice
+`componente` para uma escolha ambígua. Nenhuma geometria do banco foi alterada
+por esta auditoria.

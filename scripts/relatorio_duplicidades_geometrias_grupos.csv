@@ -1,0 +1,98 @@
+﻿nome_normalizado;nome_exemplo;quantidade_cadastros;quantidade_contextos;quantidade_geometrias_validas;quantidade_geometrias_unicas;quantidade_geometrias_compartilhadas;distancia_maxima_entre_centros_m;extensao_maxima_da_geometria_m;status;ids;bairros;ceps;distritos
+UM;PRAÇA UM;3;3;3;2;2;3924.2;29306.7;geometria_compartilhada_contextos_distintos;1856,2044,2072;Parque Aeroporto,Parque Boa Vista,Parque Guarus;28070700,28073557,28093530;621,622,623
+SANTO ANTONIO;TRAVESSA SANTO ANTÔNIO;3;3;3;2;2;3707.0;29091.3;geometria_compartilhada_contextos_distintos;1012,1459,1501;Parque Jóquei Club,Parque Santo Antônio;28022085,28080515,28080525;613,617
+DOIS;PRAÇA DOIS;6;6;6;2;5;2011.7;34430.6;geometria_compartilhada_contextos_distintos;1854,1895,1949,1996,1998,2065;Jardim Lagoa das Pedras,Parque Aeroporto,Parque Barão do Rio Branco,Parque Boa Vista,Parque Guarus,Parque Presidente Vargas;28070040,28073580,28073700,28083331,28085510,28093130;621,622,623
+PROJETADA A;RUA PROJETADA A;7;7;7;1;7;0.0;49310.1;geometria_compartilhada_contextos_distintos;50,530,1561,1592,1593,1810,2071;Custodópolis,Parque Aurora,Parque Calabouço,Parque Novo Jockey,Parque São Domingos,Parque Vera Cruz,Vila Industrial;28020835,28026550,28060395,28080760,28085270,28085655,28090015;601,608,618,620,623
+CARLOS LACERDA ATE 137 LADO IMPAR;RUA CARLOS LACERDA - ATÉ 137 - LADO ÍMPAR;2;2;2;1;2;0.0;2320.9;geometria_compartilhada_contextos_distintos;60,110;Centro;28010241;602,603
+CARLOS LACERDA ATE 146 LADO PAR;RUA CARLOS LACERDA - ATÉ 146 - LADO PAR;2;2;2;1;2;0.0;2320.9;geometria_compartilhada_contextos_distintos;61,111;Centro;28010242;602,603
+PROJETADA C;RUA PROJETADA C;3;3;3;1;3;0.0;9329.9;geometria_compartilhada_contextos_distintos;100,528,1597;Custodópolis,Parque Aurora,Parque Novo Jockey;28020833,28026605,28085645;602,608,618
+GILBERTO SIQUEIRA;RUA GILBERTO SIQUEIRA;2;2;2;1;2;0.0;4569.9;geometria_compartilhada_contextos_distintos;116,1707;Centro,Parque Fundão;28010400,28060377;603,619
+DOS GOYTACAZES DE 564 A 976 LADO PAR;RUA DOS GOYTACAZES - DE 564 A 976 - LADO PAR;2;2;2;1;2;0.0;1662.2;geometria_compartilhada_contextos_distintos;123,1044;Parque Turf Club;28027231;603,613
+DOS GOYTACAZES DE 609 A 1041 LADO IMPAR;RUA DOS GOYTACAZES - DE 609 A 1041 - LADO ÍMPAR;2;2;2;1;2;0.0;1662.2;geometria_compartilhada_contextos_distintos;124,1045;Parque Turf Club;28027232;603,613
+DOMINGOS VIANA DE 312 AO 522;RUA DOMINGOS VIANA – DE 312 AO 522;2;2;2;1;2;0.0;2217.3;geometria_compartilhada_contextos_distintos;169,172;Parque Turf Club;28013085,28024140;604
+DOMINGOS VIANA DE 387 AO 569;RUA DOMINGOS VIANA – DE 387 AO 569;2;2;2;1;2;0.0;2217.3;geometria_compartilhada_contextos_distintos;170,173;Parque Turf Club;28013085,28024140;604
+SAO GONCALO;RUA SÃO GONÇALO;3;3;3;1;3;0.0;13885.5;geometria_compartilhada_contextos_distintos;197,1809,1924;Goytacazes,Parque Guarus,Parque São Mateus;28023592,28070216,28073225;604,620,621
+CLERIO PINHEIRO;RUA CLÉRIO PINHEIRO;2;2;2;1;2;0.0;6913.0;geometria_compartilhada_contextos_distintos;262,264;Donana,Goytacazes;28023393,28023451;605
+SANTO AMARO;RUA SANTO AMARO;3;3;3;1;3;0.0;46301.8;geometria_compartilhada_contextos_distintos;279,1803,1820;Goytacazes,Parque Visconde de Ururaí,Vila Industrial;28023471,28070326,28090017;605,620
+VEREADOR AMARO SOARES;RUA VEREADOR AMARO SOARES;2;2;2;1;2;0.0;367.1;geometria_compartilhada_contextos_distintos;291,292;Goytacazes;28023568,28023569;605
+OLIMPIO LINHARES;RUA OLÍMPIO LINHARES;2;2;2;1;2;0.0;1919.2;geometria_compartilhada_contextos_distintos;300,441;Goytacazes;28023582,28023730;605,607
+ALECRIM;RUA ALECRIM;2;2;2;1;2;0.0;37658.9;geometria_compartilhada_contextos_distintos;305,1004;Goytacazes,Parque Tarcisio Miranda;28022020,28023588;605,613
+SIQUEIRA E SILVA;RUA SIQUEIRA E SILVA;2;2;2;1;2;0.0;489.1;geometria_compartilhada_contextos_distintos;310,319;Centro;28013013,28013540;606
+IDOLINO NUNES BRASILEIRO;RUA IDOLINO NUNES BRASILEIRO;2;2;2;1;2;0.0;848.1;geometria_compartilhada_contextos_distintos;326,332;Parque Califórnia,Parque Salo Brand;28015130,28015380;606
+NOVA;RUA NOVA;2;2;2;1;2;0.0;30237.6;geometria_compartilhada_contextos_distintos;416,539;Goytacazes,Parque Novo Jockey;28020844,28023693;607,608
+MARIA TAVARES DE ALVARENGA;TRAVESSA MARIA TAVARES DE ALVARENGA;2;2;2;1;2;0.0;189.5;geometria_compartilhada_contextos_distintos;424,425;Goytacazes;28023706,28023707;607
+JOCA CASTRO;RUA JOCA CASTRO;2;2;2;1;2;0.0;4766.9;geometria_compartilhada_contextos_distintos;429,796;Goytacazes,Parque Penha;28021070,28023713;607,611
+SAO CLEMENTE;RUA SÃO CLEMENTE;2;2;2;1;2;0.0;7836.3;geometria_compartilhada_contextos_distintos;444,950;Goytacazes,Parque Maciel;28023734,28025560;607,612
+CURIO;RUA CURIÓ;2;2;2;1;2;0.0;37338.6;geometria_compartilhada_contextos_distintos;493,1300;Goytacazes,nan;28023760,28146067;607,616
+AUGUSTO DOS ANJOS;RUA AUGUSTO DOS ANJOS;2;2;2;1;2;0.0;289.7;geometria_compartilhada_contextos_distintos;526,1877;Jardins de Campos,Parque Novo Jockey;28020831,28085769;608,621
+MARANHAO;RUA MARANHÃO;2;2;2;1;2;0.0;140.2;geometria_compartilhada_contextos_distintos;532,533;Parque Novo Jockey;28020837,28020838;608
+CAMBUCI;RUA CAMBUCI;2;2;2;1;2;0.0;8153.9;geometria_compartilhada_contextos_distintos;538,1866;Parque Guarus,Parque Novo Jockey;28020843,28073070;608,621
+A;RUA A;4;4;4;1;4;0.0;74499.5;geometria_compartilhada_contextos_distintos;543,1621,1716,1725;Codim,Parque Guarus,Parque Novo Jockey,Parque Prazeres;28020849,28070050,28085735,28090530;608,619,620
+CALIFORNIA;RUA CALIFÓRNIA;2;2;2;1;2;0.0;14143.6;geometria_compartilhada_contextos_distintos;544,1537;Parque Novo Jockey,Parque Santa Rosa;28020850,28085390;608,618
+BEIRA VALAO;RUA BEIRA VALÃO;2;2;2;1;2;0.0;445.9;geometria_compartilhada_contextos_distintos;552,859;Parque Novo Jockey,Parque Penha;28020864,28022240;608,611
+DAS ACACIAS;AVENIDA DAS ACÁCIAS;3;3;3;1;3;0.0;2900.9;geometria_compartilhada_contextos_distintos;554,568,1017;Fazenda Santo Antônio,Parque Penha,Parque Tarcisio Miranda;28020197,28022140,28023009;608,613
+ANTONIO DA SILVA NETO;RUA ANTÔNIO DA SILVA NETO;2;2;2;1;2;0.0;532.6;geometria_compartilhada_contextos_distintos;557,669;Goytacazes,Parque Imperial;28022260,28023806;608,609
+TREZE;RUA TREZE;3;3;3;1;3;0.0;33037.7;geometria_compartilhada_contextos_distintos;607,731,2057;Parque Alvorada,Parque Penha,Parque Tropical;28021680,28022830,28083155;609,610,622
+DOUTOR ARTHUR BERNARDES LOT JD FLAMBOYANT;AVENIDA DOUTOR ARTHUR BERNARDES (LOT JD FLAMBOYANT);2;2;2;1;2;0.0;723.9;geometria_compartilhada_contextos_distintos;624,1202;Flamboyant;28020111;609,615
+LOUVIVAL MARTINS BEDA;AVENIDA LOUVIVAL MARTINS BEDA;2;2;2;1;2;0.0;2750.3;geometria_compartilhada_contextos_distintos;655,656;Donana,Fazenda Santo Antônio;28023135,28023235;609
+TERTULIANO VIANA;RUA TERTULIANO VIANA;2;2;2;1;2;0.0;266.6;geometria_compartilhada_contextos_distintos;670,680;Parque Jóquei Club,Parque Novo Jockey;28020015,28020869;610
+SEIS;RUA SEIS;4;4;4;1;4;0.0;16933.0;geometria_compartilhada_contextos_distintos;724,878,2032,2055;Alphaville,Parque Boa Vista,Parque Penha,Parque Zuza Mota;28021610,28024710,28073550,28083765;610,611,622
+SETE;RUA SETE;2;2;2;1;2;0.0;21174.5;geometria_compartilhada_contextos_distintos;725,2038;Parque Boa Vista,Parque Penha;28021620,28073540;610,622
+OITO;RUA OITO;2;2;2;1;2;0.0;21391.0;geometria_compartilhada_contextos_distintos;726,2022;Parque Boa Vista,Parque Penha;28021630,28073560;610,622
+NOVE;RUA NOVE;2;2;2;1;2;0.0;28109.5;geometria_compartilhada_contextos_distintos;727,2020;Parque Boa Vista,Parque Penha;28021640,28073563;610,622
+QUINZE;RUA QUINZE;2;2;2;1;2;0.0;304.9;geometria_compartilhada_contextos_distintos;733,2051;Parque Alvorada,Parque Penha;28021700,28083720;610,622
+NOSSA SENHORA DO CARMO LADO IMPAR;AVENIDA NOSSA SENHORA DO CARMO - LADO ÍMPAR;2;2;2;1;2;0.0;7538.6;geometria_compartilhada_contextos_distintos;739,763;Parque Rui Barbosa,Parque São Benedito;28024167,28025486;610
+NOSSA SENHORA DO CARMO LADO PAR;AVENIDA NOSSA SENHORA DO CARMO - LADO PAR;2;2;2;1;2;0.0;7538.6;geometria_compartilhada_contextos_distintos;740,764;Parque Rui Barbosa,Parque São Benedito;28024168,28025487;610
+SERVIDAO VIEIRA DA SILVA;RUA SERVIDÃO VIEIRA DA SILVA;2;2;2;1;2;0.0;101.7;geometria_compartilhada_contextos_distintos;762,777;Parque Aurora;28025470,28025840;610
+VINTE DE MAIO;TRAVESSA VINTE DE MAIO;2;2;2;1;2;0.0;326.0;geometria_compartilhada_contextos_distintos;775,776;Parque Aurora,Parque São Benedito;28025685,28025780;610
+DO CAPAO;ESTRADA DO CAPÃO;2;2;2;1;2;0.0;99.3;geometria_compartilhada_contextos_distintos;782,893;Parque Aurora,Parque São Benedito;28025490,28026495;610,611
+DOUTOR NEWTON GUARANA;AVENIDA DOUTOR NEWTON GUARANÁ;2;2;2;1;2;0.0;6258.8;geometria_compartilhada_contextos_distintos;787,808;Parque Novo Jockey,Parque Penha;28020803,28021245;611
+NOSSA SENHORA DA PENHA;RUA NOSSA SENHORA DA PENHA;3;3;3;1;3;0.0;58107.4;geometria_compartilhada_contextos_distintos;804,852,2061;Parque Calabouço,Parque Penha;28021220,28021470,28080783;611,622
+MANOEL VIRGILIO;RUA MANOEL VIRGÍLIO;2;2;2;1;2;0.0;344.6;geometria_compartilhada_contextos_distintos;809,810;Parque Penha;28021250,28021255;611
+JOSE DE SOUZA NETO;RUA JOSÉ DE SOUZA NETO;2;2;2;1;2;0.0;284.5;geometria_compartilhada_contextos_distintos;811,997;Parque Penha,Vivendas do Coqueiro I;28021260,28021303;611,613
+C;RUA C;2;2;2;1;2;0.0;74545.0;geometria_compartilhada_contextos_distintos;822,1533;Custodópolis,Vivendas do Coqueiro II;28021370,28085105;611,618
+I;RUA I;4;4;4;1;4;0.0;54882.0;geometria_compartilhada_contextos_distintos;823,1649,1758,2017;Codim,Parque Prazeres,Parque Presidente Vargas,Vivendas do Coqueiro II;28021371,28080100,28083780,28090600;611,619,620,622
+G;RUA G;2;2;2;1;2;0.0;29682.7;geometria_compartilhada_contextos_distintos;827,1754;Codim,Vivendas do Coqueiro II;28021375,28090580;611,620
+CINCO;RUA CINCO;4;4;4;1;4;0.0;16850.1;geometria_compartilhada_contextos_distintos;876,1730,1889,1990;Alphaville,Parque Bandeirantes,Parque Boa Vista,Vila Industrial;28024706,28073720,28085165,28090030;611,620,621,622
+MARCILIO MARTINS;RUA MARCÍLIO MARTINS;3;3;3;1;3;0.0;1087.1;geometria_compartilhada_contextos_distintos;968,970,975;Centro,Parque João Maria;28026855,28027400,28027800;612
+H;RUA H;3;3;3;1;3;0.0;59073.3;geometria_compartilhada_contextos_distintos;1001,1756,2013;Codim,Parque Céu Azul,Vivendas do Coqueiro I;28021308,28083830,28090590;613,620,622
+NOSSA SENHORA DA CONCEICAO;RUA NOSSA SENHORA DA CONCEIÇÃO;2;2;2;1;2;0.0;38302.2;geometria_compartilhada_contextos_distintos;1047,1835;Parque Santa Rosa,Parque Turf Club;28027260,28085490;613,621
+BELA VISTA RUA;BELA VISTA, RUA;2;2;2;1;2;0.0;68996.7;geometria_compartilhada_contextos_distintos;1084,1389;FAROL DE SÃO TOMÉ,Tócos;28140002,28148000;614,616
+PINHEIRO MACHADO AV;PINHEIRO MACHADO, AV.;2;2;2;1;2;0.0;6756.8;geometria_compartilhada_contextos_distintos;1144,1366;FAROL DE SÃO TOMÉ;28142002,28142143;615,616
+DEPUTADO BARTOLOMEU LIZANDRO LADO PAR;AVENIDA DEPUTADO BARTOLOMEU LIZANDRO - LADO PAR;5;5;5;1;5;0.0;2151.3;geometria_compartilhada_contextos_distintos;1453,1455,1457,1520,1522;Parque Fundão,Parque Jardim Carioca,Parque Santo Antônio,Parque Vera Cruz,Parque Vicente Gonçalves Dias;28060210,28060223,28080267,28080390,28080547;617,618
+DOUTOR PEDRO BARROSO;AVENIDA DOUTOR PEDRO BARROSO;2;2;2;1;2;0.0;736.0;geometria_compartilhada_contextos_distintos;1454,1480;Parque Jardim Carioca,Parque Vicente Gonçalves Dias;28080600,28083300;617
+FRANCISCO LAMEGO;AVENIDA FRANCISCO LAMEGO;2;2;2;1;2;0.0;2584.9;geometria_compartilhada_contextos_distintos;1456,1510;Parque Jardim Carioca,Parque Vicente Gonçalves Dias;28080000,28080810;617
+CASIMIRO DE ABREU;RUA CASIMIRO DE ABREU;2;2;2;1;2;0.0;4163.0;geometria_compartilhada_contextos_distintos;1474,1872;Parque Guarus,Parque Vicente Gonçalves Dias;28070550,28080240;617,621
+BARTOLOMEU LIZANDRO;RUA BARTOLOMEU LIZANDRO;2;2;2;1;2;0.0;456.8;geometria_compartilhada_contextos_distintos;1538,1934;Parque São Mateus;28060216,28073165;618,621
+PROJETADA B;RUA PROJETADA B;4;4;4;1;4;0.0;11744.6;geometria_compartilhada_contextos_distintos;1563,1595,2049,2073;Custodópolis,Parque Calabouço,Parque Céu Azul,Parque São Domingos;28080782,28083670,28085635,28085665;618,622,623
+WILSON BATISTA;AVENIDA WILSON BATISTA;2;2;2;1;2;0.0;1801.2;geometria_compartilhada_contextos_distintos;1618,1714;Parque Aldeia;28060555,28060560;619
+B;RUA B;4;4;4;1;4;0.0;31746.6;geometria_compartilhada_contextos_distintos;1631,1726,1728,1977;Codim,Parque Ceasa,Parque Céu Azul,Parque Prazeres;28083770,28085740,28090040,28090540;619,620,622
+FORTALEZA;RUA FORTALEZA;2;2;2;1;2;0.0;152.2;geometria_compartilhada_contextos_distintos;1644,2006;Parque Boa Vista,Parque Cidade Luz;28060810,28073565;619,622
+JOSE FERNANDES REIS;RUA JOSÉ FERNANDES REIS;2;2;2;1;2;0.0;1255.6;geometria_compartilhada_contextos_distintos;1651,1653;Parque Prazeres,São Jorge;28080145,28080169;619
+K;RUA K;2;2;2;1;2;0.0;13464.7;geometria_compartilhada_contextos_distintos;1657,1659;Parque Prazeres,São Jorge;28080168,28080745;619
+L;RUA L;3;3;3;1;3;0.0;9017.0;geometria_compartilhada_contextos_distintos;1661,1776,2031;Codim,Parque Céu Azul,Parque Prazeres;28080750,28083800,28090490;619,620,622
+ITABORAI;RUA ITABORAÍ;2;2;2;1;2;0.0;394.9;geometria_compartilhada_contextos_distintos;1747,1819;Parque Guarus;28070496,28070497;620
+F;RUA F;2;2;2;1;2;0.0;57135.9;geometria_compartilhada_contextos_distintos;1750,1752;Codim,Parque Eldorado;28090570,28090740;620
+J;RUA J;3;3;3;1;3;0.0;14196.8;geometria_compartilhada_contextos_distintos;1759,1760,2019;Codim,Parque Aldeia,Parque Presidente Vargas;28060515,28083462,28090610;620,622
+M;RUA M;2;2;2;1;2;0.0;27661.0;geometria_compartilhada_contextos_distintos;1780,2033;Codim,Parque Céu Azul;28083810,28090500;620,622
+MUSSUREPE;RUA MUSSUREPE;2;2;2;1;2;0.0;400.9;geometria_compartilhada_contextos_distintos;1783,1824;Parque Visconde de Ururaí;28070385,28070387;620
+N;RUA N;2;2;2;1;2;0.0;12604.2;geometria_compartilhada_contextos_distintos;1790,2037;Codim,Parque Céu Azul;28083820,28090620;620,622
+SANTO EDUARDO;RUA SANTO EDUARDO;2;2;2;1;2;0.0;465.5;geometria_compartilhada_contextos_distintos;1805,1825;Parque Visconde de Ururaí;28070245,28070246;620
+SANTA ROSA;AVENIDA SANTA ROSA;2;2;2;1;2;0.0;21951.7;geometria_compartilhada_contextos_distintos;1829,1831;Custodópolis,Parque Santa Clara;28085030,28085500;621
+ALMIRANTE ARY PARREIRAS;RUA ALMIRANTE ARY PARREIRAS;2;2;2;1;2;0.0;98.2;geometria_compartilhada_contextos_distintos;1858,1932;Parque São Mateus;28073170,28073235;621
+ANGRA DOS REIS;RUA ANGRA DOS REIS;2;2;2;1;2;0.0;128.2;geometria_compartilhada_contextos_distintos;1860,2207;KILOMETRO 14,Parque Guarus;28073050,28145090;621,624
+MARQUES DE VALENCA;RUA MARQUÊS DE VALENÇA;2;2;2;1;2;0.0;522.0;geometria_compartilhada_contextos_distintos;1900,1902;Parque Guarus,Parque São Mateus;28073120,28073185;621
+BORGES;TRAVESSA BORGES;2;2;2;1;2;0.0;131.0;geometria_compartilhada_contextos_distintos;1936,1938;Parque Guarus,Parque São Mateus;28070660,28073155;621
+ZUZA MOTA;AVENIDA ZUZA MOTA;3;3;3;1;3;0.0;2132.6;geometria_compartilhada_contextos_distintos;1953,1955,1957;Parque Alvorada,Parque Calabouço,Parque Presidente Vargas;28083000,28083461,28083735;622
+MURILO PEIXOTO;RUA MURILO PEIXOTO;2;2;2;1;2;0.0;1708.0;geometria_compartilhada_contextos_distintos;2068,2080;Parque Eldorado,Parque São Silvestre;28090200,28090510;623
+HUMBERTO ALVARO DE GUSMAO TRAVESSAO;RUA HUMBERTO ÁLVARO DE GUSMÃO - TRAVESSÃO;2;2;2;1;2;0.0;415.9;geometria_compartilhada_contextos_distintos;2113,2138;TRAVESSÃO;28145240,28145565;623
+SARDINHA;AVENIDA SARDINHA;2;2;2;1;2;0.0;150.5;geometria_compartilhada_contextos_distintos;2147,2201;Parque Bonsucesso,Parque Novo Mundo;28085125,28085505;624
+TRES;AVENIDA TRÊS;3;3;2;2;0;9911.7;3164.8;geometrias_distantes_mesmo_nome;1951,2042,2059;Parque Boa Vista,Parque Presidente Vargas;28073530,28083333,28083775;622
+QUATORZE;RUA QUATORZE;2;2;2;2;0;3731.0;147.0;geometrias_distantes_mesmo_nome;732,887;Alphaville,Parque Penha;28021690,28024726;610,611
+SAPUCAINHA;RUA SAPUCAINHA;2;2;2;2;0;637.9;1122.9;geometrias_distantes_mesmo_nome;1812,1822;Parque São Silvestre,Vila Industrial;28090012,28090525;620
+NOSSA SENHORA DA CONCEICAO TRAVESSAO;PRAÇA NOSSA SENHORA DA CONCEIÇÃO - TRAVESSÃO;2;2;2;2;0;487.8;348.1;nome_repetido_revisar;2084,2127;TRAVESSÃO;28145020,28145360;623
+CAMPOS VITORIA LADO PAR;RODOVIA CAMPOS-VITÓRIA - LADO PAR;2;2;2;2;0;103.3;4133.8;nome_repetido_revisar;1972,1974;Parque Boa Vista,Parque Santos Dumont;28073476,28073706;622
+CAMPOS VITORIA LADO IMPAR;RODOVIA CAMPOS-VITÓRIA - LADO ÍMPAR;2;2;2;2;0;94.4;4824.0;nome_repetido_revisar;1976,1978;Parque Boa Vista,Parque Santos Dumont;28073475,28073705;622
+MELVIN JONES;PRAÇA MELVIN JONES;2;2;2;2;0;29.8;181.3;nome_repetido_revisar;969,974;Parque Rosário;28027340,28027535;612
+MARIA DA PENHA TAVARES;RUA MARIA DA PENHA TAVARES;2;2;2;2;0;1.0;80.1;nome_repetido_revisar;1492,1517;Parque Vicente Gonçalves Dias;28080199,28080785;617
+MANOEL DE SOUZA;RUA MANOEL DE SOUZA;2;2;0;0;0;0.0;0.0;nome_repetido_revisar;1489,1511;Jardim Carioca,Parque Jardim Carioca;28080320,28080800;617

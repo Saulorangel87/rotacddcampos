@@ -207,6 +207,27 @@ Validação: `go test ./... -count=1` no backend, `git diff --check` e build do
 frontend após a atualização da versão. Nenhuma geometria ou tabela foi
 alterada nesta auditoria.
 
+### Auditoria de nomes repetidos e proteção do casamento OSM — 07/09/2026
+
+A hipótese de coordenadas trocadas foi confirmada como risco do processo de
+casamento: o importador agrupava todos os ways com a mesma chave-base de nome
+antes de gravar a geometria. Em nomes repetidos por bairro, isso podia colocar
+trechos de regiões distintas no mesmo cadastro.
+
+O relatório local encontrou 97 grupos de nomes exatos repetidos, envolvendo 232
+cadastros, e 127 chaves-base com contextos diferentes. `NOSSA SENHORA DA PENHA`
+é um exemplo com três cadastros, dois bairros e três CEPs compartilhando o
+mesmo hash de geometria. Esses números são triagem; não significam que toda
+linha esteja comprovadamente errada.
+
+Foi criado `scripts/auditar_duplicidades_geometrias.py`, somente leitura, com
+relatórios por cadastro e por grupo. O casamento OSM passou a usar
+`scripts/osm_agrupamento.py`: ways do mesmo nome são separados por continuidade
+geográfica, correspondências com mais de um componente não são aplicadas e vão
+para `scripts/revisao_matches_ambiguos.csv`. O aplicador de revisão exige
+`componente` quando a escolha tiver mais de um grupo. Nenhum banco foi alterado
+nesta etapa.
+
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
 - `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real
@@ -288,6 +309,7 @@ um CSV exportado do banco de produção — não precisam de rede especial nem
 container Python, só `pip install requests`. Geram um CSV de revisão pra
 conferência humana antes de qualquer SQL ser aplicado em produção.
 
-Scripts mais antigos (`casar_ruas_osm.py`, `aplicar_revisao_osm.py`,
-`listar_ruas_sem_match.py`, `aplicar_geometria_manual.py`) continuam como
-estavam, descritos na nota anterior.
+Os scripts `casar_ruas_osm.py` e `aplicar_revisao_osm.py` foram atualizados para
+separar componentes geográficos e bloquear associações ambíguas. Os demais
+scripts (`listar_ruas_sem_match.py` e `aplicar_geometria_manual.py`) continuam
+com o fluxo anterior.
