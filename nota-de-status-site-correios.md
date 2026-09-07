@@ -198,9 +198,14 @@ posição do cadastro. Nenhuma coordenada foi modificada.
 
 ## Pendências conhecidas / combinadas pra próxima sessão
 
-- **301 ruas sem geometria após a aplicação auditada de quatro desenhos em
-  07/09/2026** — desenho manual, ritmo próprio, sem mais
-  atalho automático gratuito disponível
+- **73 ruas sem geometria após a aplicação auditada de 228 desenhos em
+  07/09/2026** — o lote foi aplicado localmente e na produção em transação;
+  13 nunca tiveram correspondência apresentada pelo OSM e permanecem para
+  revisão/desenho manual
+- **Auditoria cadastral** — os bancos mantêm 2.115 ruas ativas e o mesmo hash
+  de geometrias (`7f0371aa84d767a5ed0438572366cf9d`). Os IDs 721 e 722 têm
+  nomes diferentes entre local e produção, embora bairro, CEP e distrito
+  coincidam; nenhum deles foi alterado pelo lote de geometrias.
 - **Fluxo de AUMENTO do Redistritamento** — banco já preparado, falta
   lógica de negócio (service/handler) e tela
 - **Plano de ordenamento por rua**: planilha com a sequência real de

@@ -1492,46 +1492,48 @@ Se essa hipótese funcionar bem no uso real, evoluiremos a precisão depois.
 
 ---
 
-# 43. COBERTURA DE COORDENADAS — ATUALIZAÇÃO DE 07/09/2026
+# 43. COBERTURA DE COORDENADAS — LOTE MANUAL DE 07/09/2026
 
-A planilha operacional ficou pendente e não é necessária para iniciar a
-correção da cobertura geográfica. A base local foi auditada antes de qualquer
-alteração e apresentou:
+A planilha operacional continua pendente e não é necessária para corrigir a
+cobertura geográfica. Antes do lote manual, a base local tinha 301 ruas ativas
+sem geometria utilizável, considerando `NULL` e texto vazio. O arquivo novo
+`scripts/geometrias_manuais_novo.json` passou pela validação de formato,
+coordenadas, IDs únicos e existência no cadastro.
 
-- 301 ruas ativas sem geometria utilizável, considerando `NULL` e texto vazio;
-- 83 geometrias desenhadas manualmente já gravadas no banco local;
-- 31 decisões OSM aceitas já gravadas no banco local;
-- 17 ruas que nunca apareceram em uma leva de correspondência OSM e precisam
-  de nova busca contextualizada ou desenho manual;
-- 2 resultados positivos e 4 negativos no cache externo de geocodificação.
+As 228 geometrias novas foram incorporadas ao arquivo canônico
+`scripts/geometrias_manuais.json` (315 entradas no total) e aplicadas em
+transação nos dois bancos. O aplicador só preenche registros ativos vazios e
+nunca sobrescreve uma geometria existente. O resultado auditado é:
 
-Os scripts de casamento e de inventário agora usam a mesma definição de
-pendência (`geometria IS NULL OR btrim(geometria) = ''`). A ferramenta de
-desenho manual foi sincronizada com as 17 pendências atuais, evitando que ruas
-já corrigidas sejam desenhadas novamente.
+- 2.115 ruas ativas em cada banco;
+- 73 ruas ativas ainda sem geometria utilizável;
+- 228 ruas atualizadas neste lote e 87 entradas manuais anteriores preservadas;
+- 13 ruas que nunca apareceram em uma leva de correspondência OSM;
+- hash canônico JSONB das geometrias igual nos bancos após a aplicação:
+  `7f0371aa84d767a5ed0438572366cf9d`.
 
-Quatro geometrias manuais foram aplicadas primeiro no banco local. A auditoria
-comparou o cadastro local e a produção pela chave dos registros e pelo hash
-canônico JSONB das geometrias; ambos os bancos ficaram com 2.115 ruas e 301
-pendências, com hashes iguais após a aplicação na VPS. O relatório completo
-das pendências está em `scripts/relatorio_ruas_sem_geometria.csv`.
+A auditoria cadastral apontou uma divergência independente nas ruas de IDs 721
+e 722 (nomes diferentes entre local e produção, com bairro, CEP e distrito
+iguais). Nenhum desses registros foi alterado pelo lote de geometrias; a
+correção cadastral deve ser tratada separadamente.
 
-O próximo lote deve ser revisado antes de gravar: primeiro tentar uma
-correspondência exata no OpenStreetMap com município e distrito; depois usar o
-desenho manual para os casos sem correspondência. CEP ou ponto aproximado só
-deve ser aceito quando a relação com a rua for inequívoca e precisa ficar
-identificado como coordenada aproximada. Nenhuma rua deve receber o centro do
-distrito ou do CDD como substituto.
+O relatório atual está em `scripts/relatorio_ruas_sem_geometria.csv`, com as 73
+pendências. O retrato das 301 pendências antes deste lote foi preservado em
+`scripts/relatorio_ruas_sem_geometria_antes_lote_2026-09-07.csv`. A lista atual
+das 13 ruas sem qualquer correspondência OSM está em
+`scripts/ruas_sem_nenhum_match.csv` e a lista anterior, com 17 registros, foi
+preservada em `scripts/ruas_sem_nenhum_match_antes_lote_2026-09-07.csv`.
 
-Cada lote aplicado deve ser validado por limites geográficos, geometria não
-degenerada e comparação de um mesmo ordenamento antes e depois. A planilha
-operacional continua reservada para a etapa posterior de calibração da
-sequência, não para preencher coordenadas.
+Cada lote futuro deve ser validado por limites geográficos, geometria não
+degenerada e comparação do hash entre os bancos antes e depois. CEP ou ponto
+aproximado só deve ser aceito quando a relação com a rua for inequívoca e
+precisa ficar identificado como coordenada aproximada. Nenhuma rua deve
+receber o centro do distrito ou do CDD como substituto.
 
 ## Ferramenta manual
 
 O arquivo `scripts/desenhar-ruas-manual.html` agora funciona como editor local
-das 301 pendências. Ele incorpora os dados do relatório, permite filtrar por
+das 73 pendências restantes. Ele incorpora os dados do relatório, permite filtrar por
 nome/bairro/distrito/CEP, consultar até cinco resultados do OpenStreetMap,
 desenhar múltiplos segmentos, mostrar a coordenada representativa e retomar o
 progresso salvo no navegador. O JSON exportado continua compatível com

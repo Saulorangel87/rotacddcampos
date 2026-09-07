@@ -326,19 +326,21 @@ Foram utilizados:
 
 Parte das ruas foi automaticamente associada a geometrias reais.
 
-Após a aplicação auditada de quatro geometrias em 07/09/2026, o snapshot local
-e a produção têm **301 ruas sem geometria**. A contagem considera tanto `NULL`
-quanto texto vazio no campo `geometria`. Dessas pendências, **17 nunca tiveram
-uma correspondência apresentada pelo OSM** e formam a lista atual para
-revisão/desenho manual em `scripts/ruas_sem_nenhum_match.csv`.
+Após a aplicação auditada de 228 geometrias manuais em 07/09/2026, o snapshot
+local e a produção têm **73 ruas sem geometria**. A contagem considera tanto
+`NULL` quanto texto vazio no campo `geometria`. Dessas pendências, **13 nunca
+tiveram uma correspondência apresentada pelo OSM** e formam a lista atual para
+revisão/desenho manual em `scripts/ruas_sem_nenhum_match.csv`. O retrato das
+301 pendências anteriores foi preservado em
+`scripts/relatorio_ruas_sem_geometria_antes_lote_2026-09-07.csv`.
 
 Resultados automáticos de baixa confiança foram descartados para evitar associação de ruas incorretas.
 
 ## Pendências conhecidas
 
-- **301 ruas sem geometria real no snapshot local e na produção** — 17 não
-  tiveram correspondência no OSM e estão na lista da ferramenta de desenho
-  manual. O detalhamento completo está em
+- **73 ruas sem geometria real no snapshot local e na produção** — 13 não
+  tiveram correspondência no OSM e estão na lista atual da ferramenta de
+  desenho manual. O detalhamento está em
   `scripts/relatorio_ruas_sem_geometria.csv`.
 - **Fluxo de aumento do Redistritamento** — estrutura do banco pronta; faltam lógica de negócio e interface.
 - **Ordenamento por rua** — futura tabela com sequência real de entrega (`rua_id`, `ordem`, `numero`).
@@ -371,12 +373,14 @@ quando o campo está `NULL` quanto quando está vazio, e a ferramenta manual é
 atualizada a partir da lista atual de pendências para não reabrir ruas já
 corrigidas.
 
-O editor `scripts/desenhar-ruas-manual.html` incorpora as 301 pendências do
-relatório e permite filtrar por nome, bairro, distrito ou CEP, localizar a rua
-no mapa, desenhar um ou mais segmentos, visualizar a coordenada representativa
-e exportar/importar o JSON. O progresso fica salvo somente no navegador. O
-aplicador valida o GeoJSON, ignora IDs inválidos e não sobrescreve geometrias
-que já existam no banco.
+O editor `scripts/desenhar-ruas-manual.html` incorpora as 73 pendências atuais
+do relatório e permite filtrar por nome, bairro, distrito ou CEP, localizar a
+rua no mapa, desenhar um ou mais segmentos, visualizar a coordenada
+representativa e exportar/importar o JSON. O progresso fica salvo somente no
+navegador. O aplicador valida o GeoJSON, ignora IDs inválidos e não sobrescreve
+geometrias que já existam no banco. O lote de 228 novas geometrias foi recebido
+em `scripts/geometrias_manuais_novo.json` e incorporado ao arquivo canônico
+`scripts/geometrias_manuais.json`.
 
 Também existe:
 
