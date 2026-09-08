@@ -1,0 +1,1572 @@
+[
+  {
+    "ruaId": 50,
+    "nome": "RUA PROJETADA A",
+    "bairro": "Parque Aurora",
+    "cep": "28026550",
+    "distrito": "601",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 60,
+    "nome": "RUA CARLOS LACERDA - ATÉ 137 - LADO ÍMPAR",
+    "bairro": "Centro",
+    "cep": "28010241",
+    "distrito": "602",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 61,
+    "nome": "RUA CARLOS LACERDA - ATÉ 146 - LADO PAR",
+    "bairro": "Centro",
+    "cep": "28010242",
+    "distrito": "602",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 100,
+    "nome": "RUA PROJETADA C",
+    "bairro": "Parque Aurora",
+    "cep": "28026605",
+    "distrito": "602",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 110,
+    "nome": "RUA CARLOS LACERDA - ATÉ 137 - LADO ÍMPAR",
+    "bairro": "Centro",
+    "cep": "28010241",
+    "distrito": "603",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 111,
+    "nome": "RUA CARLOS LACERDA - ATÉ 146 - LADO PAR",
+    "bairro": "Centro",
+    "cep": "28010242",
+    "distrito": "603",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 116,
+    "nome": "RUA GILBERTO SIQUEIRA",
+    "bairro": "Centro",
+    "cep": "28010400",
+    "distrito": "603",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 124,
+    "nome": "RUA DOS GOYTACAZES - DE 609 A 1041 - LADO ÍMPAR",
+    "bairro": "Parque Turf Club",
+    "cep": "28027232",
+    "distrito": "603",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 169,
+    "nome": "RUA DOMINGOS VIANA – DE 312 AO 522",
+    "bairro": "Parque Turf Club",
+    "cep": "28024140",
+    "distrito": "604",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 170,
+    "nome": "RUA DOMINGOS VIANA – DE 387 AO 569",
+    "bairro": "Parque Turf Club",
+    "cep": "28024140",
+    "distrito": "604",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 172,
+    "nome": "RUA DOMINGOS VIANA – DE 312 AO 522",
+    "bairro": "Parque Turf Club",
+    "cep": "28013085",
+    "distrito": "604",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 173,
+    "nome": "RUA DOMINGOS VIANA – DE 387 AO 569",
+    "bairro": "Parque Turf Club",
+    "cep": "28013085",
+    "distrito": "604",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 197,
+    "nome": "RUA SÃO GONÇALO",
+    "bairro": "Goytacazes",
+    "cep": "28023592",
+    "distrito": "604",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 300,
+    "nome": "RUA OLÍMPIO LINHARES",
+    "bairro": "Goytacazes",
+    "cep": "28023582",
+    "distrito": "605",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 319,
+    "nome": "TRAVESSA SIQUEIRA E SILVA",
+    "bairro": "Centro",
+    "cep": "28013540",
+    "distrito": "606",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 441,
+    "nome": "TRAVESSA OLIMPIO LINHARES",
+    "bairro": "Goytacazes",
+    "cep": "28023730",
+    "distrito": "607",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 528,
+    "nome": "RUA PROJETADA C",
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020833",
+    "distrito": "608",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 530,
+    "nome": "RUA PROJETADA A",
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020835",
+    "distrito": "608",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 533,
+    "nome": "TRAVESSA MARANHÃO",
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020838",
+    "distrito": "608",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 539,
+    "nome": "RUA NOVA",
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020844",
+    "distrito": "608",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 543,
+    "nome": "RUA A",
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020849",
+    "distrito": "608",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 544,
+    "nome": "RUA CALIFÓRNIA",
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020850",
+    "distrito": "608",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 552,
+    "nome": "RUA BEIRA VALÃO",
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020864",
+    "distrito": "608",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 557,
+    "nome": "RUA ANTÔNIO DA SILVA NETO",
+    "bairro": "Parque Imperial",
+    "cep": "28022260",
+    "distrito": "608",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 607,
+    "nome": "RUA TREZE",
+    "bairro": "Parque Tropical",
+    "cep": "28022830",
+    "distrito": "609",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 624,
+    "nome": "AVENIDA DOUTOR ARTHUR BERNARDES (LOT JD FLAMBOYANT)",
+    "bairro": "Flamboyant",
+    "cep": "28020111",
+    "distrito": "609",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 656,
+    "nome": "RUA LOUVIVAL MARTINS BEDA",
+    "bairro": "Donana",
+    "cep": "28023235",
+    "distrito": "609",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 669,
+    "nome": "RUA ANTÔNIO DA SILVA NETO",
+    "bairro": "Goytacazes",
+    "cep": "28023806",
+    "distrito": "609",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 670,
+    "nome": "RUA TERTULIANO VIANA",
+    "bairro": "Parque Jóquei Club",
+    "cep": "28020015",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 680,
+    "nome": "RUA TERTULIANO VIANA",
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020869",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 724,
+    "nome": "RUA SEIS",
+    "bairro": "Parque Penha",
+    "cep": "28021610",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 725,
+    "nome": "RUA SETE",
+    "bairro": "Parque Penha",
+    "cep": "28021620",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 726,
+    "nome": "RUA OITO",
+    "bairro": "Parque Penha",
+    "cep": "28021630",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 727,
+    "nome": "RUA NOVE",
+    "bairro": "Parque Penha",
+    "cep": "28021640",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 731,
+    "nome": "RUA TREZE",
+    "bairro": "Parque Penha",
+    "cep": "28021680",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 732,
+    "nome": "RUA QUATORZE",
+    "bairro": "Parque Penha",
+    "cep": "28021690",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 733,
+    "nome": "RUA QUINZE",
+    "bairro": "Parque Penha",
+    "cep": "28021700",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 775,
+    "nome": "TRAVESSA VINTE DE MAIO",
+    "bairro": "Parque São Benedito",
+    "cep": "28025685",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 776,
+    "nome": "TRAVESSA VINTE DE MAIO",
+    "bairro": "Parque Aurora",
+    "cep": "28025780",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 782,
+    "nome": "ESTRADA DO CAPÃO",
+    "bairro": "Parque São Benedito",
+    "cep": "28026495",
+    "distrito": "610",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 787,
+    "nome": "AVENIDA DOUTOR NEWTON GUARANÁ",
+    "bairro": "Parque Novo Jockey",
+    "cep": "28020803",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 808,
+    "nome": "AVENIDA DOUTOR NEWTON GUARANÁ",
+    "bairro": "Parque Penha",
+    "cep": "28021245",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 810,
+    "nome": "TRAVESSA MANOEL VIRGÍLIO",
+    "bairro": "Parque Penha",
+    "cep": "28021255",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 811,
+    "nome": "RUA JOSÉ DE SOUZA NETO",
+    "bairro": "Parque Penha",
+    "cep": "28021260",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 822,
+    "nome": "RUA C",
+    "bairro": "Vivendas do Coqueiro II",
+    "cep": "28021370",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 823,
+    "nome": "RUA I",
+    "bairro": "Vivendas do Coqueiro II",
+    "cep": "28021371",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 827,
+    "nome": "RUA G",
+    "bairro": "Vivendas do Coqueiro II",
+    "cep": "28021375",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 876,
+    "nome": "RUA CINCO",
+    "bairro": "Alphaville",
+    "cep": "28024706",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 878,
+    "nome": "RUA SEIS",
+    "bairro": "Alphaville",
+    "cep": "28024710",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 887,
+    "nome": "RUA QUATORZE",
+    "bairro": "Alphaville",
+    "cep": "28024726",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 893,
+    "nome": "ESTRADA DO CAPÃO",
+    "bairro": "Parque Aurora",
+    "cep": "28025490",
+    "distrito": "611",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 968,
+    "nome": "RUA MARCÍLIO MARTINS",
+    "bairro": "Centro",
+    "cep": "28026855",
+    "distrito": "612",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 969,
+    "nome": "PRAÇA MELVIN JONES",
+    "bairro": "Parque Rosário",
+    "cep": "28027340",
+    "distrito": "612",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 970,
+    "nome": "RUA MARCÍLIO MARTINS",
+    "bairro": "Parque João Maria",
+    "cep": "28027400",
+    "distrito": "612",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 974,
+    "nome": "RUA MELVIN JONES",
+    "bairro": "Parque Rosário",
+    "cep": "28027535",
+    "distrito": "612",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 975,
+    "nome": "RUA MARCÍLIO MARTINS",
+    "bairro": "Centro",
+    "cep": "28027800",
+    "distrito": "612",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 997,
+    "nome": "RUA JOSÉ DE SOUZA NETO",
+    "bairro": "Vivendas do Coqueiro I",
+    "cep": "28021303",
+    "distrito": "613",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1001,
+    "nome": "RUA H",
+    "bairro": "Vivendas do Coqueiro I",
+    "cep": "28021308",
+    "distrito": "613",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1044,
+    "nome": "RUA DOS GOYTACAZES - DE 564 A 976 - LADO PAR",
+    "bairro": "Parque Turf Club",
+    "cep": "28027231",
+    "distrito": "613",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1045,
+    "nome": "RUA DOS GOYTACAZES - DE 609 A 1041 - LADO ÍMPAR",
+    "bairro": "Parque Turf Club",
+    "cep": "28027232",
+    "distrito": "613",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1084,
+    "nome": "BELA VISTA, RUA",
+    "bairro": "Tócos",
+    "cep": "28148000",
+    "distrito": "614",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1144,
+    "nome": "PINHEIRO MACHADO, AV.",
+    "bairro": "FAROL DE SÃO TOMÉ",
+    "cep": "28142002",
+    "distrito": "615",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1202,
+    "nome": "AVENIDA DOUTOR ARTHUR BERNARDES (LOT JD FLAMBOYANT)",
+    "bairro": "Flamboyant",
+    "cep": "28020111",
+    "distrito": "615",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1300,
+    "nome": "RUA CURIO",
+    "bairro": "nan",
+    "cep": "28146067",
+    "distrito": "616",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1366,
+    "nome": "PINHEIRO MACHADO, AV.",
+    "bairro": "FAROL DE SÃO TOMÉ",
+    "cep": "28142143",
+    "distrito": "616",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1389,
+    "nome": "BELA VISTA, RUA",
+    "bairro": "FAROL DE SÃO TOMÉ",
+    "cep": "28140002",
+    "distrito": "616",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1456,
+    "nome": "AVENIDA FRANCISCO LAMEGO",
+    "bairro": "Parque Jardim Carioca",
+    "cep": "28080000",
+    "distrito": "617",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1480,
+    "nome": "RUA DOUTOR PEDRO BARROSO",
+    "bairro": "Parque Jardim Carioca",
+    "cep": "28080600",
+    "distrito": "617",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1489,
+    "nome": "RUA MANOEL DE SOUZA",
+    "bairro": "Jardim Carioca",
+    "cep": "28080800",
+    "distrito": "617",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1492,
+    "nome": "RUA MARIA DA PENHA TAVARES",
+    "bairro": "Parque Vicente Gonçalves Dias",
+    "cep": "28080199",
+    "distrito": "617",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1511,
+    "nome": "TRAVESSA MANOEL DE SOUZA",
+    "bairro": "Parque Jardim Carioca",
+    "cep": "28080320",
+    "distrito": "617",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1517,
+    "nome": "TRAVESSA MARIA DA PENHA TAVARES",
+    "bairro": "Parque Vicente Gonçalves Dias",
+    "cep": "28080785",
+    "distrito": "617",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1533,
+    "nome": "RUA C",
+    "bairro": "Custodópolis",
+    "cep": "28085105",
+    "distrito": "618",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1561,
+    "nome": "RUA PROJETADA A",
+    "bairro": "Parque São Domingos",
+    "cep": "28085270",
+    "distrito": "618",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1563,
+    "nome": "RUA PROJETADA B",
+    "bairro": "Parque São Domingos",
+    "cep": "28085635",
+    "distrito": "618",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1592,
+    "nome": "RUA PROJETADA A",
+    "bairro": "Parque Vera Cruz",
+    "cep": "28060395",
+    "distrito": "618",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1593,
+    "nome": "TRAVESSA PROJETADA A",
+    "bairro": "Custodópolis",
+    "cep": "28085655",
+    "distrito": "618",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1595,
+    "nome": "TRAVESSA PROJETADA B",
+    "bairro": "Custodópolis",
+    "cep": "28085665",
+    "distrito": "618",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1597,
+    "nome": "TRAVESSA PROJETADA C",
+    "bairro": "Custodópolis",
+    "cep": "28085645",
+    "distrito": "618",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1618,
+    "nome": "AVENIDA WILSON BATISTA",
+    "bairro": "Parque Aldeia",
+    "cep": "28060560",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1621,
+    "nome": "RUA A",
+    "bairro": "Parque Prazeres",
+    "cep": "28085735",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1631,
+    "nome": "RUA B",
+    "bairro": "Parque Prazeres",
+    "cep": "28085740",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1649,
+    "nome": "RUA I",
+    "bairro": "Parque Prazeres",
+    "cep": "28080100",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1651,
+    "nome": "RUA JOSÉ FERNANDES REIS",
+    "bairro": "Parque Prazeres",
+    "cep": "28080145",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1653,
+    "nome": "RUA JOSÉ FERNANDES REIS",
+    "bairro": "São Jorge",
+    "cep": "28080169",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1657,
+    "nome": "RUA K",
+    "bairro": "Parque Prazeres",
+    "cep": "28080745",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1659,
+    "nome": "RUA K",
+    "bairro": "São Jorge",
+    "cep": "28080168",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1661,
+    "nome": "RUA L",
+    "bairro": "Parque Prazeres",
+    "cep": "28080750",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1707,
+    "nome": "TRAVESSA GILBERTO SIQUEIRA",
+    "bairro": "Parque Fundão",
+    "cep": "28060377",
+    "distrito": "619",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1716,
+    "nome": "RUA A",
+    "bairro": "Codim",
+    "cep": "28090530",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1725,
+    "nome": "RUA A",
+    "bairro": "Parque Guarus",
+    "cep": "28070050",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1726,
+    "nome": "RUA B",
+    "bairro": "Codim",
+    "cep": "28090540",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1728,
+    "nome": "RUA B",
+    "bairro": "Parque Ceasa",
+    "cep": "28090040",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1730,
+    "nome": "RUA CINCO",
+    "bairro": "Vila Industrial",
+    "cep": "28090030",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1747,
+    "nome": "RUA ITABORAÍ",
+    "bairro": "Parque Guarus",
+    "cep": "28070496",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1750,
+    "nome": "RUA F",
+    "bairro": "Codim",
+    "cep": "28090570",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1752,
+    "nome": "RUA F",
+    "bairro": "Parque Eldorado",
+    "cep": "28090740",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1754,
+    "nome": "RUA G",
+    "bairro": "Codim",
+    "cep": "28090580",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1756,
+    "nome": "RUA H",
+    "bairro": "Codim",
+    "cep": "28090590",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1758,
+    "nome": "RUA I",
+    "bairro": "Codim",
+    "cep": "28090600",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1759,
+    "nome": "RUA J",
+    "bairro": "Parque Aldeia",
+    "cep": "28060515",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1760,
+    "nome": "RUA J",
+    "bairro": "Codim",
+    "cep": "28090610",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1776,
+    "nome": "RUA L",
+    "bairro": "Codim",
+    "cep": "28090490",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1780,
+    "nome": "RUA M",
+    "bairro": "Codim",
+    "cep": "28090500",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1790,
+    "nome": "RUA N",
+    "bairro": "Codim",
+    "cep": "28090620",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1810,
+    "nome": "RUA PROJETADA A",
+    "bairro": "Vila Industrial",
+    "cep": "28090015",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1812,
+    "nome": "RUA SAPUCAINHA",
+    "bairro": "Vila Industrial",
+    "cep": "28090012",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1819,
+    "nome": "TRAVESSA ITABORAÍ",
+    "bairro": "Parque Guarus",
+    "cep": "28070497",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1822,
+    "nome": "TRAVESSA SAPUCAINHA",
+    "bairro": "Parque São Silvestre",
+    "cep": "28090525",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1824,
+    "nome": "TRAVESSA MUSSUREPE",
+    "bairro": "Parque Visconde de Ururaí",
+    "cep": "28070387",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1825,
+    "nome": "TRAVESSA SANTO EDUARDO",
+    "bairro": "Parque Visconde de Ururaí",
+    "cep": "28070245",
+    "distrito": "620",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1835,
+    "nome": "PRAÇA NOSSA SENHORA DA CONCEIÇÃO",
+    "bairro": "Parque Santa Rosa",
+    "cep": "28085490",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1854,
+    "nome": "PRAÇA DOIS",
+    "bairro": "Parque Guarus",
+    "cep": "28070040",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1856,
+    "nome": "PRAÇA UM",
+    "bairro": "Parque Guarus",
+    "cep": "28070700",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1858,
+    "nome": "RUA ALMIRANTE ARY PARREIRAS",
+    "bairro": "Parque São Mateus",
+    "cep": "28073170",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1877,
+    "nome": "RUA AUGUSTO DOS ANJOS",
+    "bairro": "Jardins de Campos",
+    "cep": "28085769",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1889,
+    "nome": "RUA CINCO",
+    "bairro": "Parque Bandeirantes",
+    "cep": "28085165",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1895,
+    "nome": "RUA DOIS",
+    "bairro": "Parque Barão do Rio Branco",
+    "cep": "28085510",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1932,
+    "nome": "TRAVESSA ALMIRANTE ARY PARREIRAS",
+    "bairro": "Parque São Mateus",
+    "cep": "28073235",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1936,
+    "nome": "TRAVESSA BORGES",
+    "bairro": "Parque São Mateus",
+    "cep": "28073155",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1938,
+    "nome": "TRAVESSA BORGES",
+    "bairro": "Parque Guarus",
+    "cep": "28070660",
+    "distrito": "621",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1949,
+    "nome": "AVENIDA DOIS",
+    "bairro": "Parque Presidente Vargas",
+    "cep": "28083331",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1951,
+    "nome": "AVENIDA TRÊS",
+    "bairro": "Parque Presidente Vargas",
+    "cep": "28083333",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1972,
+    "nome": "RODOVIA CAMPOS-VITÓRIA - LADO PAR",
+    "bairro": "Parque Santos Dumont",
+    "cep": "28073476",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1974,
+    "nome": "RODOVIA CAMPOS-VITÓRIA - LADO PAR",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073706",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1976,
+    "nome": "RODOVIA CAMPOS-VITÓRIA - LADO ÍMPAR",
+    "bairro": "Parque Santos Dumont",
+    "cep": "28073475",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1977,
+    "nome": "RUA B",
+    "bairro": "Parque Céu Azul",
+    "cep": "28083770",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1978,
+    "nome": "RODOVIA CAMPOS-VITÓRIA - LADO ÍMPAR",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073705",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1990,
+    "nome": "RUA CINCO",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073720",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1996,
+    "nome": "RUA DOIS",
+    "bairro": "Jardim Lagoa das Pedras",
+    "cep": "28073580",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 1998,
+    "nome": "RUA DOIS",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073700",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2006,
+    "nome": "RUA FORTALEZA",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073565",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2013,
+    "nome": "RUA H",
+    "bairro": "Parque Céu Azul",
+    "cep": "28083830",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2017,
+    "nome": "RUA I",
+    "bairro": "Parque Presidente Vargas",
+    "cep": "28083780",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2019,
+    "nome": "RUA J",
+    "bairro": "Parque Presidente Vargas",
+    "cep": "28083462",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2020,
+    "nome": "RUA NOVE",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073563",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2022,
+    "nome": "RUA OITO",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073560",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2031,
+    "nome": "RUA L",
+    "bairro": "Parque Céu Azul",
+    "cep": "28083800",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2032,
+    "nome": "RUA SEIS",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073550",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2033,
+    "nome": "RUA M",
+    "bairro": "Parque Céu Azul",
+    "cep": "28083810",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2037,
+    "nome": "RUA N",
+    "bairro": "Parque Céu Azul",
+    "cep": "28083820",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2038,
+    "nome": "RUA SETE",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073540",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2042,
+    "nome": "RUA TRÊS",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073530",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2044,
+    "nome": "RUA UM",
+    "bairro": "Parque Boa Vista",
+    "cep": "28073557",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2049,
+    "nome": "RUA PROJETADA B",
+    "bairro": "Parque Céu Azul",
+    "cep": "28083670",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2051,
+    "nome": "RUA QUINZE",
+    "bairro": "Parque Alvorada",
+    "cep": "28083720",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2055,
+    "nome": "RUA SEIS",
+    "bairro": "Parque Zuza Mota",
+    "cep": "28083765",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2057,
+    "nome": "RUA TREZE",
+    "bairro": "Parque Alvorada",
+    "cep": "28083155",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2059,
+    "nome": "RUA TRÊS",
+    "bairro": "Parque Presidente Vargas",
+    "cep": "28083775",
+    "distrito": "622",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2071,
+    "nome": "RUA PROJETADA A",
+    "bairro": "Parque Calabouço",
+    "cep": "28080760",
+    "distrito": "623",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2073,
+    "nome": "RUA PROJETADA B",
+    "bairro": "Parque Calabouço",
+    "cep": "28080782",
+    "distrito": "623",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2084,
+    "nome": "PRAÇA NOSSA SENHORA DA CONCEIÇÃO - TRAVESSÃO",
+    "bairro": "TRAVESSÃO",
+    "cep": "28145020",
+    "distrito": "623",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2113,
+    "nome": "RUA HUMBERTO ÁLVARO DE GUSMÃO - TRAVESSÃO",
+    "bairro": "TRAVESSÃO",
+    "cep": "28145240",
+    "distrito": "623",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2127,
+    "nome": "RUA NOSSA SENHORA DA CONCEIÇÃO - TRAVESSÃO",
+    "bairro": "TRAVESSÃO",
+    "cep": "28145360",
+    "distrito": "623",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2138,
+    "nome": "TRAVESSA HUMBERTO ÁLVARO DE GUSMÃO -  TRAVESSÃO",
+    "bairro": "TRAVESSÃO",
+    "cep": "28145565",
+    "distrito": "623",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2147,
+    "nome": "AVENIDA SARDINHA",
+    "bairro": "Parque Novo Mundo",
+    "cep": "28085505",
+    "distrito": "624",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  },
+  {
+    "ruaId": 2207,
+    "nome": "RUA ANGRA DOS REIS",
+    "bairro": "KILOMETRO 14",
+    "cep": "28145090",
+    "distrito": "624",
+    "status": "revisao_manual_pendente",
+    "confianca": "",
+    "nomeOsmSugerido": ""
+  }
+]

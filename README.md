@@ -386,6 +386,11 @@ scripts/desenhar-ruas-manual.html
 scripts/auditar_duplicidades_geometrias.py
 scripts/osm_agrupamento.py
 scripts/revisar-duplicidades.html
+scripts/gerar_revisao_geometrias_existentes.py
+scripts/revisar-geometrias-existentes.html
+scripts/aplicar_revisoes_geometrias_manuais.py
+scripts/gerar_lote_revisao_manual.py
+scripts/desenhar-revisoes-pendentes.html
 ```
 
 Eles são executados localmente e geram resultados para revisão humana antes de
@@ -415,6 +420,14 @@ Se o componente OSM representar apenas o nome correto, mas um trecho maior que
 o cadastro postal, deixe a decisão pendente: essa situação exige revisão por
 segmento antes de aplicar qualquer geometria.
 
+Para revisar um trecho de uma geometria que já existe, gere o lote com
+`python scripts/gerar_revisao_geometrias_existentes.py` e abra
+`scripts/revisar-geometrias-existentes.html`. A linha laranja mostra o traçado
+atual; o operador desenha o trecho correto em azul e exporta
+`revisoes_geometrias_manuais.json`. O aplicador correspondente funciona em
+simulação por padrão e só sobrescreve registros com `--aplicar`, validando o
+hash da geometria original antes da escrita.
+
 O editor `scripts/desenhar-ruas-manual.html` incorpora as 73 pendências atuais
 do relatório e permite filtrar por nome, bairro, distrito ou CEP, localizar a
 rua no mapa, desenhar um ou mais segmentos, visualizar a coordenada
@@ -423,6 +436,14 @@ navegador. O aplicador valida o GeoJSON, ignora IDs inválidos e não sobrescrev
 geometrias que já existam no banco. O lote de 228 novas geometrias foi recebido
 em `scripts/geometrias_manuais_novo.json` e incorporado ao arquivo canônico
 `scripts/geometrias_manuais.json`.
+
+Para redesenhar do zero os cadastros que ficaram pendentes na revisão de
+duplicidades, execute `python scripts/gerar_lote_revisao_manual.py` e abra
+`scripts/desenhar-revisoes-pendentes.html`. Essa ferramenta usa a mesma edição
+manual por segmentos, mas começa sem carregar o traçado atual e mantém uma
+lista separada das 157 pendências atuais. Depois de desenhar, exporte
+`revisoes_geometrias_manuais.json` e rode primeiro o aplicador em modo de
+simulação; a gravação só ocorre com `--aplicar`.
 
 Também existe:
 

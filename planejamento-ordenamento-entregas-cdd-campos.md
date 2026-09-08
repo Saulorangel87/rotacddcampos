@@ -1624,3 +1624,27 @@ Pendência identificada: um componente OSM pode ter o nome correto, mas cobrir
 um trecho maior que o cadastro postal. Esses casos não devem ser aceitos como
 um todo; será necessário revisar e recortar a geometria por segmento antes da
 aplicação.
+
+### Revisor manual de trechos existentes — 07/09/2026
+
+Como a ferramenta de desenho original lista apenas ruas sem geometria, foi
+criado um fluxo separado para cadastros que já possuem um traçado suspeito.
+`gerar_revisao_geometrias_existentes.py` gera o lote com a geometria atual;
+`revisar-geometrias-existentes.html` exibe o traçado como referência e permite
+desenhar o trecho corrigido. O resultado é exportado para
+`revisoes_geometrias_manuais.json`.
+
+`aplicar_revisoes_geometrias_manuais.py` faz simulação por padrão. A aplicação
+exige `--aplicar` e verifica o hash original para impedir sobrescrita quando o
+cadastro tiver mudado desde a revisão.
+
+### Lote manual das pendências da revisão de duplicidades — 07/09/2026
+
+As escolhas OSM aplicadas foram retiradas do próximo lote. Para os cadastros
+que permaneceram sem decisão segura (incluindo os casos em que o OSM cobriu um
+trecho maior que o CEP), `gerar_lote_revisao_manual.py` gera
+`lote_revisao_manual_pendente.json` e a ferramenta
+`desenhar-revisoes-pendentes.html`. Ela reutiliza o editor de desenho original,
+mas inicia cada cadastro sem geometria para que o operador trace somente o
+trecho postal correto. O lote atual contém 157 cadastros; ele é independente da
+lista histórica de 73 ruas sem geometria.

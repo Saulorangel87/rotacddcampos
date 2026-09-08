@@ -242,6 +242,16 @@ correto, mas representar um trecho maior que o cadastro postal. Esses casos
 ficam pendentes e deverão ser recortados por segmento antes de qualquer
 aplicação.
 
+Para esse cenário foi criado um fluxo separado: `gerar_revisao_geometrias_existentes.py`
+gera a lista com as geometrias atuais, `revisar-geometrias-existentes.html`
+permite desenhar o trecho corrigido e `aplicar_revisoes_geometrias_manuais.py`
+valida e aplica o JSON somente quando executado com `--aplicar`.
+
+Para os cadastros que ficaram pendentes na revisão de duplicidades, o lote deve
+ser regenerado com `python scripts/gerar_lote_revisao_manual.py`. A ferramenta
+`desenhar-revisoes-pendentes.html` é a versão de desenho iniciada do zero e
+contém 157 pendências atuais, separadas das 73 ruas históricas sem geometria.
+
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
 - `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real
