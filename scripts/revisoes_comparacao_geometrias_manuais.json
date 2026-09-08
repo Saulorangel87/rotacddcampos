@@ -1,0 +1,418 @@
+[
+  {
+    "rua_id": 279,
+    "nome": "RUA SANTO AMARO",
+    "bairro": "Goytacazes",
+    "cep": "28023471",
+    "distrito": "605",
+    "hash_geometria_original": "afe1966f85ec4d54",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.29280090332032,
+            -21.826633251982877
+          ],
+          [
+            -41.29130959510804,
+            -21.8248012326473
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 305,
+    "nome": "RUA ALECRIM",
+    "bairro": "Goytacazes",
+    "cep": "28023588",
+    "distrito": "605",
+    "hash_geometria_original": "168396dd64408fea",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.28222227096558,
+            -21.829730517502842
+          ],
+          [
+            -41.28100991249085,
+            -21.83006903291698
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 416,
+    "nome": "RUA NOVA",
+    "bairro": "Goytacazes",
+    "cep": "28023693",
+    "distrito": "607",
+    "hash_geometria_original": "eb8c50bd375cace7",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.27378940582276,
+            -21.828087000640636
+          ],
+          [
+            -41.27366065979004,
+            -21.825129900895885
+          ],
+          [
+            -41.273156404495246,
+            -21.82372519591054
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 493,
+    "nome": "RUA CURIÓ",
+    "bairro": "Goytacazes",
+    "cep": "28023760",
+    "distrito": "607",
+    "hash_geometria_original": "4c491446270600a6",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.2581937,
+            -21.8357593
+          ],
+          [
+            -41.2579831,
+            -21.8353759
+          ],
+          [
+            -41.2569438,
+            -21.8332409
+          ],
+          [
+            -41.2559225,
+            -21.8311544
+          ]
+        ],
+        [
+          [
+            -41.5976162,
+            -21.729776
+          ],
+          [
+            -41.5977915,
+            -21.7297141
+          ],
+          [
+            -41.598004,
+            -21.7297073
+          ],
+          [
+            -41.5980839,
+            -21.7297086
+          ],
+          [
+            -41.5982813,
+            -21.7294336
+          ],
+          [
+            -41.5985017,
+            -21.7291264
+          ],
+          [
+            -41.5987058,
+            -21.728842
+          ],
+          [
+            -41.5987021,
+            -21.728813
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 796,
+    "nome": "RUA JOCA CASTRO",
+    "bairro": "Parque Penha",
+    "cep": "28021070",
+    "distrito": "611",
+    "hash_geometria_original": "b8b13ccaf2718e70",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.29196405410767,
+            -21.79782746445752
+          ],
+          [
+            -41.288927793502815,
+            -21.79511870872009
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 1004,
+    "nome": "RUA ALECRIM",
+    "bairro": "Parque Tarcisio Miranda",
+    "cep": "28022020",
+    "distrito": "613",
+    "hash_geometria_original": "ae926afacc03c897",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.299678087234504,
+            -21.788982980494858
+          ],
+          [
+            -41.29770398139954,
+            -21.79093496674351
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 1012,
+    "nome": "TRAVESSA SANTO ANTÔNIO",
+    "bairro": "Parque Jóquei Club",
+    "cep": "28022085",
+    "distrito": "613",
+    "hash_geometria_original": "0c9cd7b2fdc7e645",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.298149228096015,
+            -21.786912943970204
+          ],
+          [
+            -41.29729628562928,
+            -21.78637513940264
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 1047,
+    "nome": "RUA NOSSA SENHORA DA CONCEIÇÃO",
+    "bairro": "Parque Turf Club",
+    "cep": "28027260",
+    "distrito": "613",
+    "hash_geometria_original": "a259e8d322a5a26e",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.32256269454957,
+            -21.768486700441446
+          ],
+          [
+            -41.31870031356812,
+            -21.76949271800613
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 1459,
+    "nome": "PRAÇA SANTO ANTÔNIO",
+    "bairro": "Parque Santo Antônio",
+    "cep": "28080515",
+    "distrito": "617",
+    "hash_geometria_original": "4cba9658c5c3fa82",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.32749259471894,
+            -21.745029836764076
+          ],
+          [
+            -41.32668256759644,
+            -21.744078440413418
+          ]
+        ],
+        [
+          [
+            -41.32822751998902,
+            -21.744457007255377
+          ],
+          [
+            -41.3274496793747,
+            -21.743585305794188
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 1474,
+    "nome": "RUA CASIMIRO DE ABREU",
+    "bairro": "Parque Vicente Gonçalves Dias",
+    "cep": "28080240",
+    "distrito": "617",
+    "hash_geometria_original": "5cd9814180dcea77",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.31758451461793,
+            -21.751914469629465
+          ],
+          [
+            -41.31701588630677,
+            -21.74772050956294
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 1501,
+    "nome": "RUA SANTO ANTÔNIO",
+    "bairro": "Parque Santo Antônio",
+    "cep": "28080525",
+    "distrito": "617",
+    "hash_geometria_original": "4cba9658c5c3fa82",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.32656455039979,
+            -21.744062330152214
+          ],
+          [
+            -41.32272362709046,
+            -21.73949952449891
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 1714,
+    "nome": "TRAVESSA WILSON BATISTA",
+    "bairro": "Parque Aldeia",
+    "cep": "28060555",
+    "distrito": "619",
+    "hash_geometria_original": "20422ec5a3cf53f5",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.335426568984985,
+            -21.726697343056692
+          ],
+          [
+            -41.335088610649116,
+            -21.726258948241817
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 1803,
+    "nome": "RUA SANTO AMARO",
+    "bairro": "Parque Visconde de Ururaí",
+    "cep": "28070326",
+    "distrito": "620",
+    "hash_geometria_original": "0c55fa5ae4f2432c",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.32716536521912,
+            -21.72361418525052
+          ],
+          [
+            -41.325384378433235,
+            -21.72312098041497
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 2061,
+    "nome": "TRAVESSA NOSSA SENHORA DA PENHA",
+    "bairro": "Parque Calabouço",
+    "cep": "28080783",
+    "distrito": "622",
+    "hash_geometria_original": "3326c1c51cfdeecb",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.31469309329987,
+            -21.744546997667687
+          ],
+          [
+            -41.31348609924317,
+            -21.744322846509004
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "rua_id": 2072,
+    "nome": "RUA UM",
+    "bairro": "Parque Aeroporto",
+    "cep": "28093530",
+    "distrito": "623",
+    "hash_geometria_original": "0f272f5f80758dd0",
+    "fonte_referencia": "desenho manual",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.30951642990113,
+            -21.700528105634287
+          ],
+          [
+            -41.30895853042603,
+            -21.70058789751611
+          ]
+        ]
+      ]
+    }
+  }
+]

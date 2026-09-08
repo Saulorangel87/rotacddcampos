@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparação de geometrias — CDD Campos</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root { --azul:#003d73; --azul-escuro:#002d55; --azul-claro:#eaf2fb; --cinza-050:#f8fafc; --cinza-100:#f1f4f7; --cinza-200:#dce3ea; --cinza-500:#657487; --verde:#1e7e34; --laranja:#a85a00; --vermelho:#b3261e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: #162235; font-family: Segoe UI, Roboto, Arial, sans-serif; background: #eef2f5; }
+  button, input { font: inherit; }
+  button { cursor: pointer; }
+  .topo { min-height: 64px; padding: 10px 18px; color: #fff; background: var(--azul); display: flex; align-items: center; gap: 18px; }
+  .topo h1 { margin: 0; font-size: 1.05rem; }
+  .topo p { margin: 3px 0 0; color: #d9e8f7; font-size: .78rem; }
+  .progresso { margin-left: auto; padding: 7px 11px; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; font-size: .82rem; white-space: nowrap; }
+  .layout { display: grid; grid-template-columns: 430px minmax(0, 1fr); height: calc(100vh - 64px); }
+  .painel { padding: 14px; overflow-y: auto; background: #fff; border-right: 1px solid var(--cinza-200); }
+  #mapa { min-height: 520px; background: #dce5eb; }
+  .card { margin-bottom: 12px; padding: 13px; background: var(--cinza-050); border: 1px solid var(--cinza-200); border-radius: 10px; }
+  .rotulo { display: block; margin-bottom: 5px; color: var(--cinza-500); font-size: .69rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+  input[type=text], input[type=file] { width: 100%; margin-top: 5px; padding: 9px 10px; color: #162235; background: #fff; border: 1px solid #bccbd9; border-radius: 7px; font-size: .84rem; }
+  input[type=file] { padding: 7px; }
+  button { min-height: 36px; padding: 7px 10px; border-radius: 7px; font-size: .8rem; font-weight: 750; text-align: center; }
+  button:disabled { cursor: wait; opacity: .58; }
+  .btn-primario { width: 100%; color: #fff; background: var(--azul); border: 1px solid var(--azul); }
+  .btn-primario:hover { background: var(--azul-escuro); }
+  .btn-secundario { color: var(--azul); background: #fff; border: 1px solid #abc3da; }
+  .btn-secundario:hover { background: var(--azul-claro); }
+  .btn-perigo { color: var(--vermelho); background: #fff; border: 1px solid #e2aaa6; }
+  .btn-perigo:hover { color: #fff; background: var(--vermelho); }
+  .linha-botoes { display: flex; gap: 7px; margin-top: 8px; }
+  .linha-botoes > * { flex: 1; }
+  .ajuda { color: #526276; font-size: .77rem; line-height: 1.45; }
+  .ajuda strong { color: #253b56; }
+  .arquivo-status { margin-top: 7px; color: var(--verde); font-size: .75rem; }
+  #lista-ruas { max-height: 310px; overflow-y: auto; border: 1px solid var(--cinza-200); border-radius: 8px; background: #fff; }
+  .lista-cabecalho { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .item-lista { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px; border-bottom: 1px solid #edf1f4; cursor: pointer; }
+  .item-lista:last-child { border-bottom: 0; }
+  .item-lista:hover, .item-lista.atual { background: var(--azul-claro); }
+  .item-lista.atual { box-shadow: inset 3px 0 0 var(--azul); }
+  .item-lista .nome { color: #233f60; font-size: .78rem; font-weight: 750; }
+  .item-lista .detalhe { margin-top: 3px; color: var(--cinza-500); font-size: .7rem; }
+  .marca-feito { padding: 2px 6px; color: #155d26; background: #dcf3e1; border-radius: 999px; font-size: .66rem; font-weight: 800; }
+  .nome-rua { margin: 6px 0 8px; color: #1c426b; font-size: 1rem; line-height: 1.25; }
+  .metadados { color: #526276; font-size: .78rem; line-height: 1.5; }
+  .status { margin-top: 8px; padding: 8px 9px; color: var(--laranja); background: #fff5e4; border: 1px solid #f0d49c; border-radius: 7px; font-size: .77rem; line-height: 1.35; }
+  .status.ok { color: var(--verde); background: #effaf1; border-color: #b9dfc0; }
+  .status.erro { color: var(--vermelho); background: #fff0ef; border-color: #e2aaa6; }
+  .link-referencia { display: inline-block; margin-top: 8px; color: var(--azul); font-size: .76rem; }
+  .busca-resultados { display: grid; gap: 6px; margin-top: 8px; }
+  .resultado { color: #29435f; background: #fff; border: 1px solid #c4d5e5; text-align: left; font-size: .72rem; font-weight: 500; }
+  .resultado:hover { background: var(--azul-claro); border-color: #0b72ce; }
+  .coordenadas { margin-top: 8px; color: #526276; font-size: .76rem; line-height: 1.45; }
+  .legenda { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; color: #526276; font-size: .72rem; }
+  .cor { display: inline-block; width: 12px; height: 4px; margin-right: 4px; vertical-align: middle; border-radius: 2px; }
+  .vazio { padding: 12px; color: var(--cinza-500); font-size: .78rem; text-align: center; }
+  @media (max-width: 850px) { .layout { display: flex; height: auto; min-height: calc(100vh - 64px); flex-direction: column-reverse; } #mapa { height: 55vh; min-height: 380px; } .painel { overflow: visible; } .progresso { margin-left: 0; } }
+</style>
+</head>
+<body>
+<header class="topo">
+  <div><h1>Comparação manual de geometrias</h1><p>Confira local e produção antes de escolher ou redesenhar o trecho postal.</p></div>
+  <div class="progresso" id="progresso">0 / 0 revisões</div>
+</header>
+<div class="layout">
+  <aside class="painel">
+    <section class="card">
+      <label class="rotulo" for="arquivo">1. Carregar comparação</label>
+      <input type="file" id="arquivo" accept="application/json,.json">
+      <div class="arquivo-status" id="arquivo-status">Nenhum lote carregado.</div>
+      <p class="ajuda">Use <strong>comparacao_geometrias_local_producao_20260908.json</strong>. A leitura ocorre somente neste navegador.</p>
+    </section>
+    <section class="card">
+      <label class="rotulo" for="filtro">2. Selecionar cadastro</label>
+      <input type="text" id="filtro" placeholder="Nome, bairro, distrito, CEP ou ID">
+      <div class="lista-cabecalho"><span class="rotulo" style="margin:0;">Divergências por distância</span><small id="contador"></small></div>
+      <div id="lista-ruas"><div class="vazio">Carregue o lote para começar.</div></div>
+    </section>
+    <section class="card">
+      <span class="rotulo">Cadastro selecionado</span>
+      <h2 class="nome-rua" id="nome-atual">Selecione um cadastro</h2>
+      <div class="metadados" id="metadados">Bairro: —<br>CEP: — · Distrito: —<br>Comparação: —</div>
+      <div class="status" id="status">Carregue o lote e escolha um cadastro.</div>
+      <label for="campo-busca" style="display:block;margin-top:10px;font-size:.78rem;font-weight:700;">Localizar no mapa</label>
+      <input type="text" id="campo-busca" placeholder="Rua, bairro ou ponto de referência">
+      <button class="btn-secundario" id="btn-buscar" style="width:100%;margin-top:7px;">Buscar no OpenStreetMap</button>
+      <a class="link-referencia" id="link-google" href="#" target="_blank" rel="noopener">Abrir referência no Google Maps</a>
+      <div class="busca-resultados" id="busca-resultados"></div>
+    </section>
+    <section class="card">
+      <span class="rotulo">3. Confirmar ou desenhar</span>
+      <p class="ajuda">Escolha uma das geometrias exibidas ou marque pontos no mapa para criar um trecho novo.</p>
+      <div class="linha-botoes"><button class="btn-secundario" id="btn-usar-local" disabled>Usar local</button><button class="btn-secundario" id="btn-usar-producao" disabled>Usar produção</button></div>
+      <div class="coordenadas" id="status-pontos">Nenhum ponto marcado.</div>
+      <div class="coordenadas" id="coordenadas">Rascunho: —</div>
+      <div class="linha-botoes"><button class="btn-secundario" id="btn-desfazer" disabled>Desfazer ponto</button><button class="btn-secundario" id="btn-segmento" disabled>Novo segmento</button></div>
+      <div class="linha-botoes"><button class="btn-perigo" id="btn-limpar" disabled>Limpar rascunho</button><button class="btn-secundario" id="btn-centralizar">Centralizar CDD</button></div>
+      <button class="btn-primario" id="btn-salvar" disabled style="margin-top:8px;">Salvar correção local</button>
+      <div class="legenda"><span><i class="cor" style="background:#0b72ce"></i>geometria local</span><span><i class="cor" style="background:#e67e22"></i>geometria produção</span><span><i class="cor" style="background:#b3261e"></i>rascunho</span></div>
+    </section>
+    <section class="card">
+      <span class="rotulo">4. Exportar correções</span>
+      <p class="ajuda">As escolhas ficam no navegador até serem exportadas. O JSON será revisado antes de qualquer alteração no banco.</p>
+      <button class="btn-primario" id="baixar" disabled>Baixar correções JSON</button>
+      <div class="linha-botoes"><button class="btn-secundario" id="importar">Importar correções</button><button class="btn-perigo" id="apagar">Apagar correção atual</button></div>
+      <input type="file" id="arquivo-correcoes" accept="application/json,.json" hidden>
+    </section>
+  </aside>
+  <main id="mapa" aria-label="Mapa para comparação manual de geometrias"></main>
+</div>
+<script>
+const CENTRO_CAMPOS = [-21.7545, -41.3244];
+const LIMITES = { minLat: -22.2, maxLat: -21.1, minLon: -42.0, maxLon: -40.7 };
+const CHAVE_STORAGE = 'comparacao_geometrias_local_producao_v1';
+const mapa = L.map('mapa').setView(CENTRO_CAMPOS, 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', maxZoom: 19 }).addTo(mapa);
+let dados = [], filtrados = [], itemAtual = null, segmentosAtuais = [[]], revisoes = carregarRevisoes();
+let camadasLocal = [], camadasProducao = [], camadasRascunho = [], marcadoresPontos = [], marcadorBusca = null;
+function carregarRevisoes() { try { const bruto = localStorage.getItem(CHAVE_STORAGE); return bruto ? JSON.parse(bruto) : {}; } catch (_) { return {}; } }
+function salvarRevisoes() { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(revisoes)); atualizarProgresso(); }
+function textoBusca(valor) { return String(valor || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase(); }
+function escapar(valor) { return String(valor ?? '').replace(/[&<>'"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' }[c])); }
+function formatarCoordenada(lat, lon) { return `${Number(lat).toFixed(6)}, ${Number(lon).toFixed(6)}`; }
+function geometriaValida(g) { return !!(g && g.type === 'MultiLineString' && Array.isArray(g.coordinates) && g.coordinates.some(l => Array.isArray(l) && l.length >= 2 && l.every(p => Array.isArray(p) && p.length >= 2 && Number.isFinite(Number(p[0])) && Number.isFinite(Number(p[1])) && Number(p[0]) >= LIMITES.minLon && Number(p[0]) <= LIMITES.maxLon && Number(p[1]) >= LIMITES.minLat && Number(p[1]) <= LIMITES.maxLat))); }
+function geoParaSegmentos(g) { return geometriaValida(g) ? g.coordinates.filter(l => Array.isArray(l) && l.length >= 2).map(l => l.map(([lon, lat]) => [Number(lat), Number(lon)])) : []; }
+function segmentosParaGeoJSON() { const linhas = segmentosAtuais.filter(s => s.length >= 2).map(s => s.map(([lat, lon]) => [Number(lon), Number(lat)])); return linhas.length ? { type:'MultiLineString', coordinates:linhas } : null; }
+function limparCamadas(lista) { lista.forEach(c => mapa.removeLayer(c)); lista.length = 0; }
+function pontosTodos() { return segmentosAtuais.flatMap(s => s); }
+function corrigido(item) { return !!(item && revisoes[item.rua_id] && geometriaValida(revisoes[item.rua_id].geometria)); }
+function atualizarProgresso() { document.getElementById('progresso').textContent = `${dados.filter(corrigido).length} / ${dados.length} revisões`; document.getElementById('baixar').disabled = !Object.keys(revisoes).length; }
+function renderizarLista() { const lista = document.getElementById('lista-ruas'); const termo = textoBusca(document.getElementById('filtro').value.trim()); filtrados = dados.filter(item => !termo || textoBusca([item.rua_id,item.nome,item.bairro,item.distrito,item.cep].join(' ')).includes(termo)); document.getElementById('contador').textContent = `${filtrados.length} de ${dados.length}`; lista.innerHTML = ''; if (!filtrados.length) { lista.innerHTML = '<div class="vazio">Nenhum cadastro encontrado.</div>'; return; } filtrados.forEach(item => { const div = document.createElement('div'); div.className = 'item-lista' + (item === itemAtual ? ' atual' : ''); const dist = item.distancia_centroides_m == null ? 'distância indisponível' : `${Number(item.distancia_centroides_m).toFixed(0)} m entre centros`; div.innerHTML = `<div><div class="nome">${escapar(item.nome)} · ID ${escapar(item.rua_id)}</div><div class="detalhe">${escapar(item.bairro || 'Bairro não informado')} · ${dist}</div></div>${corrigido(item) ? '<span class="marca-feito">OK</span>' : ''}`; div.onclick = () => selecionarItem(item); lista.appendChild(div); }); atualizarProgresso(); }
+function renderizarMetadados() { if (!itemAtual) { document.getElementById('nome-atual').textContent = 'Selecione um cadastro'; document.getElementById('metadados').innerHTML = 'Bairro: —<br>CEP: — · Distrito: —<br>Comparação: —'; return; } document.getElementById('nome-atual').textContent = `${itemAtual.nome} · ID ${itemAtual.rua_id}`; document.getElementById('metadados').innerHTML = `Bairro: ${escapar(itemAtual.bairro || 'não informado')}<br>CEP: ${escapar(itemAtual.cep || 'não informado')} · Distrito ${escapar(itemAtual.distrito || 'não informado')}<br>Centros: ${itemAtual.distancia_centroides_m == null ? '—' : `${Number(itemAtual.distancia_centroides_m).toFixed(1)} m`} · Pontos local/produção: ${itemAtual.pontos_local}/${itemAtual.pontos_producao}`; }
+function desenharGeometria(g, estilo, lista) { geoParaSegmentos(g).forEach(l => lista.push(L.polyline(l, estilo).addTo(mapa))); }
+function renderizarMapa(ajustar = false) { limparCamadas(camadasLocal); limparCamadas(camadasProducao); limparCamadas(camadasRascunho); limparCamadas(marcadoresPontos); if (itemAtual) { desenharGeometria(itemAtual.geometria_local, {color:'#0b72ce', weight:5, opacity:.9, dashArray:'7 5'}, camadasLocal); desenharGeometria(itemAtual.geometria_producao, {color:'#e67e22', weight:5, opacity:.82, dashArray:'12 6'}, camadasProducao); } segmentosAtuais.forEach(segmento => { if (segmento.length >= 2) camadasRascunho.push(L.polyline(segmento, {color:'#b3261e', weight:6, opacity:.95}).addTo(mapa)); segmento.forEach((ponto, i) => { const marcador = L.circleMarker(ponto, {radius:5, color:'#b3261e', fillColor:'#ffd400', fillOpacity:1, weight:2}).addTo(mapa); marcador.bindTooltip(`${i + 1}: ${formatarCoordenada(ponto[0], ponto[1])}`, {direction:'top'}); marcadoresPontos.push(marcador); }); }); atualizarLeitura(); if (ajustar) { const todas = [...camadasLocal, ...camadasProducao, ...camadasRascunho]; if (todas.length) mapa.fitBounds(L.featureGroup(todas).getBounds().pad(.2), {maxZoom:17}); } }
+function atualizarLeitura() { const pontos = pontosTodos(); document.getElementById('status-pontos').textContent = pontos.length ? `${pontos.length} ponto(s) em ${segmentosAtuais.filter(s => s.length).length} segmento(s).` : 'Nenhum ponto marcado.'; document.getElementById('coordenadas').innerHTML = pontos.length ? `<strong>Último ponto:</strong> ${formatarCoordenada(pontos[pontos.length - 1][0], pontos[pontos.length - 1][1])}` : 'Rascunho: —'; document.getElementById('btn-desfazer').disabled = !pontos.length; document.getElementById('btn-segmento').disabled = !pontos.length; document.getElementById('btn-limpar').disabled = !pontos.length; document.getElementById('btn-salvar').disabled = !segmentosParaGeoJSON(); }
+function selecionarItem(item) { itemAtual = item; const revisao = revisoes[item.rua_id]; segmentosAtuais = revisao && geometriaValida(revisao.geometria) ? geoParaSegmentos(revisao.geometria) : [[]]; renderizarMetadados(); document.getElementById('campo-busca').value = `${item.nome}, ${item.bairro || ''}, Campos dos Goytacazes, RJ`.replace(/,\s*,/g, ','); document.getElementById('link-google').href = `https://www.google.com/maps/search/${encodeURIComponent(document.getElementById('campo-busca').value)}`; document.getElementById('status').className = 'status'; document.getElementById('status').textContent = revisao ? `Correção local carregada (${revisao.fonte_referencia || 'desenho manual'}).` : 'Compare as linhas azul e laranja. Escolha uma fonte ou desenhe o trecho correto.'; document.getElementById('btn-buscar').disabled = false; document.getElementById('btn-usar-local').disabled = !geometriaValida(item.geometria_local); document.getElementById('btn-usar-producao').disabled = !geometriaValida(item.geometria_producao); renderizarMapa(true); renderizarLista(); }
+function adicionarPonto(lat, lon) { if (!itemAtual) return; segmentosAtuais[segmentosAtuais.length - 1].push([lat, lon]); renderizarMapa(); }
+function salvarGeometria(geometria, fonte) { if (!itemAtual || !geometriaValida(geometria)) return; revisoes[itemAtual.rua_id] = {rua_id:Number(itemAtual.rua_id), nome:itemAtual.nome, bairro:itemAtual.bairro, cep:itemAtual.cep, distrito:itemAtual.distrito, hash_geometria_original:itemAtual.hash_local || '', fonte_referencia:fonte, geometria}; segmentosAtuais = geoParaSegmentos(geometria); salvarRevisoes(); renderizarMapa(); renderizarLista(); document.getElementById('status').className = 'status ok'; document.getElementById('status').textContent = `Escolha do cadastro ${itemAtual.rua_id} salva somente neste navegador.`; }
+function limparRascunho() { if (!itemAtual || !confirm(`Apagar a correção do cadastro ${itemAtual.rua_id}?`)) return; delete revisoes[itemAtual.rua_id]; segmentosAtuais = [[]]; salvarRevisoes(); renderizarMapa(); renderizarLista(); document.getElementById('status').className = 'status'; document.getElementById('status').textContent = 'Correção removida; as duas geometrias originais continuam visíveis.'; }
+function desfazerPonto() { let s = segmentosAtuais[segmentosAtuais.length - 1]; if (!s.length && segmentosAtuais.length > 1) { segmentosAtuais.pop(); s = segmentosAtuais[segmentosAtuais.length - 1]; } if (s.length) s.pop(); renderizarMapa(); }
+function novoSegmento() { if (segmentosAtuais[segmentosAtuais.length - 1].length) segmentosAtuais.push([]); atualizarLeitura(); }
+function mostrarResultados(resultados) { const c = document.getElementById('busca-resultados'); c.innerHTML = ''; if (!resultados.length) { c.innerHTML = '<div class="vazio">Nenhum resultado encontrado.</div>'; return; } resultados.forEach(r => { const lat=Number(r.lat), lon=Number(r.lon); if (!Number.isFinite(lat)||!Number.isFinite(lon)) return; const b=document.createElement('button'); b.type='button'; b.className='resultado'; b.textContent=r.display_name || formatarCoordenada(lat,lon); b.onclick=()=>{mapa.setView([lat,lon],17); if(marcadorBusca) mapa.removeLayer(marcadorBusca); marcadorBusca=L.marker([lat,lon]).addTo(mapa).bindPopup(r.display_name || formatarCoordenada(lat,lon)).openPopup();}; c.appendChild(b); }); }
+async function buscarNoOsm() { const termo=document.getElementById('campo-busca').value.trim(), botao=document.getElementById('btn-buscar'); if(!termo)return; botao.disabled=true; botao.textContent='Consultando mapa…'; try { const r=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&countrycodes=br&q='+encodeURIComponent(termo),{headers:{'Accept-Language':'pt-BR'}}); if(!r.ok)throw new Error(`HTTP ${r.status}`); mostrarResultados(await r.json()); } catch(e) { mostrarResultados([]); document.getElementById('status').className='status erro'; document.getElementById('status').textContent=`Busca geográfica indisponível: ${e.message}. Ainda é possível desenhar no mapa.`; } finally { botao.disabled=false; botao.textContent='Buscar no OpenStreetMap'; } }
+function baixarCorrecoes() { const saida=Object.values(revisoes).filter(x=>geometriaValida(x.geometria)).sort((a,b)=>a.rua_id-b.rua_id); const blob=new Blob([JSON.stringify(saida,null,2)],{type:'application/json;charset=utf-8'}), url=URL.createObjectURL(blob), link=document.createElement('a'); link.href=url; link.download='revisoes_comparacao_geometrias_manuais.json'; link.click(); URL.revokeObjectURL(url); }
+document.getElementById('arquivo').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x)||!x.length)throw new Error();dados=x.filter(i=>Number.isInteger(Number(i.rua_id))&&i.nome);if(!dados.length)throw new Error();document.getElementById('arquivo-status').textContent=`${dados.length} divergências carregadas.`;itemAtual=null;segmentosAtuais=[[]];renderizarMetadados();renderizarMapa();document.getElementById('status').className='status';document.getElementById('status').textContent='Lote carregado. Escolha um cadastro.';renderizarLista();}catch(_){document.getElementById('arquivo-status').textContent='Arquivo inválido.';document.getElementById('status').className='status erro';document.getElementById('status').textContent='Não foi possível ler o lote de comparação.';}finally{e.target.value='';}};
+document.getElementById('filtro').oninput=renderizarLista; document.getElementById('btn-buscar').onclick=buscarNoOsm; mapa.on('click',e=>adicionarPonto(e.latlng.lat,e.latlng.lng)); document.getElementById('btn-desfazer').onclick=desfazerPonto; document.getElementById('btn-segmento').onclick=novoSegmento; document.getElementById('btn-limpar').onclick=limparRascunho; document.getElementById('btn-centralizar').onclick=()=>mapa.setView(CENTRO_CAMPOS,13); document.getElementById('btn-salvar').onclick=()=>salvarGeometria(segmentosParaGeoJSON(),'desenho manual'); document.getElementById('btn-usar-local').onclick=()=>salvarGeometria(itemAtual.geometria_local,'geometria local'); document.getElementById('btn-usar-producao').onclick=()=>salvarGeometria(itemAtual.geometria_producao,'geometria produção'); document.getElementById('baixar').onclick=baixarCorrecoes; document.getElementById('importar').onclick=()=>document.getElementById('arquivo-correcoes').click(); document.getElementById('arquivo-correcoes').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x))throw new Error();x.forEach(i=>{if(Number.isInteger(Number(i.rua_id))&&geometriaValida(i.geometria))revisoes[i.rua_id]=i;});salvarRevisoes();if(itemAtual)selecionarItem(itemAtual);else renderizarLista();}catch(_){alert('JSON de correções inválido.');}finally{e.target.value='';}}; document.getElementById('apagar').onclick=limparRascunho; atualizarProgresso();
+// Quando aberto pelo servidor local do projeto, o lote é carregado automaticamente.
+(async()=>{try{const resposta=await fetch('comparacao_geometrias_local_producao_20260908.json');if(!resposta.ok)return;const lote=await resposta.json();if(!Array.isArray(lote)||!lote.length)return;dados=lote.filter(item=>Number.isInteger(Number(item.rua_id))&&item.nome);document.getElementById('arquivo-status').textContent=`${dados.length} divergências carregadas automaticamente.`;renderizarLista();}catch(_){/* Permanece disponível o carregamento manual. */}})();
+</script>
+</body>
+</html>

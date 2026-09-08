@@ -1,0 +1,35 @@
+﻿rua_id;nome;bairro;cep;distrito;status;componentes;pontos;distancia_max_componentes_m;extensao_m;hash_original;observacao
+493;RUA CURIÓ;Goytacazes;28023760;607;BLOQUEAR;2;12;37073.0;563.2;OK;CRÍTICO: componentes separados por mais de 1 km
+1459;PRAÇA SANTO ANTÔNIO;Parque Santo Antônio;28080515;617;CONFIRMAR;2;4;97.6;134.9;OK;revisar componentes próximos
+973;RUA BARROS BARRETO;Parque Rosário;28027460;612;CONFIRMAR;2;4;53.8;138.9;OK;revisar componentes próximos
+495;RUA SÃO DOMINGOS;Goytacazes;28023766;607;CONFIRMAR;1;2;0;372.5;OK;confirmar relação com outro cadastro do mesmo nome
+1348;SAO DOMINGOS, RUA;Goytacazes;28146312;616;CONFIRMAR;1;2;0;368.0;OK;confirmar relação com outro cadastro do mesmo nome
+178;TRAVESSA HORÁCIO DE SOUZA;Parque Turf Club;28013120;604;OK;1;2;0;74.0;OK;geometria contínua no contexto revisado
+279;RUA SANTO AMARO;Goytacazes;28023471;605;OK;1;2;0;255.3;OK;geometria contínua no contexto revisado
+304;RUA CAMPO ALEGRE;Goytacazes;28023587;605;OK;1;2;0;99.1;OK;geometria contínua no contexto revisado
+305;RUA ALECRIM;Goytacazes;28023588;605;OK;1;2;0;130.7;OK;geometria contínua no contexto revisado
+416;RUA NOVA;Goytacazes;28023693;607;OK;1;3;0;489.4;OK;geometria contínua no contexto revisado
+549;RUA BARCELOS MARTINS;Parque Novo Jockey;28020856;608;OK;1;2;0;321.7;OK;geometria contínua no contexto revisado
+796;RUA JOCA CASTRO;Parque Penha;28021070;611;OK;1;2;0;434.7;OK;geometria contínua no contexto revisado
+1004;RUA ALECRIM;Parque Tarcisio Miranda;28022020;613;OK;1;2;0;297.8;OK;geometria contínua no contexto revisado
+1012;TRAVESSA SANTO ANTÔNIO;Parque Jóquei Club;28022085;613;OK;1;2;0;106.5;OK;geometria contínua no contexto revisado
+1047;RUA NOSSA SENHORA DA CONCEIÇÃO;Parque Turf Club;28027260;613;OK;1;2;0;414.2;OK;geometria contínua no contexto revisado
+1087;PARAÍSO, RUA;Tócos;28148004;614;OK;1;2;0;403.2;OK;geometria contínua no contexto revisado
+1090;SANTO AMARO, RUA;Tócos;28148008;614;OK;1;2;0;326.0;OK;geometria contínua no contexto revisado
+1095;MIGUEL RINALDI, TV.;Tócos;28148014;614;OK;1;2;0;301.2;OK;geometria contínua no contexto revisado
+1112;MIGUEL RINALDI, AV.;Tócos;28148042;614;OK;1;7;0;1675.9;OK;geometria contínua no contexto revisado
+1117;SANTO ANTÔNIO, RUA;Tócos;28148049;614;OK;1;2;0;391.2;OK;geometria contínua no contexto revisado
+1134;BARROS BARRETO, TV.;BAIXA GRANDE;28140027;615;OK;1;2;0;244.3;OK;geometria contínua no contexto revisado
+1157;BARCELOS MARTINS, RUA;FAROL DE SÃO TOMÉ;28142039;615;OK;1;2;0;239.3;OK;geometria contínua no contexto revisado
+1167;HORÁCIO DE SOUZA, RUA;FAROL DE SÃO TOMÉ;28142050;615;OK;1;2;0;226.0;OK;geometria contínua no contexto revisado
+1184;NOGUEIRA, TV.;BAIXA GRANDE;28145634;615;OK;1;2;0;244.0;OK;geometria contínua no contexto revisado
+1226;CAMPO ALEGRE, RUA;FAROL DE SÃO TOMÉ;28145697;616;OK;1;2;0;158.1;OK;geometria contínua no contexto revisado
+1396;SARDINHA, RUA;FAROL DE SÃO TOMÉ;28140021;616;OK;1;2;0;504.5;OK;geometria contínua no contexto revisado
+1424;I, RUA;FAROL DE SÃO TOMÉ;28140076;616;OK;1;2;0;58.6;OK;geometria contínua no contexto revisado
+1474;RUA CASIMIRO DE ABREU;Parque Vicente Gonçalves Dias;28080240;617;OK;1;2;0;470.0;OK;geometria contínua no contexto revisado
+1501;RUA SANTO ANTÔNIO;Parque Santo Antônio;28080525;617;OK;1;2;0;644.0;OK;geometria contínua no contexto revisado
+1714;TRAVESSA WILSON BATISTA;Parque Aldeia;28060555;619;OK;1;2;0;60.0;OK;geometria contínua no contexto revisado
+1791;RUA PARAÍSO;Parque Visconde de Ururaí;28070466;620;OK;1;2;0;48.5;OK;geometria contínua no contexto revisado
+1803;RUA SANTO AMARO;Parque Visconde de Ururaí;28070326;620;OK;1;2;0;192.0;OK;geometria contínua no contexto revisado
+2061;TRAVESSA NOSSA SENHORA DA PENHA;Parque Calabouço;28080783;622;OK;1;2;0;127.1;OK;geometria contínua no contexto revisado
+2072;RUA UM;Parque Aeroporto;28093530;623;OK;1;2;0;58.0;OK;geometria contínua no contexto revisado

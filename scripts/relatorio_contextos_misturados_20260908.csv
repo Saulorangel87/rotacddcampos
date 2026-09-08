@@ -1,0 +1,21 @@
+﻿rua_id;nome;bairro;cep;distrito;chave_contexto;tamanho_grupo_contexto;segmentos;distancia_maxima_segmentos_m;hash_geometria;geometrias_compartilhadas_no_grupo;status_grupo
+1184;NOGUEIRA, TV.;BAIXA GRANDE;28145634;615;NOGUEIRA;2;10;59504.8;f4aeaa6a48b159d6;sim;contexto_misturado_fora_do_lote_anterior
+1970;ESTRADA NOGUEIRA;Custodópolis;28073400;622;NOGUEIRA;2;10;59504.8;f4aeaa6a48b159d6;sim;contexto_misturado_fora_do_lote_anterior
+1090;SANTO AMARO, RUA;Tócos;28148008;614;SANTO AMARO;4;15;45032.7;dd8c6f8a292a9e10;não;contexto_misturado_fora_do_lote_anterior
+304;RUA CAMPO ALEGRE;Goytacazes;28023587;605;CAMPO ALEGRE;2;2;32990.4;201adbcef505e8f1;sim;contexto_misturado_fora_do_lote_anterior
+1226;CAMPO ALEGRE, RUA;FAROL DE SÃO TOMÉ;28145697;616;CAMPO ALEGRE;2;2;32990.4;201adbcef505e8f1;sim;contexto_misturado_fora_do_lote_anterior
+495;RUA SÃO DOMINGOS;Goytacazes;28023766;607;SAO DOMINGOS;2;3;30675.7;27ab73ca4a3e7615;não;contexto_misturado_fora_do_lote_anterior
+973;RUA BARROS BARRETO;Parque Rosário;28027460;612;BARROS BARRETO;2;2;26874.9;0eef9c1bbd9bcc91;sim;contexto_misturado_fora_do_lote_anterior
+1134;BARROS BARRETO, TV.;BAIXA GRANDE;28140027;615;BARROS BARRETO;2;2;26874.9;0eef9c1bbd9bcc91;sim;contexto_misturado_fora_do_lote_anterior
+1087;PARAÍSO, RUA;Tócos;28148004;614;PARAISO;2;2;20687.5;42d5e234be8d32cc;sim;contexto_misturado_fora_do_lote_anterior
+1791;RUA PARAÍSO;Parque Visconde de Ururaí;28070466;620;PARAISO;2;2;20687.5;42d5e234be8d32cc;sim;contexto_misturado_fora_do_lote_anterior
+1117;SANTO ANTÔNIO, RUA;Tócos;28148049;614;SANTO ANTONIO;4;9;20512.7;7570f4099d7fcec5;sim;contexto_misturado_fora_do_lote_anterior
+1424;I, RUA;FAROL DE SÃO TOMÉ;28140076;616;I;5;3;240.2;bcae1113ea5efd88;sim;contexto_misturado_fora_do_lote_anterior
+178;TRAVESSA HORÁCIO DE SOUZA;Parque Turf Club;28013120;604;HORACIO DE SOUZA;2;1;0;c0176a6e2b50e686;sim;contexto_misturado_fora_do_lote_anterior
+1167;HORÁCIO DE SOUZA, RUA;FAROL DE SÃO TOMÉ;28142050;615;HORACIO DE SOUZA;2;1;0;c0176a6e2b50e686;sim;contexto_misturado_fora_do_lote_anterior
+1348;SAO DOMINGOS, RUA;Goytacazes;28146312;616;SAO DOMINGOS;2;1;0;5f87206cf2465f64;não;contexto_misturado_fora_do_lote_anterior
+549;RUA BARCELOS MARTINS;Parque Novo Jockey;28020856;608;BARCELOS MARTINS;2;1;0;ca0ec305ccb7e810;sim;contexto_misturado_fora_do_lote_anterior
+1157;BARCELOS MARTINS, RUA;FAROL DE SÃO TOMÉ;28142039;615;BARCELOS MARTINS;2;1;0;ca0ec305ccb7e810;sim;contexto_misturado_fora_do_lote_anterior
+1095;MIGUEL RINALDI, TV.;Tócos;28148014;614;MIGUEL RINALDI;2;1;0;a132a25fc333d6c5;sim;contexto_misturado_fora_do_lote_anterior
+1112;MIGUEL RINALDI, AV.;Tócos;28148042;614;MIGUEL RINALDI;2;1;0;a132a25fc333d6c5;sim;contexto_misturado_fora_do_lote_anterior
+1396;SARDINHA, RUA;FAROL DE SÃO TOMÉ;28140021;616;SARDINHA;3;1;0;9deaa7b592c855f9;sim;contexto_misturado_fora_do_lote_anterior
