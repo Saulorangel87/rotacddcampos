@@ -1663,3 +1663,15 @@ JSON; os registros de auditoria estão em
 Após a aplicação, a base local ficou com 73 ruas ativas sem geometria. O
 relatório atual está em `scripts/relatorio_ruas_sem_geometria.csv` e a lista
 somente com nomes em `scripts/relatorio_ruas_sem_geometria_nomes.txt`.
+
+### Caso para auditoria do ordenamento — 08/09/2026
+
+Um teste após a atualização das geometrias mostrou uma transição incoerente no
+ordenamento. No trecho observado, a sequência calculada foi `RUA LINDOLFO
+FRAGA` → `RUA BABILÔNIA - TRAVESSÃO` → `RUA ALMIRANTE ARY PARREIRAS`, mas a
+proximidade esperada é `RUA LINDOLFO FRAGA` → `RUA ALMIRANTE ARY PARREIRAS` →
+`RUA BABILÔNIA - TRAVESSÃO`. O cadastro de Lindolfo Fraga é o ID 1576; a
+Babilônia - Travessão é o ID 2097; há dois cadastros com o nome Almirante Ary
+Parreiras, e o contexto exibido no teste deve ser confirmado antes de alterar o
+algoritmo. A auditoria posterior deve comparar as coordenadas usadas em cada
+transição partindo do CDD, sem usar o tamanho textual da rua como critério.

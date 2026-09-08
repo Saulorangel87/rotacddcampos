@@ -262,6 +262,12 @@ atual das 73 ruas sem geometria está em
 `scripts/relatorio_ruas_sem_geometria.csv`, com a lista limpa de nomes em
 `scripts/relatorio_ruas_sem_geometria_nomes.txt`.
 
+Fica registrada uma pendência de ordenamento observada em 08/09/2026: em um
+teste, `RUA BABILÔNIA - TRAVESSÃO` apareceu antes de `RUA ALMIRANTE ARY
+PARREIRAS`, embora a sequência esperada após `RUA LINDOLFO FRAGA` fosse Ary
+Parreiras e só depois Babilônia. O caso será reavaliado pelas coordenadas e pelo
+contexto do cadastro antes de qualquer nova alteração no motor.
+
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
 - `upgradar_tracado_nominatim.py` — tenta upgradar ponto pra traçado real
