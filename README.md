@@ -445,12 +445,15 @@ lista separada das 157 pendências atuais. Depois de desenhar, exporte
 `revisoes_geometrias_manuais.json` e rode primeiro o aplicador em modo de
 simulação; a gravação só ocorre com `--aplicar`.
 
-Em 08/09/2026, o arquivo exportado com 95 desenhos foi validado e aplicado
-somente no banco local. A conferência pós-aplicação encontrou 95 de 95
-geometrias iguais ao JSON, sem conflitos. O relatório atualizado das ruas ainda
-sem geometria está em `scripts/relatorio_ruas_sem_geometria.csv` (73 registros),
-com a versão limpa apenas com nomes em
-`scripts/relatorio_ruas_sem_geometria_nomes.txt`.
+Em 08/09/2026, o arquivo exportado com 95 desenhos foi validado e aplicado no
+banco local e na produção. Houve backup dos registros de produção, comparação
+prévia sem divergências e conferência pós-aplicação com 95 de 95 geometrias
+iguais ao JSON. Os artefatos locais estão em
+`scripts/backup_geometrias_producao_antes_aplicacao_20260908.txt` e
+`scripts/auditoria_geometrias_producao_pos_aplicacao_20260908.txt`. O relatório
+atualizado das ruas ainda sem geometria está em
+`scripts/relatorio_ruas_sem_geometria.csv` (73 registros), com a versão limpa
+apenas com nomes em `scripts/relatorio_ruas_sem_geometria_nomes.txt`.
 
 Também existe:
 

@@ -1653,8 +1653,12 @@ Em 08/09/2026, foram exportados 95 desenhos desse lote. O arquivo passou pela
 validação estrutural, foi preservado em
 `scripts/backup_geometrias_manuais_antes_aplicacao_20260908_071849.json` e foi
 aplicado somente no banco local. A auditoria posterior conferiu os 95 IDs e
-encontrou zero divergências. A produção permanece sem essa aplicação até a
-auditoria de espelhamento.
+encontrou zero divergências. Depois do deploy, o mesmo lote foi aplicado na
+produção com backup específico, pré-condição de geometria original e transação
+atômica. A conferência pós-aplicação encontrou 95 de 95 geometrias iguais ao
+JSON; os registros de auditoria estão em
+`scripts/backup_geometrias_producao_antes_aplicacao_20260908.txt` e
+`scripts/auditoria_geometrias_producao_pos_aplicacao_20260908.txt`.
 
 Após a aplicação, a base local ficou com 73 ruas ativas sem geometria. O
 relatório atual está em `scripts/relatorio_ruas_sem_geometria.csv` e a lista

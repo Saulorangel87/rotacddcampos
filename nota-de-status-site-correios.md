@@ -252,11 +252,15 @@ ser regenerado com `python scripts/gerar_lote_revisao_manual.py`. A ferramenta
 `desenhar-revisoes-pendentes.html` é a versão de desenho iniciada do zero e
 contém 157 pendências atuais, separadas das 73 ruas históricas sem geometria.
 
-Em 08/09/2026, 95 desenhos foram validados e aplicados no banco local, com
-backup dos registros afetados e conferência pós-aplicação sem divergências. A
-produção ainda não foi alterada. O relatório atual das 73 ruas sem geometria
-está em `scripts/relatorio_ruas_sem_geometria.csv`, com a lista limpa de nomes
-em `scripts/relatorio_ruas_sem_geometria_nomes.txt`.
+Em 08/09/2026, 95 desenhos foram validados e aplicados no banco local e na
+produção. A produção teve backup dos registros afetados, comparação prévia com
+o estado local e aplicação em transação protegida; a conferência pós-aplicação
+não encontrou divergências. Os artefatos estão em
+`scripts/backup_geometrias_producao_antes_aplicacao_20260908.txt` e
+`scripts/auditoria_geometrias_producao_pos_aplicacao_20260908.txt`. O relatório
+atual das 73 ruas sem geometria está em
+`scripts/relatorio_ruas_sem_geometria.csv`, com a lista limpa de nomes em
+`scripts/relatorio_ruas_sem_geometria_nomes.txt`.
 
 ### Scripts novos (fora do Docker, rodam local no PC)
 - `preencher_geometria_nominatim.py` — geocodifica por nome via Nominatim
