@@ -1648,3 +1648,14 @@ trecho maior que o CEP), `gerar_lote_revisao_manual.py` gera
 mas inicia cada cadastro sem geometria para que o operador trace somente o
 trecho postal correto. O lote atual contém 157 cadastros; ele é independente da
 lista histórica de 73 ruas sem geometria.
+
+Em 08/09/2026, foram exportados 95 desenhos desse lote. O arquivo passou pela
+validação estrutural, foi preservado em
+`scripts/backup_geometrias_manuais_antes_aplicacao_20260908_071849.json` e foi
+aplicado somente no banco local. A auditoria posterior conferiu os 95 IDs e
+encontrou zero divergências. A produção permanece sem essa aplicação até a
+auditoria de espelhamento.
+
+Após a aplicação, a base local ficou com 73 ruas ativas sem geometria. O
+relatório atual está em `scripts/relatorio_ruas_sem_geometria.csv` e a lista
+somente com nomes em `scripts/relatorio_ruas_sem_geometria_nomes.txt`.

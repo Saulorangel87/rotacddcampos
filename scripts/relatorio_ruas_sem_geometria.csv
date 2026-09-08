@@ -1,74 +1,74 @@
-rua_id;nome_rua;bairro;cep;distrito;status_cobertura;confianca_osm;nome_osm_sugerido;proxima_acao
-841;AVENIDA DINO ALENCAR;Vivendas do Coqueiro IV;28021391;611;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1827;AVENIDA JARDINS DE CAMPOS;Jardins de Campos;28085762;621;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-137;AVENIDA PASSOS;Centro;28013370;603;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1415;BARRA ALEGRE, RUA;FAROL DE SÃO TOMÉ;28140057;616;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-392;ESTRADA ANTÔNIO MOACIR BATISTA;Donana;28023375;606;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1085;JOSÉ PEREIRA ABREU, RUA;Tócos;28148001;614;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1268;MANOEL P. BARBOSA, RUA;nan;28145907;616;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1723;PRAÇA ABELARDO QUEIROZ;Parque Visconde de Ururaí;28070220;620;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1959;PRAÇA JOÃO BARRETO DA SILVA;Parque Calabouço;28083060;622;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-877;RUA ALBERTINA PINTO;Alphaville;28024707;611;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-366;RUA ALBERTO JOBIM;Donana;28023335;606;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1982;RUA ALINO TAVARES DE MIRANDA;Parque Santos Dumont;28073676;622;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2090;RUA AMARO GALAXE -  TRAVESSÃO;TRAVESSÃO;28145065;623;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2206;RUA AMARO SALES PINTO - TRAVESSÃO;TRAVESSÃO;28145070;624;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-367;RUA ANTÔNIO PINHEIRO;Donana;28023336;606;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-379;RUA ARIEL XAVIER;Donana;28023351;606;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-691;RUA ARTUR PINHEIRO;Parque Penha;28021101;610;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2095;RUA ARY BARRETO -  TRAVESSÃO;TRAVESSÃO;28145125;623;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2173;RUA B (FAROFA);Parque Presidente Vargas;28083327;624;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-2103;RUA CÂNDIDO DUTRA -  TRAVESSÃO;TRAVESSÃO;28145150;623;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-125;RUA CRUZ PEIXOTO;Centro;28010490;603;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-847;RUA DÁCIO SAMPAIO;Vivendas do Coqueiro IV;28021398;611;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1983;RUA DALTON CRESPO DE CASTRO;Parque Zuza Mota;28083767;622;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1556;RUA DOUTOR CARLOS ANTÔNIO RIBEIRO;Parque Santa Helena;28060100;618;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1744;RUA E (JD ELDORADO);Parque Eldorado;28090658;620;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2109;RUA EDERVAL VENÂNCIO;TRAVESSÃO;28145215;623;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2110;RUA EDMUNDO LINS - TRAVESSÃO;TRAVESSÃO;28145220;623;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-2002;RUA EVALDO GABRIEL;Parque Santos Dumont;28073410;622;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1654;RUA H (FAZ ALDEIA);Parque Aldeia;28060553;619;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-829;RUA IRENE LISBOA;Vivendas do Coqueiro III;28021377;611;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-648;RUA JAIME FERREIRA LADIM;Parque Varanda do Visconde;28022800;609;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1668;RUA JOÃO DAMASCENO ALVES;Parque Aldeia;28060571;619;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1572;RUA JOÃO PEÇANHA DE CARVALHO;Parque Guarus;28060710;618;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1764;RUA JORGE CEDINHA;Parque Eldorado;28090020;620;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1911;RUA JORGE DE LIMA;Jardins de Campos;28085763;621;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1763;RUA JORNALISTA CARLOS FERREIRA DE ANDRADE;Parque Guarus;28060730;620;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1666;RUA JOSÉ MARIA BARRETO;Parque Guarus;28060696;619;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2115;RUA JOSÉ RANGEL DE ALMEIDA -  TRAVESSÃO;TRAVESSÃO;28145270;623;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1917;RUA JÚLIO VERNE;Jardins de Campos;28085766;621;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1670;RUA L (FAZ ALDEIA);Parque Aldeia;28060558;619;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-687;RUA LÚCIO LOPES (ESTÂNCIA DA PENHA);Parque Penha;28021065;610;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-1778;RUA LUIZ DUMONT;Vila Industrial;28090680;620;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1489;RUA MANOEL DE SOUZA;Jardim Carioca;28080800;617;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1782;RUA MANOEL JOAQUIM DE MENDOÇA;Vila Industrial;28090011;620;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-145;RUA MOACIR MACHADO;Centro;28013590;603;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-307;RUA NÉDIO RIBEIRO DOS SANTOS DIAS;Goytacazes;28023590;605;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1787;RUA NÉLIA CAMPOS DE OLIVEIRA;Parque Guarus;28070770;620;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1792;RUA NILZA PAES DE FREITAS;Codim;28090480;620;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1588;RUA PALESTRA;Parque Santa Helena;28060115;618;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1205;RUA PROFESSORA ODETE LEÃO HIGINO;Fazenda Santo Antônio;28023121;615;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2234;RUA QUATORZE - NOVA CANAÃ;NOVA CANAÃ;28145405;624;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2236;RUA QUINZE - NOVA CANAÃ;NOVA CANAÃ;28145420;624;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-688;RUA ROSANA MARCONDE (ESTÂNCIA DA PENHA);Parque Penha;28021072;610;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-359;RUA SÃO PEDRO DO SUL;Donana;28023259;606;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2133;RUA SEBASTIÃO LACERDA - TRAVESSÃO;TRAVESSÃO;28145490;623;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2134;RUA SERVIDÃO ELOAH MACHADO VASCONCELOS;Parque São Silvestre;28090243;623;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2042;RUA TRÊS;Parque Boa Vista;28073530;622;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2250;RUA TRINTA E NOVE - NOVA CANAÃ;NOVA CANAÃ;28145525;624;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-1942;RUA UMBERTO ECO;Jardins de Campos;28085786;621;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-704;RUA VALMOR BARBOSA (VILA MENEZES);Parque Penha;28021129;610;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-608;SERVIDÃO LEURIPES G DA SILVA;Donana;28023269;609;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-80;TRAVESSA ANTÔNIO AMARO DE SOUZA;Parque São Benedito;28025240;602;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-694;TRAVESSA EDITE DE SOUZA LICASALIO (VILA MANHÃES);Parque Penha;28021113;610;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-1511;TRAVESSA MANOEL DE SOUZA;Parque Jardim Carioca;28080320;617;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-183;TRAVESSA MANOEL MODESTO;Parque Turf Club;28013220;604;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1516;TRAVESSA MANOEL SOUZA;Jardim Carioca;28080685;617;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1609;TRAVESSA NELY;Parque Vera Cruz;28060385;618;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-104;TRAVESSA OSIEL SILVA DOS SANTOS;Parque Aurora;28026760;602;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-695;TRAVESSA SANTO AMARO (VILA MANHÃES);Parque Penha;28021114;610;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-2142;TRAVESSA SÃO FRANCISCO -  TRAVESSÃO;TRAVESSÃO;28145600;623;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1518;TRAVESSA TEIXEIRA DIAS;Parque Jardim Carioca;28080310;617;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
-1613;VILA CUSTÓDIO;Parque Fundão;28060225;618;nunca_revisada_osm;;;buscar no OSM com contexto ou desenhar manualmente
-1010;VILA HÍPICA;Parque Jóquei Club;28022080;613;revisada_osm_rejeitada;;;revisar a sugestao OSM ou desenhar manualmente
+rua_id;nome_rua;bairro;cep;distrito;status_cobertura;proxima_acao
+841;AVENIDA DINO ALENCAR;Vivendas do Coqueiro IV;28021391;611;sem_geometria_atual;desenhar_manual
+1827;AVENIDA JARDINS DE CAMPOS;Jardins de Campos;28085762;621;sem_geometria_atual;desenhar_manual
+137;AVENIDA PASSOS;Centro;28013370;603;sem_geometria_atual;desenhar_manual
+1415;BARRA ALEGRE, RUA;FAROL DE SÃO TOMÉ;28140057;616;sem_geometria_atual;desenhar_manual
+392;ESTRADA ANTÔNIO MOACIR BATISTA;Donana;28023375;606;sem_geometria_atual;desenhar_manual
+1085;JOSÉ PEREIRA ABREU, RUA;Tócos;28148001;614;sem_geometria_atual;desenhar_manual
+1268;MANOEL P. BARBOSA, RUA;nan;28145907;616;sem_geometria_atual;desenhar_manual
+1723;PRAÇA ABELARDO QUEIROZ;Parque Visconde de Ururaí;28070220;620;sem_geometria_atual;desenhar_manual
+1959;PRAÇA JOÃO BARRETO DA SILVA;Parque Calabouço;28083060;622;sem_geometria_atual;desenhar_manual
+877;RUA ALBERTINA PINTO;Alphaville;28024707;611;sem_geometria_atual;desenhar_manual
+366;RUA ALBERTO JOBIM;Donana;28023335;606;sem_geometria_atual;desenhar_manual
+1982;RUA ALINO TAVARES DE MIRANDA;Parque Santos Dumont;28073676;622;sem_geometria_atual;desenhar_manual
+2090;RUA AMARO GALAXE -  TRAVESSÃO;TRAVESSÃO;28145065;623;sem_geometria_atual;desenhar_manual
+2206;RUA AMARO SALES PINTO - TRAVESSÃO;TRAVESSÃO;28145070;624;sem_geometria_atual;desenhar_manual
+367;RUA ANTÔNIO PINHEIRO;Donana;28023336;606;sem_geometria_atual;desenhar_manual
+379;RUA ARIEL XAVIER;Donana;28023351;606;sem_geometria_atual;desenhar_manual
+691;RUA ARTUR PINHEIRO;Parque Penha;28021101;610;sem_geometria_atual;desenhar_manual
+2095;RUA ARY BARRETO -  TRAVESSÃO;TRAVESSÃO;28145125;623;sem_geometria_atual;desenhar_manual
+2173;RUA B (FAROFA);Parque Presidente Vargas;28083327;624;sem_geometria_atual;desenhar_manual
+2103;RUA CÂNDIDO DUTRA -  TRAVESSÃO;TRAVESSÃO;28145150;623;sem_geometria_atual;desenhar_manual
+125;RUA CRUZ PEIXOTO;Centro;28010490;603;sem_geometria_atual;desenhar_manual
+847;RUA DÁCIO SAMPAIO;Vivendas do Coqueiro IV;28021398;611;sem_geometria_atual;desenhar_manual
+1983;RUA DALTON CRESPO DE CASTRO;Parque Zuza Mota;28083767;622;sem_geometria_atual;desenhar_manual
+1556;RUA DOUTOR CARLOS ANTÔNIO RIBEIRO;Parque Santa Helena;28060100;618;sem_geometria_atual;desenhar_manual
+1744;RUA E (JD ELDORADO);Parque Eldorado;28090658;620;sem_geometria_atual;desenhar_manual
+2109;RUA EDERVAL VENÂNCIO;TRAVESSÃO;28145215;623;sem_geometria_atual;desenhar_manual
+2110;RUA EDMUNDO LINS - TRAVESSÃO;TRAVESSÃO;28145220;623;sem_geometria_atual;desenhar_manual
+2002;RUA EVALDO GABRIEL;Parque Santos Dumont;28073410;622;sem_geometria_atual;desenhar_manual
+1654;RUA H (FAZ ALDEIA);Parque Aldeia;28060553;619;sem_geometria_atual;desenhar_manual
+829;RUA IRENE LISBOA;Vivendas do Coqueiro III;28021377;611;sem_geometria_atual;desenhar_manual
+648;RUA JAIME FERREIRA LADIM;Parque Varanda do Visconde;28022800;609;sem_geometria_atual;desenhar_manual
+1668;RUA JOÃO DAMASCENO ALVES;Parque Aldeia;28060571;619;sem_geometria_atual;desenhar_manual
+1572;RUA JOÃO PEÇANHA DE CARVALHO;Parque Guarus;28060710;618;sem_geometria_atual;desenhar_manual
+1764;RUA JORGE CEDINHA;Parque Eldorado;28090020;620;sem_geometria_atual;desenhar_manual
+1911;RUA JORGE DE LIMA;Jardins de Campos;28085763;621;sem_geometria_atual;desenhar_manual
+1763;RUA JORNALISTA CARLOS FERREIRA DE ANDRADE;Parque Guarus;28060730;620;sem_geometria_atual;desenhar_manual
+1666;RUA JOSÉ MARIA BARRETO;Parque Guarus;28060696;619;sem_geometria_atual;desenhar_manual
+2115;RUA JOSÉ RANGEL DE ALMEIDA -  TRAVESSÃO;TRAVESSÃO;28145270;623;sem_geometria_atual;desenhar_manual
+1917;RUA JÚLIO VERNE;Jardins de Campos;28085766;621;sem_geometria_atual;desenhar_manual
+1670;RUA L (FAZ ALDEIA);Parque Aldeia;28060558;619;sem_geometria_atual;desenhar_manual
+687;RUA LÚCIO LOPES (ESTÂNCIA DA PENHA);Parque Penha;28021065;610;sem_geometria_atual;desenhar_manual
+1778;RUA LUIZ DUMONT;Vila Industrial;28090680;620;sem_geometria_atual;desenhar_manual
+1489;RUA MANOEL DE SOUZA;Jardim Carioca;28080800;617;sem_geometria_atual;desenhar_manual
+1782;RUA MANOEL JOAQUIM DE MENDOÇA;Vila Industrial;28090011;620;sem_geometria_atual;desenhar_manual
+145;RUA MOACIR MACHADO;Centro;28013590;603;sem_geometria_atual;desenhar_manual
+307;RUA NÉDIO RIBEIRO DOS SANTOS DIAS;Goytacazes;28023590;605;sem_geometria_atual;desenhar_manual
+1787;RUA NÉLIA CAMPOS DE OLIVEIRA;Parque Guarus;28070770;620;sem_geometria_atual;desenhar_manual
+1792;RUA NILZA PAES DE FREITAS;Codim;28090480;620;sem_geometria_atual;desenhar_manual
+1588;RUA PALESTRA;Parque Santa Helena;28060115;618;sem_geometria_atual;desenhar_manual
+1205;RUA PROFESSORA ODETE LEÃO HIGINO;Fazenda Santo Antônio;28023121;615;sem_geometria_atual;desenhar_manual
+2234;RUA QUATORZE - NOVA CANAÃ;NOVA CANAÃ;28145405;624;sem_geometria_atual;desenhar_manual
+2236;RUA QUINZE - NOVA CANAÃ;NOVA CANAÃ;28145420;624;sem_geometria_atual;desenhar_manual
+688;RUA ROSANA MARCONDE (ESTÂNCIA DA PENHA);Parque Penha;28021072;610;sem_geometria_atual;desenhar_manual
+359;RUA SÃO PEDRO DO SUL;Donana;28023259;606;sem_geometria_atual;desenhar_manual
+2133;RUA SEBASTIÃO LACERDA - TRAVESSÃO;TRAVESSÃO;28145490;623;sem_geometria_atual;desenhar_manual
+2134;RUA SERVIDÃO ELOAH MACHADO VASCONCELOS;Parque São Silvestre;28090243;623;sem_geometria_atual;desenhar_manual
+2042;RUA TRÊS;Parque Boa Vista;28073530;622;sem_geometria_atual;desenhar_manual
+2250;RUA TRINTA E NOVE - NOVA CANAÃ;NOVA CANAÃ;28145525;624;sem_geometria_atual;desenhar_manual
+1942;RUA UMBERTO ECO;Jardins de Campos;28085786;621;sem_geometria_atual;desenhar_manual
+704;RUA VALMOR BARBOSA (VILA MENEZES);Parque Penha;28021129;610;sem_geometria_atual;desenhar_manual
+608;SERVIDÃO LEURIPES G DA SILVA;Donana;28023269;609;sem_geometria_atual;desenhar_manual
+80;TRAVESSA ANTÔNIO AMARO DE SOUZA;Parque São Benedito;28025240;602;sem_geometria_atual;desenhar_manual
+694;TRAVESSA EDITE DE SOUZA LICASALIO (VILA MANHÃES);Parque Penha;28021113;610;sem_geometria_atual;desenhar_manual
+1511;TRAVESSA MANOEL DE SOUZA;Parque Jardim Carioca;28080320;617;sem_geometria_atual;desenhar_manual
+183;TRAVESSA MANOEL MODESTO;Parque Turf Club;28013220;604;sem_geometria_atual;desenhar_manual
+1516;TRAVESSA MANOEL SOUZA;Jardim Carioca;28080685;617;sem_geometria_atual;desenhar_manual
+1609;TRAVESSA NELY;Parque Vera Cruz;28060385;618;sem_geometria_atual;desenhar_manual
+104;TRAVESSA OSIEL SILVA DOS SANTOS;Parque Aurora;28026760;602;sem_geometria_atual;desenhar_manual
+695;TRAVESSA SANTO AMARO (VILA MANHÃES);Parque Penha;28021114;610;sem_geometria_atual;desenhar_manual
+2142;TRAVESSA SÃO FRANCISCO -  TRAVESSÃO;TRAVESSÃO;28145600;623;sem_geometria_atual;desenhar_manual
+1518;TRAVESSA TEIXEIRA DIAS;Parque Jardim Carioca;28080310;617;sem_geometria_atual;desenhar_manual
+1613;VILA CUSTÓDIO;Parque Fundão;28060225;618;sem_geometria_atual;desenhar_manual
+1010;VILA HÍPICA;Parque Jóquei Club;28022080;613;sem_geometria_atual;desenhar_manual
