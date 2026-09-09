@@ -3,10 +3,12 @@ import AniversarioBadge from "./AniversarioBadge.jsx";
 import LoginModal from "./LoginModal.jsx";
 import TrocarSenhaModal from "./TrocarSenhaModal.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useReconhecimentoDeVoz } from "../hooks/useReconhecimentoDeVoz.js";
 import {
   IconeAdministrador,
   IconeColaborador,
   IconeEntrar,
+  IconeMicrofone,
 } from "./icons/Icons.jsx";
 import styles from "./Header.module.css";
 
@@ -15,12 +17,23 @@ export default function Header({ onBuscar }) {
   const [busca, setBusca] = useState("");
   const [loginAberto, setLoginAberto] = useState(false);
   const [trocarSenhaAberto, setTrocarSenhaAberto] = useState(false);
+  const { ouvindo, ouvirVoz } = useReconhecimentoDeVoz((textoTranscrito) => {
+    const termo = textoTranscrito.trim();
+    if (!termo) return;
+    setBusca(termo);
+    onBuscar?.(termo);
+  });
 
   function aoSubmeterBusca(e) {
     e.preventDefault();
     const termo = busca.trim();
     if (!termo) return;
     onBuscar?.(termo);
+  }
+
+  function iniciarBuscaPorVoz() {
+    document.activeElement?.blur?.();
+    ouvirVoz();
   }
 
   return (
@@ -74,6 +87,16 @@ export default function Header({ onBuscar }) {
                   strokeLinecap="round"
                 />
               </svg>
+            </button>
+            <button
+              type="button"
+              className={`${styles.btnMicrofone} ${ouvindo ? styles.microfoneAtivo : ''}`}
+              onClick={iniciarBuscaPorVoz}
+              aria-label={ouvindo ? 'Ouvindo busca por voz' : 'Pesquisar por voz'}
+              aria-pressed={ouvindo}
+              title="Pesquisar por voz"
+            >
+              <IconeMicrofone size={15} aria-hidden="true" />
             </button>
           </form>
         )}

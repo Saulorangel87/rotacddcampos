@@ -342,3 +342,37 @@ func TestEnderecoResolverExpõeOpcoesParaCEPAmbiguo(t *testing.T) {
 		t.Fatalf("seleção por CEP inesperada: %+v", confirmada)
 	}
 }
+
+func TestEnderecoResolverSugereNomeComPequenoErroDeVoz(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 501, NomeRua: "AVENIDA NEWTON GUARANÁ", Distrito: "611", CEP: "28020803"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "Avenida Niwton Guaraná")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoPendente || resultado.MotivoPendencia != MotivoRuaAproximada {
+		t.Fatalf("aproximação inesperada: %+v", resultado)
+	}
+	if len(resultado.Opcoes) != 1 || resultado.Opcoes[0].RuaID != 501 {
+		t.Fatalf("opção aproximada inesperada: %+v", resultado.Opcoes)
+	}
+}
+
+func TestEnderecoResolverSugereNomeComTrocaDeLetrasEConservaNumero(t *testing.T) {
+	resolver := NewEnderecoResolver(ruaBuscaRepoFake{ruas: []models.Rua{
+		{ID: 502, NomeRua: "RUA VICTOR SENCE", Distrito: "608", CEP: "28015000"},
+	}})
+
+	resultado, err := resolver.Resolver(context.Background(), "Rua Vitor Cence 42")
+	if err != nil {
+		t.Fatalf("Resolver() erro inesperado: %v", err)
+	}
+	if resultado.Status != models.StatusResolucaoPendente || resultado.MotivoPendencia != MotivoRuaAproximada || resultado.Numero != "42" {
+		t.Fatalf("aproximação com número inesperada: %+v", resultado)
+	}
+	if len(resultado.Opcoes) != 1 || resultado.Opcoes[0].RuaID != 502 {
+		t.Fatalf("opção aproximada inesperada: %+v", resultado.Opcoes)
+	}
+}

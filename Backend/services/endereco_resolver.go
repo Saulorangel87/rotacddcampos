@@ -16,6 +16,7 @@ const (
 	MotivoRuaNaoEncontrada = "rua_nao_encontrada"
 	MotivoRuaAmbigua       = "rua_ambigua"
 	MotivoCEPNaoEncontrado = "cep_nao_encontrado"
+	MotivoRuaAproximada    = "rua_aproximada"
 )
 
 var (
@@ -204,7 +205,16 @@ func (r *enderecoResolver) resolverTermo(ctx context.Context, termo, numero stri
 		}
 	}
 	if len(grupos) == 0 {
-		return ResolucaoEndereco{}, false, nil
+		// Na primeira tentativa o termo ainda pode conter o número da casa.
+		// Deixe Resolver extrair esse número antes de aplicar a aproximação;
+		// comparar "SANTA CECÍLIA 10" com o nome da rua perderia uma opção
+		// perfeitamente válida.
+		if numero == "" {
+			if _, numeroExtraido := extrairNumeroFinal(termo); numeroExtraido != "" {
+				return ResolucaoEndereco{}, false, nil
+			}
+		}
+		return r.sugerirRuaAproximada(ctx, normalizado, numero)
 	}
 	if len(grupos) > 1 {
 		return pendenciaComOpcoes(MotivoRuaAmbigua, numero, grupos), true, nil
@@ -243,6 +253,182 @@ func (r *enderecoResolver) resolverTermo(ctx context.Context, termo, numero stri
 		}
 	}
 	return resolucao, true, nil
+}
+
+// sugerirRuaAproximada é um fallback específico para entradas de voz ou
+// digitações com pequenos erros ortográficos. A sugestão nunca é aceita
+// automaticamente: ela volta como pendência para o usuário confirmar o
+// cadastro correto, preservando a segurança para ruas homônimas.
+func (r *enderecoResolver) sugerirRuaAproximada(ctx context.Context, termo, numero string) (ResolucaoEndereco, bool, error) {
+	todas, err := r.ruas.FindAll(ctx, map[string]string{})
+	if err != nil {
+		return ResolucaoEndereco{}, false, err
+	}
+
+	grupos := agruparRuasAproximadas(todas, termo)
+	if len(grupos) == 0 {
+		return ResolucaoEndereco{}, false, nil
+	}
+	sort.SliceStable(grupos, func(i, j int) bool {
+		if grupos[i].score != grupos[j].score {
+			return grupos[i].score < grupos[j].score
+		}
+		return grupos[i].chave < grupos[j].chave
+	})
+
+	resultado := pendencia(MotivoRuaAproximada, numero)
+	// Até três nomes prováveis evitam uma lista extensa para uma transcrição
+	// imperfeita, mas preservam todos os cadastros homônimos do melhor nome.
+	for indice, grupo := range grupos {
+		if indice >= 3 {
+			break
+		}
+		sort.SliceStable(grupo.ruas, func(i, j int) bool {
+			if grupo.ruas[i].Distrito != grupo.ruas[j].Distrito {
+				return grupo.ruas[i].Distrito < grupo.ruas[j].Distrito
+			}
+			return grupo.ruas[i].ID < grupo.ruas[j].ID
+		})
+		for _, rua := range grupo.ruas {
+			resultado.Opcoes = append(resultado.Opcoes, models.OpcaoResolucao{
+				RuaID: rua.ID, NomeRua: nomeBaseExibicao(rua.NomeRua), Distrito: rua.Distrito, CEP: rua.CEP,
+			})
+		}
+	}
+	return resultado, true, nil
+}
+
+type grupoSugestaoRua struct {
+	chave string
+	score int
+	ruas  []models.Rua
+}
+
+// agruparRuasAproximadas reúne os nomes mais próximos da transcrição. O tipo
+// do logradouro é usado quando há candidatos nesse tipo; se a voz também
+// errou "avenida"/"rua", a busca volta ao nome para não perder a sugestão.
+func agruparRuasAproximadas(todas []models.Rua, termo string) []*grupoSugestaoRua {
+	consulta := normalizarNomeComparacao(termo)
+	if consulta == "" {
+		return nil
+	}
+	tipo := tipoLogradouroInformado(termo)
+	temCandidatoDoTipo := false
+	if tipo != "" {
+		for _, rua := range todas {
+			if tipoLogradouroNormalizado(rua.NomeRua) != tipo {
+				continue
+			}
+			if _, ok := pontuacaoNomeAproximada(rua.NomeRua, consulta); ok {
+				temCandidatoDoTipo = true
+				break
+			}
+		}
+	}
+	if !temCandidatoDoTipo {
+		tipo = ""
+	}
+
+	porNome := make(map[string]*grupoSugestaoRua)
+	for _, rua := range todas {
+		if tipo != "" && tipoLogradouroNormalizado(rua.NomeRua) != tipo {
+			continue
+		}
+		base := normalizarNomeBase(rua.NomeRua)
+		score, ok := pontuacaoNomeAproximada(base, consulta)
+		if !ok {
+			continue
+		}
+		chave := normalizarNomeComparacao(base)
+		if chave == "" {
+			continue
+		}
+		grupo := porNome[chave]
+		if grupo == nil {
+			grupo = &grupoSugestaoRua{chave: chave, score: score}
+			porNome[chave] = grupo
+		}
+		if score < grupo.score {
+			grupo.score = score
+		}
+		grupo.ruas = append(grupo.ruas, rua)
+	}
+
+	grupos := make([]*grupoSugestaoRua, 0, len(porNome))
+	for _, grupo := range porNome {
+		grupos = append(grupos, grupo)
+	}
+	sort.SliceStable(grupos, func(i, j int) bool {
+		if grupos[i].score != grupos[j].score {
+			return grupos[i].score < grupos[j].score
+		}
+		return grupos[i].chave < grupos[j].chave
+	})
+	return grupos
+}
+
+// pontuacaoNomeAproximada aceita apenas pequenos erros de transcrição. O
+// limite cresce devagar com o tamanho do nome para evitar que uma entrada
+// genérica vire uma sugestão arbitrária; o usuário ainda precisa confirmar.
+func pontuacaoNomeAproximada(cadastro, consulta string) (int, bool) {
+	base := normalizarNomeComparacao(cadastro)
+	alvo := normalizarNomeComparacao(consulta)
+	if base == "" || alvo == "" {
+		return 0, false
+	}
+	distancia := distanciaLevenshtein([]rune(base), []rune(alvo))
+	maior := len([]rune(base))
+	if n := len([]rune(alvo)); n > maior {
+		maior = n
+	}
+	limite := 1
+	if maior >= 8 {
+		limite = 2
+	}
+	if maior >= 16 {
+		limite = 3
+	}
+	if distancia > limite || distancia*5 > maior {
+		return distancia, false
+	}
+	return distancia, true
+}
+
+func distanciaLevenshtein(a, b []rune) int {
+	if len(a) == 0 {
+		return len(b)
+	}
+	if len(b) == 0 {
+		return len(a)
+	}
+	linha := make([]int, len(b)+1)
+	for indice := range linha {
+		linha[indice] = indice
+	}
+	for i, caractereA := range a {
+		anterior := linha[0]
+		linha[0] = i + 1
+		for j, caractereB := range b {
+			atual := linha[j+1]
+			custo := 0
+			if caractereA != caractereB {
+				custo = 1
+			}
+			linha[j+1] = minInt(linha[j+1]+1, linha[j]+1, anterior+custo)
+			anterior = atual
+		}
+	}
+	return linha[len(b)]
+}
+
+func minInt(valores ...int) int {
+	menor := valores[0]
+	for _, valor := range valores[1:] {
+		if valor < menor {
+			menor = valor
+		}
+	}
+	return menor
 }
 
 // Selecionar confirma um cadastro específico dentre as opções que a busca

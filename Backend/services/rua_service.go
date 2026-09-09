@@ -54,7 +54,32 @@ func (s *ruaService) List(ctx context.Context, nome, cep, distrito string) ([]mo
 		"cep":      strings.TrimSpace(cep),
 		"distrito": strings.TrimSpace(distrito),
 	}
-	return s.repo.FindAll(ctx, filters)
+	ruas, err := s.repo.FindAll(ctx, filters)
+	if err != nil || len(ruas) > 0 || filters["nome"] == "" || filters["cep"] != "" || filters["distrito"] != "" {
+		return ruas, err
+	}
+
+	// Uma transcrição de voz pode trocar poucas letras ("niwton"/"newton",
+	// "vitor"/"victor"). Quando a busca exata não encontra nada, devolvemos
+	// somente os grupos mais próximos para a interface mostrar uma confirmação,
+	// sem transformar a aproximação em uma identificação automática.
+	todas, err := s.repo.FindAll(ctx, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+	resultado := make([]models.Rua, 0, 12)
+	for indice, grupo := range agruparRuasAproximadas(todas, filters["nome"]) {
+		if indice >= 3 || len(resultado) >= 50 {
+			break
+		}
+		for _, rua := range grupo.ruas {
+			if len(resultado) >= 50 {
+				break
+			}
+			resultado = append(resultado, rua)
+		}
+	}
+	return resultado, nil
 }
 
 func (s *ruaService) GetByID(ctx context.Context, id uint) (*models.Rua, error) {

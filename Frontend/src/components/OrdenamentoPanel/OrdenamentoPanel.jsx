@@ -63,6 +63,7 @@ export default function OrdenamentoPanel() {
   const leitorScannerRef = useRef(null)
   const controlesScannerRef = useRef(null)
   const scannerAtivoRef = useRef(false)
+  const ultimoCodigoScannerRef = useRef('')
   const { ouvindo, ouvirVoz } = useReconhecimentoDeVoz((textoTranscrito) => {
     setEntrada(textoTranscrito)
     setOrigemEntrada('voz')
@@ -72,6 +73,7 @@ export default function OrdenamentoPanel() {
 
   function iniciarEntradaPorVoz() {
     encerrarScanner()
+    ocultarTecladoEntrada()
     setOrigemEntrada('voz')
     setDigitando(true)
     setAvisoScanner('')
@@ -85,6 +87,8 @@ export default function OrdenamentoPanel() {
     setErro('')
     setAvisoScanner('')
     setFeedbackAdicao(null)
+    ultimoCodigoScannerRef.current = ''
+    ocultarTecladoEntrada()
     setDigitando(false)
     if (!navigator.mediaDevices?.getUserMedia) {
       setErro('A câmera não está disponível neste navegador. Use Digitar ou Falar.')
@@ -123,11 +127,24 @@ export default function OrdenamentoPanel() {
           if (!scannerAtivoRef.current) return
           const codigo = resultado?.getText()?.trim()
           if (!codigo) return
+
+          const cep = extrairCepScanner(codigo)
+          if (!cep) {
+            // O leitor pode encontrar o código de rastreio antes do código
+            // postal. Mantemos a câmera aberta e ignoramos qualquer leitura
+            // que não seja exclusivamente um CEP de oito dígitos.
+            if (ultimoCodigoScannerRef.current !== codigo) {
+              ultimoCodigoScannerRef.current = codigo
+              setAvisoScanner('Código ignorado. Aponte para o código de barras do CEP com 8 dígitos.')
+            }
+            return
+          }
+
           encerrarScanner()
-          setEntrada(codigo)
+          setEntrada(cep)
           setOrigemEntrada('scanner')
           setDigitando(true)
-          setAvisoScanner(mensagemCodigoLido(codigo))
+          setAvisoScanner(mensagemCodigoLido(cep))
           setErro('')
         },
       )
@@ -475,7 +492,7 @@ export default function OrdenamentoPanel() {
           {escaneando && (
             <div className={styles.scanner} aria-label="Leitura da etiqueta">
               <video ref={videoScannerRef} autoPlay muted playsInline />
-              <p>Aponte a câmera para um código da etiqueta.</p>
+              <p>{avisoScanner || 'Aponte a câmera para o código de barras do CEP (8 dígitos).'}</p>
               <button type="button" onClick={encerrarScanner}>Cancelar</button>
             </div>
           )}
@@ -699,8 +716,27 @@ export default function OrdenamentoPanel() {
 
 function mensagemPendencia(motivo) {
   if (motivo === 'rua_ambigua') return 'Precisa de revisão · Há mais de uma rua possível'
+  if (motivo === 'rua_aproximada') return 'Precisa de revisão · Encontramos uma rua parecida'
   if (motivo === 'cep_nao_encontrado') return 'Precisa de revisão · CEP não encontrado no cadastro'
   return 'Precisa de revisão · Rua não encontrada no cadastro'
+}
+
+function ocultarTecladoEntrada() {
+  const ativo = document.activeElement
+  if (ativo instanceof HTMLElement) ativo.blur()
+  try {
+    navigator.virtualKeyboard?.hide?.()
+  } catch {
+    // A API é opcional e alguns navegadores lançam quando não há teclado.
+  }
+}
+
+function extrairCepScanner(codigo) {
+  const texto = String(codigo ?? '').trim()
+  if (!/^[\d\s.-]+$/.test(texto)) return ''
+  const digitos = texto.replace(/\D/g, '')
+  if (digitos.length !== 8) return ''
+  return `${digitos.slice(0, 5)}-${digitos.slice(5)}`
 }
 
 function mensagemCodigoLido(codigo) {

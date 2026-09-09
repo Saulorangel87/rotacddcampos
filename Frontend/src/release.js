@@ -1,6 +1,18 @@
-export const APP_VERSION = '1.5.0'
+export const APP_VERSION = '1.6.0'
 
 export const UPDATE_NOTES = [
+  {
+    title: 'Busca por voz mais tolerante',
+    description: 'Pequenos erros de transcrição, como Niwton/Newton e Vitor/Victor, agora exibem sugestões do cadastro para confirmação, inclusive no Zé Rota.',
+  },
+  {
+    title: 'Scanner focado no CEP',
+    description: 'A câmera ignora códigos de rastreio e só aceita o código de barras numérico com oito dígitos do CEP, mantendo a leitura aberta até encontrar um código válido.',
+  },
+  {
+    title: 'Pesquisa por voz no cabeçalho',
+    description: 'O campo Buscar rua no mapa ganhou microfone para iniciar a pesquisa sem digitação.',
+  },
   {
     title: 'Acesso por perfil e login',
     description: 'Administradores e colaboradores veem apenas as funções permitidas para o seu perfil, e todo novo login começa no Mapa Geral.',

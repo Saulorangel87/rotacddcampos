@@ -1692,3 +1692,18 @@ posterior e não bloqueia o encerramento do refinamento atual. Até que o
 levantamento exista, não alterar novamente o algoritmo com base em suposições
 de rota; quando os pontos forem identificados, aplicar o mesmo fluxo de
 validação, backup, atualização local, auditoria e espelhamento em produção.
+
+### Refinamento das entradas por voz e câmera — 09/09/2026
+
+Foi acrescentada uma tolerância controlada para pequenos erros de transcrição,
+como `Niwton`/`Newton` e `Vitor Cence`/`Victor Sence`. A aproximação nunca
+confirma uma rua sozinha: o cadastro volta como pendência com as opções
+prováveis para o usuário confirmar, preservando a separação entre ruas
+homônimas. O mesmo comportamento foi aplicado à ferramenta do Zé Rota e à
+busca de ruas do cabeçalho.
+
+O scanner agora ignora códigos de rastreio e qualquer leitura que não seja
+formada exclusivamente por oito dígitos (aceitando apenas separadores comuns
+do CEP). A câmera permanece aberta até encontrar um CEP válido; iniciar a
+câmera também desfoca o campo para impedir que o teclado móvel apareça junto.
+O cabeçalho ganhou um microfone que transcreve e dispara a mesma busca de ruas.

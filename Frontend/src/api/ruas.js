@@ -18,7 +18,13 @@ export async function listarRuas({ nome = '', cep = '', distrito = '' } = {}) {
     const res = await apiFetch(`/ruas?${params.toString()}`)
     if (!res.ok) throw new Error(`API respondeu ${res.status}`)
     const dados = await res.json()
-    return nome ? filtrarRuasPorCorrespondencia(dados, nome) : dados
+    if (!nome) return dados
+    const correspondentes = filtrarRuasPorCorrespondencia(dados, nome)
+    // Quando o backend devolve uma aproximação por voz (por exemplo,
+    // "niwton" para "NEWTON"), a filtragem literal não encontra palavras
+    // iguais. Nesse caso, preserve as sugestões ordenadas pelo backend para
+    // que a tela possa pedir confirmação em vez de mostrar lista vazia.
+    return correspondentes.length > 0 ? correspondentes : dados
   } catch (err) {
     console.warn('[api/ruas] usando dados de exemplo — API indisponível:', err.message)
     return filtrarMock({ nome, cep, distrito })

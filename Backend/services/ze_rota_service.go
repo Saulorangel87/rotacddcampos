@@ -66,6 +66,10 @@ use sugerir_link_mapa pra dar uma sugestão de busca externa no Google Maps. Dei
 isso não é dado oficial do CDD, é só uma pista pra ajudar a achar o endereço — nunca afirme distrito,
 bairro ou CEP com base nisso.
 
+Quando buscar_rua devolver "busca_aproximada": true, a grafia informada provavelmente veio com um erro
+de voz ou digitação. Mostre as opções sugeridas e peça confirmação do bairro/distrito; trate-as como
+possibilidades do cadastro, nunca como uma identificação certa sem essa confirmação.
+
 Use consultar_clima quando perguntarem sobre o tempo, ou quando fizer sentido avisar sobre chuva que
 pode atrapalhar uma entrega (ex: perguntaram sobre uma rota agora ou hoje). Pra interpretar o campo
 weather_code da resposta (padrão WMO): 0 é céu limpo; 1-3 é parcialmente nublado a nublado; 45-48 é
@@ -371,8 +375,36 @@ func (s *zeRotaService) buscarRua(ctx context.Context, chamada groqToolCall) str
 	if err != nil {
 		return "erro ao buscar no banco: " + err.Error()
 	}
+	buscaAproximada := false
 	if len(ruas) == 0 {
-		return fmt.Sprintf("nenhuma rua encontrada com o nome %q", entrada.Nome)
+		todas, err := s.ruaRepo.FindAll(ctx, map[string]string{})
+		if err != nil {
+			return "erro ao buscar no banco: " + err.Error()
+		}
+		for indice, grupo := range agruparRuasAproximadas(todas, entrada.Nome) {
+			if indice >= 3 || len(ruas) >= 5 {
+				break
+			}
+			for _, rua := range grupo.ruas {
+				if len(ruas) >= 5 {
+					break
+				}
+				duplicada := false
+				for _, existente := range ruas {
+					if existente.ID == rua.ID {
+						duplicada = true
+						break
+					}
+				}
+				if !duplicada {
+					ruas = append(ruas, rua)
+				}
+			}
+		}
+		if len(ruas) == 0 {
+			return fmt.Sprintf("nenhuma rua encontrada com o nome %q", entrada.Nome)
+		}
+		buscaAproximada = true
 	}
 
 	limite := len(ruas)
@@ -411,9 +443,11 @@ func (s *zeRotaService) buscarRua(ctx context.Context, chamada groqToolCall) str
 	}
 
 	saida, _ := json.Marshal(map[string]interface{}{
-		"total_encontrado": len(ruas),
-		"mostrando":        limite,
-		"ruas":             resumos,
+		"total_encontrado":  len(ruas),
+		"mostrando":         limite,
+		"busca_aproximada":  buscaAproximada,
+		"consulta_original": entrada.Nome,
+		"ruas":              resumos,
 	})
 	return string(saida)
 }
