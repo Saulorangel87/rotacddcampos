@@ -1707,3 +1707,106 @@ formada exclusivamente por oito dígitos (aceitando apenas separadores comuns
 do CEP). A câmera permanece aberta até encontrar um CEP válido; iniciar a
 câmera também desfoca o campo para impedir que o teclado móvel apareça junto.
 O cabeçalho ganhou um microfone que transcreve e dispara a mesma busca de ruas.
+
+### Fase 9 — Redistritamento automático com equilíbrio e vizinhança — 09/09/2026
+
+#### Objetivo
+
+Evoluir a redução de distritos para que o sistema proponha uma redistribuição
+auditável quando a unidade passar, por exemplo, de 24 para 20 ou 17 distritos.
+As ruas dos distritos extintos devem ser absorvidas pelos distritos vizinhos
+sem concentrar carga excessiva em um único destino. A proposta precisa partir
+do CDD e das coordenadas reais das ruas, mas continuar dependendo de aprovação
+do administrador antes de qualquer alteração definitiva.
+
+O efeito de “dominó” será tratado como um rebalanceamento global: depois de
+receber ruas órfãs, um distrito que ultrapassar sua capacidade pode ceder suas
+ruas de fronteira para outro vizinho. Isso evita uma sequência de decisões
+locais que pareça razoável a cada passo, mas produza um resultado ruim no
+conjunto.
+
+#### Dados necessários e preparação
+
+1. Registrar o estado de referência: distritos ativos, códigos que serão
+   extintos, ruas por distrito, geometria disponível, confiança da geometria,
+   CEP, bairro e quantidade de objetos por período.
+2. Classificar ruas sem geometria ou com contexto ambíguo como **pendentes de
+   revisão**. Elas não devem ser movidas automaticamente por uma coordenada
+   presumida.
+3. Receber a planilha operacional de tempos, preferencialmente com as colunas
+   `distrito_origem`, `distrito_destino`, `tempo_minutos` e, se disponível,
+   `distancia_km`. A planilha deve ser conferida contra os códigos atuais antes
+   de entrar no cálculo.
+4. Definir capacidade por distrito. O melhor indicador é carga/tempo de
+   entrega observado; quantidade de ruas é apenas um fallback e não representa
+   sozinha o esforço real.
+
+#### Motor de recomendação
+
+O cálculo será feito em modo de simulação, sem gravar em `ruas`:
+
+1. Selecionar os distritos sobreviventes e as ruas órfãs dos distritos que
+   serão extintos.
+2. Construir uma rede de vizinhança usando distância entre geometrias ou
+   pontos representativos, com penalidade para dados de baixa confiança.
+3. Gerar candidatos somente entre distritos espacialmente próximos. Um
+   candidato distante pode ser exibido como exceção, mas não deve ser escolhido
+   automaticamente se houver alternativa válida.
+4. Resolver a atribuição global minimizando uma função com quatro fatores:
+   proximidade/tempo de percurso, excesso de capacidade, número de mudanças e
+   descontinuidade territorial. O sistema deve preferir pequenas alterações
+   quando duas alternativas forem equivalentes.
+5. Recalcular o equilíbrio após cada conjunto de atribuições, permitindo o
+   rebalanceamento de borda que representa o efeito dominó.
+6. Produzir uma recomendação por rua com destino sugerido, distância ou tempo,
+   carga antes/depois, motivo, confiança e indicação de revisão manual quando
+   os dados forem insuficientes.
+
+O cálculo deve ser determinístico: a mesma fotografia dos dados e os mesmos
+parâmetros devem produzir o mesmo resultado. Não usar aprendizado automático
+nem alterar um cadastro apenas porque um nome de rua é parecido.
+
+#### Interface e aprovação
+
+O painel administrativo deverá oferecer:
+
+- escolha da quantidade alvo (por exemplo, 24 → 20 ou 24 → 17);
+- botão **Simular redistribuição**;
+- mapa e lista com distrito atual, destino sugerido, distância/tempo e
+  confiança;
+- filtros para baixa confiança, excesso de capacidade e ruas sem geometria;
+- edição manual do destino e justificativa da alteração;
+- comparação da carga por distrito antes e depois;
+- exportação do plano para revisão e registro de quem aprovou cada exceção.
+
+O fluxo atual de **Concluir** e **Aplicar** será preservado. A recomendação
+preenche um rascunho; somente o administrador pode concluir e aplicar. Antes da
+aplicação será gerado backup, conferida a quantidade de ruas por destino e
+verificada a transação. Depois, a base local será comparada com a produção e o
+deploy seguirá pelo GitHub Actions.
+
+#### Validação por etapas
+
+1. Rodar simulações históricas 24 → 20 e 24 → 17 sem alterar o banco.
+2. Conferir manualmente as transições com maior distância, maior aumento de
+   carga e menor confiança de geometria.
+3. Comparar a recomendação com os tempos da planilha e com o conhecimento dos
+   colaboradores da unidade.
+4. Executar uma rodada piloto em cópia local, gerar relatório antes/depois e
+   validar que nenhum distrito ficou isolado ou acima da capacidade acordada.
+5. Só depois ativar a recomendação no painel de produção, mantendo a decisão
+   final humana e um caminho claro para desfazer um plano ainda não aplicado.
+
+#### Critérios de aceite e pendências
+
+- nenhuma rua sem geometria confiável recebe destino automático silencioso;
+- cada sugestão informa a evidência usada e pode ser revisada;
+- a solução não concentra órfãos em um único distrito sem justificar a
+  capacidade disponível;
+- o resultado é reproduzível e auditável;
+- a aplicação continua atômica, com histórico e backup;
+- faltam ainda a planilha de tempos de percurso, a definição de capacidade e a
+  revisão das 73 ruas ativas sem geometria utilizável.
+
+Esta fase é um planejamento. Nenhum código do motor de redistritamento foi
+alterado nesta auditoria.

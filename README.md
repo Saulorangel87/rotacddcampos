@@ -2,8 +2,9 @@
 
 Ferramenta interna da unidade CDD Campos dos Goytacazes (Correios): mapa interativo dos distritos postais, consulta de ruas/CEP, cadastro de colaboradores, ajuste de rotas e redistritamento.
 
-Em produção: **https://cddcampos.devsaulo.com.br** — as alterações locais da
-versão **v1.4.0** ainda aguardam publicação manual pelo workflow de deploy.
+Em produção: **https://cddcampos.devsaulo.com.br** — versão atual do frontend:
+**v1.6.0**. A publicação continua sendo disparada manualmente pelo workflow
+de deploy.
 
 ## Stack
 
@@ -218,6 +219,11 @@ Ao aplicar:
 Também existe a opção **Voltar ao início**, enquanto o plano ainda não foi aplicado.
 
 O sistema foi testado em produção com a remoção do distrito **624**, envolvendo a realocação de **120 ruas**.
+
+O fluxo automático de redução, com recomendações por proximidade, capacidade e
+tempo de percurso, está planejado na **Fase 9** de
+`planejamento-ordenamento-entregas-cdd-campos.md`. Até essa fase ser
+implementada e validada, a escolha dos destinos continua manual.
 
 O fluxo de **aumento de distritos** ainda não foi implementado na interface e na camada de negócio, embora a estrutura do banco já esteja preparada.
 
