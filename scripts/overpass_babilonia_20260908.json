@@ -1,0 +1,37 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-09-09T00:31:48Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "way",
+  "id": 295038508,
+  "bounds": {
+    "minlat": -21.6000719,
+    "minlon": -41.3166700,
+    "maxlat": -21.5996855,
+    "maxlon": -41.3134548
+  },
+  "nodes": [
+    2987105241,
+    2987105242,
+    1308074170
+  ],
+  "geometry": [
+    { "lat": -21.5996855, "lon": -41.3166700 },
+    { "lat": -21.5998110, "lon": -41.3157013 },
+    { "lat": -21.6000719, "lon": -41.3134548 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "name": "Rua Babilônia",
+    "surface": "paved"
+  }
+}
+
+  ]
+}

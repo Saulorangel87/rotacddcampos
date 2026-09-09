@@ -1,0 +1,30 @@
+[
+  {
+    "rua_id": 2097,
+    "nome": "RUA BABILÔNIA - TRAVESSÃO",
+    "bairro": "TRAVESSÃO",
+    "cep": "28145135",
+    "distrito": "623",
+    "hash_geometria_original": "aed26ea88ae91ebe",
+    "fonte_referencia": "OpenStreetMap way 295038508; ponto confirmado pelo usuário",
+    "geometria": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -41.31667,
+            -21.5996855
+          ],
+          [
+            -41.3157013,
+            -21.599811
+          ],
+          [
+            -41.3134548,
+            -21.6000719
+          ]
+        ]
+      ]
+    }
+  }
+]
