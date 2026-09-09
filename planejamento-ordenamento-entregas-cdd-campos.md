@@ -1675,3 +1675,20 @@ Babilônia - Travessão é o ID 2097; há dois cadastros com o nome Almirante Ar
 Parreiras, e o contexto exibido no teste deve ser confirmado antes de alterar o
 algoritmo. A auditoria posterior deve comparar as coordenadas usadas em cada
 transição partindo do CDD, sem usar o tamanho textual da rua como critério.
+
+### Encerramento da Fase 8 — 09/09/2026
+
+A Fase 8 — Refinamento — é considerada concluída para o escopo atual. Foram
+validados em produção o fluxo de busca por nome e CEP, a entrada por voz, o
+scanner, o ordenamento estrito pelo vizinho mais próximo a partir do CDD, a
+correção manual da ordem e a revisão das geometrias que tinham contexto
+misturado. A correção da `RUA BABILÔNIA - TRAVESSÃO` (ID 2097) também foi
+aplicada e conferida nos bancos local e de produção.
+
+Permanece uma pendência de dados: a base possui 73 ruas ativas sem geometria
+utilizável. A localização exata dessas ruas dependerá de um levantamento com
+os colaboradores da unidade. Essa pendência fica registrada para uma etapa
+posterior e não bloqueia o encerramento do refinamento atual. Até que o
+levantamento exista, não alterar novamente o algoritmo com base em suposições
+de rota; quando os pontos forem identificados, aplicar o mesmo fluxo de
+validação, backup, atualização local, auditoria e espelhamento em produção.
